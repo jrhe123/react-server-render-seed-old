@@ -1,0 +1,25 @@
+@media(max-width: 767px) {
+
+    .app-content {
+        padding-left: 0px;
+    }
+
+    .padding-left {
+        padding-left: 0px;
+    }
+
+    .report-page-input-div {
+        text-align: center;
+        width: 100vw;
+    }
+
+    .page-tab-div {
+        width: 100vw;
+    }
+
+    .center-div-two-radio-group {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-70%);
+    }
+}
