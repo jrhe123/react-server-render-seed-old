@@ -86,7 +86,8 @@ const styles = {
         float: "right",
         width: 24,
         height: 24,
-        marginRight: 12
+        marginRight: 12,
+        cursor: "pointer"
     },
 
     logoImgStyle: {

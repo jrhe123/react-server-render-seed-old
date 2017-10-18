@@ -17,7 +17,7 @@ class Feature extends Component{
 
     componentDidMount(){
         setTimeout(() => {
-    		this.setState({posting: false}); }, 1000
+    		this.setState({posting: false}); }, 1500
         );
     }
 
@@ -470,7 +470,8 @@ const styles = {
         float: "right",
         width: 24,
         height: 24,
-        marginRight: 12
+        marginRight: 12,
+        cursor: "pointer"
     },
 
     logoImgStyle: {

@@ -713,19 +713,19 @@ section.module.parallax-2 {
     text-align: center;
   }
   .logo1{
-    animation: MoveUpDown1 1s linear infinite;
+    animation: MoveUpDown1 0.5s linear infinite;
     left: 0;
   }
   .logo2{
-    animation: MoveUpDown2 1.8s linear infinite;
+    animation: MoveUpDown2 0.9s linear infinite;
     left: 20px;
   }
   .logo3{
-    animation: MoveUpDown3 2s linear infinite;
+    animation: MoveUpDown3 1s linear infinite;
     left: 40px;
   }
   .logo4{
-    animation: MoveUpDown4 1.6s linear infinite;
+    animation: MoveUpDown4 0.8s linear infinite;
     left: 60px;
   }
   @keyframes MoveUpDown1 {
