@@ -49,7 +49,7 @@ class Feature extends Component{
         } = styles;
 
         const settings = {
-            dots: true,
+            dots: false,
             infinite: true,
             slidesToShow: 4,
             slidesToScroll: 1,
@@ -377,6 +377,8 @@ const styles = {
 
     flexDisItemStyle: {
         width: "50%",
+        minWidth: "360px",
+        marginBottom: 24
     },
 
     desContainerStyle:{ 
