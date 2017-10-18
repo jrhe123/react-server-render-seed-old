@@ -222,7 +222,7 @@ class Feature extends Component{
                                 </div>
                                 <div style={sliderItemStyle}>
                                     <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
-                                        <img style={sliderItemImgStyle} src="/img/wechatPay.png" />
+                                        <img style={sliderItemImgStyle} src="/img/debit.png" />
                                     </div>
                                 </div>
                             </Slider>

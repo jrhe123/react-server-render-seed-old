@@ -11,11 +11,11 @@ module.exports = {
     },
     module: {
         loaders: [{
+            // test: path.join(__dirname, 'src'),
             test: /\.js$/,
             exclude: /(node_modules|bower_components)/,
             loader: 'babel-loader',
             query: {
-                // cacheDirectory: 'babel_cache',
                 presets: ["es2015", "react", "stage-2"],
                 plugins: ["transform-class-properties", "transform-decorators-legacy"]
             }
@@ -25,6 +25,12 @@ module.exports = {
         }, {
             test: /\.(jpe?g|gif|png)$/,
             loader: 'file-loader?emitFile=false&name=[path][name].[ext]'
+        }, {
+            test: /\.(woff|woff2|eot|ttf|otf)$/,
+            loader: "file-loader"
+        },{
+            test: /\.svg$/,
+            loader: 'svg-inline-loader'
         }]
     },
     plugins: [
