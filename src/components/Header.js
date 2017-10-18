@@ -3,16 +3,15 @@ import { connect } from 'react-redux';
 import AppBar from 'material-ui/AppBar';
 import ReactDOM from 'react-dom';
 import { browserHistory } from 'react-router';
-import IconButton from 'material-ui/IconButton';
 import FlatButton from 'material-ui/FlatButton';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import Close from 'material-ui/svg-icons/navigation/close';
+import FormatAlignJustify from 'material-ui/svg-icons/editor/format-align-justify';
 import { grey200, orangeA400, grey50 } from 'material-ui/styles/colors';
-import AccountCircle from 'material-ui/svg-icons/action/account-circle';
-import { toggleMenu }  from '../actions/layout_action';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { root_page } from '../utilities/urlPath'
 import { Link } from 'react-router';
+import { bubble as Menu } from 'react-burger-menu'
 
 class Header extends Component {
 
@@ -22,15 +21,22 @@ class Header extends Component {
             bg: 'transparent',
             zdepth: 0,
             fontColor: grey50,
-            logoPath: '/img/Logo_Orange.png'
+            logoPath: '/img/Logo_White.png',
+            openMenu: false,
+            rightIconMarginTop: window.innerWidth >= 414 ? 5 : -8,
+            largeScreen: window.innerWidth >= 414
         }
         this.refactor = this.refactor.bind(this);
         this.scrollEvent = this.scrollEvent.bind(this);
         this.gotoHome = this.gotoHome.bind(this);
         this.gotoFeature = this.gotoFeature.bind(this);
+        this.closeMenu = this.closeMenu.bind(this);
        // this.scrollTo = this.scrollTo.bind(this);
     }
 
+    closeMenu = () => {
+        this.setState({ openMenu: false });
+    }
 
     gotoHome = () => {
         this.scrollTo(0, 10)
@@ -57,6 +63,12 @@ class Header extends Component {
     refactor = () => {
         const width = window.innerWidth;
 
+        if (width <= 414) {
+            this.setState({ largeScreen: false, rightIconMarginTop: -8 })
+        } else {
+            this.setState({ largeScreen: true, rightIconMarginTop: 5 })
+        }
+
     }
 
     componentDidMount() {
@@ -78,11 +90,20 @@ class Header extends Component {
             fontSize: '18px'
         };
 
+        const smallScreenLabelMargin = {
+            marginLeft: '20px'
+        };
 
-        const iconStyleRight = {
+        const closeIconRightTop = {
             position: 'relative',
-            top: 5,
-            right: 50
+            top: 3,
+            right: 10
+        }
+
+        let iconStyleRight = {
+            position: 'relative',
+            top: this.state.rightIconMarginTop,
+            right: 35
         };
 
         return (
@@ -98,10 +119,20 @@ class Header extends Component {
                         showMenuIconButton={false}
                         onTitleTouchTap={(e) => browserHistory.push(`${root_page}`)}
                         iconElementRight={
-                            <div>
+                            this.state.largeScreen ? <div>
                                 <Link to={`${root_page}`}><FlatButton key={1} label="Home" labelStyle={labelStyle} /></Link>
                                 <Link to={`${root_page}feature`}><FlatButton key={2} label="Features" labelStyle={labelStyle} /></Link>
                                 <Link to={`${root_page}about`}><FlatButton key={3} label="About Us" labelStyle={labelStyle} /></Link>
+                            </div> : <div id="outer-container">
+                                <Menu right pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } isOpen={ this.state.openMenu }>
+                                    <div style={closeIconRightTop}><FloatingActionButton className="m-t" mini={true} backgroundColor={"transparent"} onClick={() => this.closeMenu()}><Close /></FloatingActionButton></div>
+                                    <div style={smallScreenLabelMargin}><Link to={`${root_page}`}><FlatButton key={1} label="Home" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
+                                    <div style={smallScreenLabelMargin}><Link to={`${root_page}feature`}><FlatButton key={2} label="Features" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
+                                    <div style={smallScreenLabelMargin}><Link to={`${root_page}about`}><FlatButton key={3} label="About Us" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
+                                </Menu>
+                                <main id="page-wrap">
+                                    <div><FormatAlignJustify style={{ marginTop:'14px' }} color={this.state.fontColor}/></div>
+                                </main>
                             </div>
                         }
                         iconStyleRight={iconStyleRight}
@@ -119,6 +150,7 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(Header);
+
 
 /*
 scrollTo = (node_offset, node_height) => {
