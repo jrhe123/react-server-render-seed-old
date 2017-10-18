@@ -718,14 +718,17 @@ section.module.parallax-2 {
   }
   .logo2{
     animation: MoveUpDown2 0.9s linear infinite;
+    animation-delay: 0.5s;
     left: 20px;
   }
   .logo3{
     animation: MoveUpDown3 1s linear infinite;
+    animation-delay: 0.8s;
     left: 40px;
   }
   .logo4{
     animation: MoveUpDown4 0.8s linear infinite;
+    animation-delay: 1s;
     left: 60px;
   }
   @keyframes MoveUpDown1 {
@@ -813,7 +816,7 @@ section.module.parallax-2 {
 }
 .team-flex-item{
     width: 33.33%;
-    margin-bottom: 12px;
+    margin-bottom: 24px;
 }
 @media only screen and (max-width : 768px) {
     .txt-1{

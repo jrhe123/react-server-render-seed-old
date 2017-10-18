@@ -89,7 +89,7 @@ class NewAboutUs extends Component{
             <div>
                 <div style={bannerContainerStyle}>
                     <p className="txt-1" style={bannerTxtStyle}>ABOUT US</p>
-                    <img style={bannerImgStyle} src="/img/feature_bg.png" />
+                    <img style={bannerImgStyle} src="/img/about_us.png" />
                 </div>
 
                 <div style={detailContainerStyle}>
@@ -122,49 +122,49 @@ class NewAboutUs extends Component{
                         <div style={Object.assign({}, centerDivStyle, delimit )}></div>
                         <div style={teamFlexContainerStyle}>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p className="txt-4" style={teamDescStyle}>123</p>
+                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Benjamin Liang</p>
+                                <p className="txt-4" style={teamDescStyle}>CEO, President</p>
                             </div>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p className="txt-4" style={teamDescStyle}>123</p>
+                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Sophia Zhang</p>
+                                <p className="txt-4" style={teamDescStyle}>COO, Co-founder</p>
                             </div>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p className="txt-4" style={teamDescStyle}>123</p>
+                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Nick Ning</p>
+                                <p className="txt-4" style={teamDescStyle}>Sales Director</p>
                             </div>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p className="txt-4" style={teamDescStyle}>123</p>
+                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Yina Gong</p>
+                                <p className="txt-4" style={teamDescStyle}>Executive Assistant</p>
                             </div>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p className="txt-4" style={teamDescStyle}>123</p>
+                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Jiamin Ning</p>
+                                <p className="txt-4" style={teamDescStyle}>Software Engineer</p>
                             </div>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p className="txt-4" style={teamDescStyle}>123</p>
+                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Roy He</p>
+                                <p className="txt-4" style={teamDescStyle}>Roy He</p>
                             </div>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p className="txt-4" style={teamDescStyle}>123</p>
+                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Yifu Ye</p>
+                                <p className="txt-4" style={teamDescStyle}>System Engineer</p>
                             </div>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p className="txt-4" style={teamDescStyle}>123</p>
+                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Who</p>
+                                <p className="txt-4" style={teamDescStyle}>Position Title</p>
                             </div>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p className="txt-4" style={teamDescStyle}>123</p>
+                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Who</p>
+                                <p className="txt-4" style={teamDescStyle}>Position Title</p>
                             </div>
                         </div>
                     </div>
@@ -221,7 +221,7 @@ const styles = {
 
     bannerImgStyle : {
         width: "100vw",
-        height: "300px"
+        height: "400px"
     },
 
     bannerTxtStyle : {

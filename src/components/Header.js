@@ -23,8 +23,8 @@ class Header extends Component {
             fontColor: grey50,
             logoPath: '/img/Logo_White.png',
             openMenu: false,
-            rightIconMarginTop: window.innerWidth >= 414 ? 5 : -8,
-            largeScreen: window.innerWidth >= 414
+            rightIconMarginTop: 5,
+            largeScreen: true
         }
         this.refactor = this.refactor.bind(this);
         this.scrollEvent = this.scrollEvent.bind(this);
@@ -72,13 +72,14 @@ class Header extends Component {
     }
 
     componentDidMount() {
-        this.setState({ 
-            user: sessionStorage.getItem('user'), 
-            //rightIconMarginTop: window.innerWidth >= 414 ? 5 : -8,
-            //largeScreen: window.innerWidth >= 414
-        });
+        
         window.addEventListener('resize', this.refactor);
         window.addEventListener('scroll', this.scrollEvent);
+        this.setState({ 
+            user: sessionStorage.getItem('user'), 
+            rightIconMarginTop: window.innerWidth >= 414 ? 5 : -8,
+            largeScreen: window.innerWidth >= 414
+        });
     }
 
     componentWillUnmount() {
@@ -121,7 +122,7 @@ class Header extends Component {
                     <AppBar
                         style={{ width: '100vw', opacity:'0.8', fontWeight: 'bold', backgroundColor: this.state.bg, transition: 'background-color 1.3s' }}
                         title={
-                            <div><img style={{  margin: '5px', width: '38px', height: '50px' }} src={this.state.logoPath} /></div>
+                            <div><img style={{  margin: '5px', marginTop: '10px', width: '38px', height: '50px' }} src={this.state.logoPath} /></div>
                         }
                         titleStyle={ {marginLeft: '30px'} }
                         zDepth={this.state.zdepth}
@@ -130,7 +131,7 @@ class Header extends Component {
                         iconElementRight={
                             this.state.largeScreen ? <div>
                                 <Link to={`${root_page}`}><FlatButton key={1} label="Home" labelStyle={labelStyle} /></Link>
-                                <Link to={`${root_page}feature`}><FlatButton key={2} label="Features" labelStyle={labelStyle} /></Link>
+                                <Link to={`${root_page}feature`}><FlatButton key={2} label="Feature" labelStyle={labelStyle} /></Link>
                                 <Link to={`${root_page}about`}><FlatButton key={3} label="About Us" labelStyle={labelStyle} /></Link>
                             </div> : <div id="outer-container">
                                 <Menu right pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } isOpen={ this.state.openMenu }>
@@ -138,7 +139,7 @@ class Header extends Component {
                                         <div style={closeIconRightTop}><FloatingActionButton mini={true} backgroundColor={"transparent"} onClick={() => this.closeMenu()}><Close /></FloatingActionButton></div>
                                         <div className="m-t-lg">
                                             <div style={smallScreenLabelMargin}><Link to={`${root_page}`}><FlatButton key={1} label="Home" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
-                                            <div style={smallScreenLabelMargin}><Link to={`${root_page}feature`}><FlatButton key={2} label="Features" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
+                                            <div style={smallScreenLabelMargin}><Link to={`${root_page}feature`}><FlatButton key={2} label="Feature" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
                                             <div style={smallScreenLabelMargin}><Link to={`${root_page}about`}><FlatButton key={3} label="About Us" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
                                         </div>
                                     </div>

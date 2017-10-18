@@ -98,7 +98,7 @@ class Feature extends Component{
             <div>
                 <div style={bannerContainerStyle}>
                     <p className="txt-1" style={bannerTxtStyle}>FEATURE</p>
-                    <img style={bannerImgStyle} src="/img/feature_bg.png" />
+                    <img style={bannerImgStyle} src="/img/feature.png" />
                 </div>
 
                 <div style={mapContainerStyle}>
@@ -280,7 +280,7 @@ const styles = {
 
     bannerImgStyle : {
         width: "100vw",
-        height: "300px"
+        height: "400px"
     },
 
     bannerTxtStyle : {
