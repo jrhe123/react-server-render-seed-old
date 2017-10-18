@@ -41,10 +41,12 @@ constructor(props) {
                 <div className="main_page">
                     <div>{this.props.children}</div>
                 </div>
-                <div><Footer className="Footer" /></div>
             </div>
     );
   }
 }
 
 export default connect()(Layout);
+
+
+{/* <div><Footer className="Footer" /></div> */}

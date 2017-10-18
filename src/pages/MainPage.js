@@ -6,6 +6,7 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import MarkImage from '../components/MarkImage';
 import { mainPageMoveToSection }  from '../actions/layout_action';
+import Logo from '../components/Logo/Logo';
 
 class MainPage extends React.Component {
 
@@ -104,7 +105,7 @@ class MainPage extends React.Component {
                             </div>
                         </section>
                     </CSSTransitionGroup>
-
+                    
                     <section ref="second_section" style={{ opacity: this.state.second_section_opacity, transition: 'opacity 3.9s', marginBottom: '10' }}>
                         <div>
                             <div style={{ textAlign: 'center', paddingTop:'17px' }}>

@@ -28,6 +28,12 @@ module.exports = {
         }, {
             test: /\.(jpe?g|gif|png)$/,
             loader: 'file-loader?emitFile=false&name=[path][name].[ext]'
+        }, {
+            test: /\.(woff|woff2|eot|ttf|otf)$/,
+            loader: "file-loader"
+        },{
+            test: /\.svg$/,
+            loader: 'svg-inline-loader'
         }]
     },
     plugins: [

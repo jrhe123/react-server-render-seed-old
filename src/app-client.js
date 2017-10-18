@@ -8,6 +8,8 @@ import { createStore, applyMiddleware } from 'redux';
 import AppRoutes from './components/AppRoutes';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import 'bootstrap/dist/css/bootstrap.css';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import reducers from './reducers';
 injectTapEventPlugin();
 
