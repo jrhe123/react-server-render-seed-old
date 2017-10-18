@@ -72,7 +72,11 @@ class Header extends Component {
     }
 
     componentDidMount() {
-        this.setState({ user: sessionStorage.getItem('user')});
+        this.setState({ 
+            user: sessionStorage.getItem('user'), 
+            //rightIconMarginTop: window.innerWidth >= 414 ? 5 : -8,
+            //largeScreen: window.innerWidth >= 414
+        });
         window.addEventListener('resize', this.refactor);
         window.addEventListener('scroll', this.scrollEvent);
     }
@@ -94,9 +98,14 @@ class Header extends Component {
             marginLeft: '20px'
         };
 
-        const closeIconRightTop = {
+        const barWrapper = {
+            width: "100%",
             position: 'relative',
-            top: 3,
+        };
+
+        const closeIconRightTop = {
+            position: "absolute",
+            top: -24,
             right: 10
         }
 
@@ -125,10 +134,14 @@ class Header extends Component {
                                 <Link to={`${root_page}about`}><FlatButton key={3} label="About Us" labelStyle={labelStyle} /></Link>
                             </div> : <div id="outer-container">
                                 <Menu right pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } isOpen={ this.state.openMenu }>
-                                    <div style={closeIconRightTop}><FloatingActionButton className="m-t" mini={true} backgroundColor={"transparent"} onClick={() => this.closeMenu()}><Close /></FloatingActionButton></div>
-                                    <div style={smallScreenLabelMargin}><Link to={`${root_page}`}><FlatButton key={1} label="Home" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
-                                    <div style={smallScreenLabelMargin}><Link to={`${root_page}feature`}><FlatButton key={2} label="Features" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
-                                    <div style={smallScreenLabelMargin}><Link to={`${root_page}about`}><FlatButton key={3} label="About Us" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
+                                    <div style={barWrapper}>
+                                        <div style={closeIconRightTop}><FloatingActionButton mini={true} backgroundColor={"transparent"} onClick={() => this.closeMenu()}><Close /></FloatingActionButton></div>
+                                        <div className="m-t-lg">
+                                            <div style={smallScreenLabelMargin}><Link to={`${root_page}`}><FlatButton key={1} label="Home" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
+                                            <div style={smallScreenLabelMargin}><Link to={`${root_page}feature`}><FlatButton key={2} label="Features" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
+                                            <div style={smallScreenLabelMargin}><Link to={`${root_page}about`}><FlatButton key={3} label="About Us" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
+                                        </div>
+                                    </div>
                                 </Menu>
                                 <main id="page-wrap">
                                     <div><FormatAlignJustify style={{ marginTop:'14px' }} color={this.state.fontColor}/></div>
