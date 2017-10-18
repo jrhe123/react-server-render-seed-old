@@ -614,3 +614,161 @@ section.module.parallax-2 {
     opacity: 1;
     transition: opacity 1.2s ease-in;
 }
+
+
+/* responsive font */
+.m-t{
+    margin-top: 12px;
+}
+.m-b{
+    margin-bottom: 12px;
+}
+.m-l{
+    margin-left: 12px;
+}
+.m-r{
+    margin-right: 12px;
+}
+.m-t-md{
+    margin-top: 24px;
+}
+.m-b-md{
+    margin-bottom: 24px;
+}
+.m-l-md{
+    margin-left: 24px;
+}
+.m-r-md{
+    margin-right: 24px;
+}
+.m-t-lg{
+    margin-top: 36px;
+}
+.m-b-lg{
+    margin-bottom: 36px;
+}
+.m-l-lg{
+    margin-left: 36px;
+}
+.m-r-lg{
+    margin-right: 36px;
+}
+
+.p-t{
+    padding-top: 12px;
+}
+.p-b{
+    padding-bottom: 12px;
+}
+.p-l{
+    padding-left: 12px;
+}
+.p-r{
+    padding-right: 12px;
+}
+.p-t-md{
+    padding-top: 24px;
+}
+.p-b-md{
+    padding-bottom: 24px;
+}
+.p-l-md{
+    padding-left: 24px;
+}
+.p-r-md{
+    padding-right: 24px;
+}
+.p-t-lg{
+    padding-top: 36px;
+}
+.p-b-lg{
+    padding-bottom: 36px;
+}
+.p-l-lg{
+    padding-left: 36px;
+}
+.p-r-lg{
+    padding-right: 36px;
+}
+
+.txt-1{
+    font-size: 36px;
+}
+.txt-2{
+    font-size: 24px;
+}
+.txt-3{
+    font-size: 18px;
+}
+.txt-4{
+    font-size: 16px;
+}
+
+.flex-item-2{
+    width: 50%;
+}
+.counter-container{
+    width: 80%;    
+}
+.counter-box{
+    margin-top: 10px;
+    height: 60px;
+    width: 100px;
+    padding: "6px 12px";
+    border-radius: 12px;    
+}
+.counter-desc-container{
+    width: calc(100% - 100px);
+    padding-left: 12px;
+    height: 80px;
+}
+.counter-desc-wrapper{
+    height: 80px;
+}
+.slider-item-wrapper{
+    padding: 0 12px;
+}
+@media only screen and (max-width : 768px) {
+    .txt-1{
+        font-size: 28px;
+    }
+    .txt-2{
+        font-size: 20px;
+    }
+    .txt-3{
+        font-size: 14px;
+    }
+    .txt-4{
+        font-size: 12px;
+    }
+    .flex-item-2{
+        width: 100%;
+    }
+    .counter-box{
+        margin-top: 20px;
+        height: 40px;
+        width: 80px;
+        border-radius: 8px;
+    }
+    .counter-desc-container{
+        width: calc(100% - 100px);
+    }
+}
+@media only screen and (max-width : 414px) {
+    .txt-1{
+        font-size: 20px;
+    }
+    .txt-2{
+        font-size: 16px;
+    }
+    .txt-3{
+        font-size: 14px;
+    }
+    .txt-4{
+        font-size: 12px;
+    }
+    .slider-item-wrapper{
+        padding: 0 6px;
+    }
+}
+    

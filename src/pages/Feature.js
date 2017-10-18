@@ -15,7 +15,6 @@ class Feature extends Component{
             contentContainerStyle,
             centerTitleTxtStyle,
             centerDivStyle,
-            titleStyle,
             delimit,
             mapContainerStyle,
             mapImgStyle,
@@ -64,35 +63,35 @@ class Feature extends Component{
 
             <div>
                 <div style={bannerContainerStyle}>
-                    <p style={bannerTxtStyle}>FEATURE</p>
+                    <p className="txt-1" style={bannerTxtStyle}>FEATURE</p>
                     <img style={bannerImgStyle} src="/img/feature_bg.png" />
                 </div>
 
                 <div style={mapContainerStyle}>
                     <div style={contentContainerStyle}>
-                        <p style={Object.assign({}, centerTitleTxtStyle, titleStyle )}>Link China and Canada to expand your business</p>
+                        <p className="txt-2 m-b p-l p-r" style={centerTitleTxtStyle}>Link China and Canada to expand your business</p>
                         <div style={Object.assign({}, centerDivStyle, delimit )}></div>
                         <img style={mapImgStyle} src="/img/map.png" />
-                        <div style={counterContainerStyle}>
-                            <div style={counterItemStyle}>
-                                <div style={counterBoxStyle}>
-                                    <p style={counterBgTxtStyle}>610139</p>
-                                    <p style={counterSmTxtStyle}>in 2016</p>
+                        <div className="counter-container" style={counterContainerStyle}>
+                            <div className="flex-item-2" style={counterItemStyle}>
+                                <div className="counter-box" style={counterBoxStyle}>
+                                    <p className="txt-3" style={counterBgTxtStyle}>610139</p>
+                                    <p className="txt-4" style={counterSmTxtStyle}>in 2016</p>
                                 </div>
-                                <div style={counterDescContainerStyle}>
-                                    <div style={counterDescWrapperStyle}>
-                                        <p style={counterDescStyle}>Visitors to Canada From China</p>
+                                <div className="counter-desc-container" style={counterDescContainerStyle}>
+                                    <div className="counter-desc-wrapper" style={counterDescWrapperStyle}>
+                                        <p className="txt-4" style={counterDescStyle}>Visitors to Canada From China</p>
                                     </div>
                                 </div>
                             </div>
-                            <div style={counterItemStyle}>
-                                <div style={counterBoxStyle}>
-                                    <p style={counterBgTxtStyle}>50%</p>
-                                    <p style={counterSmTxtStyle}>longer</p>
+                            <div className="flex-item-2" style={counterItemStyle}>
+                                <div className="counter-box" style={counterBoxStyle}>
+                                    <p className="txt-3" style={counterBgTxtStyle}>50%</p>
+                                    <p className="txt-4" style={counterSmTxtStyle}>longer</p>
                                 </div>
-                                <div style={counterDescContainerStyle}>
-                                    <div style={counterDescWrapperStyle}>
-                                        <p style={counterDescStyle}>Staying of Chinese travellers in Canada than in USA</p>
+                                <div className="counter-desc-container" style={counterDescContainerStyle}>
+                                    <div className="counter-desc-wrapper" style={counterDescWrapperStyle}>
+                                        <p className="txt-4" style={counterDescStyle}>Staying of Chinese travellers in Canada than in USA</p>
                                     </div>
                                 </div>
                             </div>
@@ -109,11 +108,11 @@ class Feature extends Component{
                             <div style={flexDisItemStyle}>
                                 <div style={desContainerStyle}>
                                     <div style={desContainerWrapperStyle}>
-                                        <p style={ titleStyle }>PAYMENT SOLUTION</p>
+                                        <p className="txt-2 m-b">PAYMENT SOLUTION</p>
                                         <div style={delimit}></div>
                                         <ul>
-                                            <li>Canadian independen third party payment solution</li>
-                                            <li>Providing convenient and efficient mobile paymnet services for the international traveler, local consumers and Merchandise</li>
+                                            <li className="txt-3">Canadian independen third party payment solution</li>
+                                            <li className="txt-3">Providing convenient and efficient mobile paymnet services for the international traveler, local consumers and Merchandise</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -124,17 +123,17 @@ class Feature extends Component{
 
                 <div style={scenarioContainerStyle}>
                     <div style={contentContainerStyle}>
-                        <div style={flexDisContainerStyle}>
+                        <div className="m-t-md" style={flexDisContainerStyle}>
                             <div style={flexDisItemStyle}>
                                 <div style={desContainerStyle}>
                                     <div style={desContainerWrapperStyle}>
-                                        <p style={ titleStyle }>SCENARIO</p>
+                                        <p className="txt-2 m-b">SCENARIO</p>
                                         <div style={delimit}></div>
                                         <ul>
-                                            <li>Elminate counterfeit coin</li>
-                                            <li>Fast and simple processing</li>
-                                            <li>Support multiple currencies</li>
-                                            <li>Data analysis</li>
+                                            <li className="txt-3">Elminate counterfeit coin</li>
+                                            <li className="txt-3">Fast and simple processing</li>
+                                            <li className="txt-3">Support multiple currencies</li>
+                                            <li className="txt-3">Data analysis</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -148,47 +147,47 @@ class Feature extends Component{
 
                 <div style={partnerContainerStyle}>
                     <div style={contentContainerStyle}>
-                        <p style={Object.assign({}, centerTitleTxtStyle, titleStyle )}>PARTNER</p>
+                        <p className="txt-2 m-b p-l p-r" style={centerTitleTxtStyle}>PARTNER</p>
                         <div style={Object.assign({}, centerDivStyle, delimit )}></div>
                         <div style={sliderContainerStyle}>
                             <Slider {...settings}>
                                 <div style={sliderItemStyle}>
-                                    <div style={sliderItemWrapperStyle}>
+                                    <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
                                         <img style={sliderItemImgStyle} src="/img/alipay.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
-                                    <div style={sliderItemWrapperStyle}>
+                                    <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
                                         <img style={sliderItemImgStyle} src="/img/wechatPay.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
-                                    <div style={sliderItemWrapperStyle}>
+                                    <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
                                         <img style={sliderItemImgStyle} src="/img/td.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
-                                    <div style={sliderItemWrapperStyle}>
+                                    <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
                                         <img style={sliderItemImgStyle} src="/img/visa.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
-                                    <div style={sliderItemWrapperStyle}>
+                                    <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
                                         <img style={sliderItemImgStyle} src="/img/mastercard.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
-                                    <div style={sliderItemWrapperStyle}>
+                                    <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
                                         <img style={sliderItemImgStyle} src="/img/bambora.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
-                                    <div style={sliderItemWrapperStyle}>
+                                    <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
                                         <img style={sliderItemImgStyle} src="/img/moneris.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
-                                    <div style={sliderItemWrapperStyle}>
+                                    <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
                                         <img style={sliderItemImgStyle} src="/img/wechatPay.png" />
                                     </div>
                                 </div>
@@ -202,13 +201,13 @@ class Feature extends Component{
                         <div style={footerFlexContainerStyle}>
                             <div style={footerFlexItemStyle}>
                                 <div style={footerDescContainerStyle}>
-                                    <p style={boldFont}>OPAY INC.</p>
-                                    <p>Unit304 - 3950 14TH AVE,</p>
-                                    <p>MARKHAM, ON L3R 0A9</p>
-                                    <p>647-931-3090</p>
-                                    <p>INFO@OPAY.CA</p>
+                                    <p className="txt-4" style={boldFont}>OPAY INC.</p>
+                                    <p className="txt-4">Unit304 - 3950 14TH AVE,</p>
+                                    <p className="txt-4">MARKHAM, ON L3R 0A9</p>
+                                    <p className="txt-4">647-931-3090</p>
+                                    <p className="txt-4">INFO@OPAY.CA</p>
                                     <br />
-                                    <p style={boldFont}>© 2017 COPYRIGHT OPAY.</p>
+                                    <p className="txt-4" style={boldFont}>© 2017 COPYRIGHT OPAY.</p>
                                 </div>
                             </div>
                             <div style={footerFlexItemStyle}>
@@ -256,20 +255,14 @@ const styles = {
         bottom: "12px",
         margin: 0,
         width: "100%",
-        paddingLeft: "36px",
+        paddingLeft: "24px",
         color: "white",
-        fontSize: "36px",
         fontWeight: "bold"
     },
 
     contentContainerStyle : {
         maxWidth: "1080px",
         margin: "0 auto"
-    },
-
-    titleStyle : {
-        fontSize: "24px",
-        marginBottom: "12px"
     },
 
     centerTitleTxtStyle : {
@@ -300,35 +293,25 @@ const styles = {
     },
 
     counterContainerStyle: {
-        width: "80%",
-        margin: "12px auto",
         display: "flex",
         flexWrap: "wrap",
-        justifyContent: "space-around"
+        justifyContent: "center",
+        margin: "0 auto"
     },
 
     counterItemStyle: {
-        width: "45%",
-        minWidth: "400px",
         position: "relative",
-        marginTop: 12,
-        marginBottom: 12
     },
 
     counterBoxStyle: {
         float: "left",
         display: "inline-block",
-        borderRadius: "12px",
         backgroundColor: "#343434",
-        padding: "6px 12px",
-        height: 60,
-        width: 100
     },
 
     counterBgTxtStyle: {
         color: "#fff",
         margin: 0,
-        fontSize: "18px",
         fontWeight: "bold",
         textAlign: "center"
     }, 
@@ -337,20 +320,15 @@ const styles = {
         color: "#fff",
         margin: 0,
         textAlign: "center",
-        fontSize: "16px",
     },
 
     counterDescContainerStyle: {
         float: "left",
         display: "inline-block",
-        width: "calc(100% - 100px)",
-        paddingLeft: 12,
-        height: 60
     },
 
     counterDescWrapperStyle: {
         display: "table",
-        height: 60,
         width: "80%",
     },
 
@@ -358,7 +336,6 @@ const styles = {
         margin: 0,
         display: "table-cell",
         verticalAlign: "middle",
-        fontSize: "16px"
     },
     
     paymentContainerStyle: {
@@ -410,9 +387,9 @@ const styles = {
 
     sliderItemWrapperStyle: {
         maxWidth: 120,
+        width: "95%",
         height: 40,
         margin: "0 auto",
-        padding: "0 12px",
         backgroundColor: "#D7D8D7",
         borderRadius: "6px",
         display: "table"
