@@ -3,8 +3,24 @@ import React, { Component } from 'react';
 // libraries
 import Slider from 'react-slick';
 
+// components
+import Logo from '../components/Logo/Logo';
 
 class NewAboutUs extends Component{
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            posting: true
+        }
+    }
+
+
+    componentDidMount(){
+        setTimeout(() => {
+    		this.setState({posting: false}); }, 1000
+        );
+    }
 
     render(){
 
@@ -24,7 +40,6 @@ class NewAboutUs extends Component{
 
             teamContainerStyle,
             teamFlexContainerStyle,
-            teamFlexItemStyle,
             teamImgStyle,
             teamDescStyle,
 
@@ -50,11 +65,30 @@ class NewAboutUs extends Component{
             centerPadding: '60px',
         };
 
+        if(this.state.posting){
+            return (
+                <div className="logo-wrapper">
+                    <div className="logo-container">
+                        <Logo 
+                            containerWidth={80}
+                            containerHeight={180}
+                            logoWidth={15}
+                            logoHeight1={60}
+                            logoHeight2={80}
+                            logoHeight3={100}
+                            logoHeight4={70}
+                            borderRadius={12}
+                            textColor={"white"} />
+                    </div>    
+                </div>
+            )
+        }
+
         return(
 
             <div>
                 <div style={bannerContainerStyle}>
-                    <p style={bannerTxtStyle}>ABOUT US</p>
+                    <p className="txt-1" style={bannerTxtStyle}>ABOUT US</p>
                     <img style={bannerImgStyle} src="/img/feature_bg.png" />
                 </div>
 
@@ -62,18 +96,18 @@ class NewAboutUs extends Component{
                     <div style={contentContainerStyle}>
                         <div style={detailFlexContainerStyle}>
                             <div style={detailFlexItemStyle}>
-                                <p>
+                                <p className="txt-3">
                                     Opay Inc. established in Toronto and incorporated under the Canadian Federal Government. OPay is the subsidiary of Open Decisions Inc. which has extensive experience with banking and Telco system deploy- ment, IT architecture and production operations. Most of the executive directors come from leading com- puter and networking companies with a lot of system design and management experiences. Open Decisions has established a strong customer base comprising major players in the  nancial and Telco industries. Our major customers include well-known banks such as Bank of China, China Construction Bank, Industrial and Commercial Bank of China, etc.
                                 </p>
                             </div>
                             <div style={detailFlexItemStyle}>
-                                <p>
+                                <p className="txt-3">
                                     Registered as a money service business (MSB) by FINTRAC, Opay is planning to take the next strategic step. The company plans to utilize its advantages by enriching its mobile payment platform and expanding its global presence.
                                 </p>
-                                <p>
+                                <p className="txt-3">
                                     Alipay and Wechat payment have become a fast –adapted payment method in China. Opay will implement these payment method into Canadian market and help the Canadian businesses to attract more Chinese visitors and students who travelling and staying in Canada, as Chinese consumers do not have to carry lots of cash and in- ter-banking limitations in Canada.
                                 </p>
-                                <p>
+                                <p className="txt-3">
                                     In advance, Opay is seeking a business partnership to extend these advance payment method to non-Chinese consumers. This will add further to the value of the company and strengthen its position in Canadian money service business market.
                                 </p>
                             </div>
@@ -84,53 +118,53 @@ class NewAboutUs extends Component{
 
                 <div style={teamContainerStyle}>
                     <div style={contentContainerStyle}>
-                        <p style={Object.assign({}, centerTitleTxtStyle, titleStyle )}>OUR TEAM</p>
+                        <p className="txt-2" style={Object.assign({}, centerTitleTxtStyle, titleStyle )}>OUR TEAM</p>
                         <div style={Object.assign({}, centerDivStyle, delimit )}></div>
                         <div style={teamFlexContainerStyle}>
-                            <div style={teamFlexItemStyle}>
+                            <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p style={teamDescStyle}>123</p>
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
+                                <p className="txt-4" style={teamDescStyle}>123</p>
                             </div>
-                            <div style={teamFlexItemStyle}>
+                            <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p style={teamDescStyle}>123</p>
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
+                                <p className="txt-4" style={teamDescStyle}>123</p>
                             </div>
-                            <div style={teamFlexItemStyle}>
+                            <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p style={teamDescStyle}>123</p>
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
+                                <p className="txt-4" style={teamDescStyle}>123</p>
                             </div>
-                            <div style={teamFlexItemStyle}>
+                            <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p style={teamDescStyle}>123</p>
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
+                                <p className="txt-4" style={teamDescStyle}>123</p>
                             </div>
-                            <div style={teamFlexItemStyle}>
+                            <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p style={teamDescStyle}>123</p>
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
+                                <p className="txt-4" style={teamDescStyle}>123</p>
                             </div>
-                            <div style={teamFlexItemStyle}>
+                            <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p style={teamDescStyle}>123</p>
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
+                                <p className="txt-4" style={teamDescStyle}>123</p>
                             </div>
-                            <div style={teamFlexItemStyle}>
+                            <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p style={teamDescStyle}>123</p>
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
+                                <p className="txt-4" style={teamDescStyle}>123</p>
                             </div>
-                            <div style={teamFlexItemStyle}>
+                            <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p style={teamDescStyle}>123</p>
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
+                                <p className="txt-4" style={teamDescStyle}>123</p>
                             </div>
-                            <div style={teamFlexItemStyle}>
+                            <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/feature_bg.png" />
-                                <p style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
-                                <p style={teamDescStyle}>123</p>
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>123</p>
+                                <p className="txt-4" style={teamDescStyle}>123</p>
                             </div>
                         </div>
                     </div>
@@ -141,13 +175,13 @@ class NewAboutUs extends Component{
                         <div style={footerFlexContainerStyle}>
                             <div style={footerFlexItemStyle}>
                                 <div style={footerDescContainerStyle}>
-                                    <p style={boldFont}>OPAY INC.</p>
-                                    <p>Unit304 - 3950 14TH AVE,</p>
-                                    <p>MARKHAM, ON L3R 0A9</p>
-                                    <p>647-931-3090</p>
-                                    <p>INFO@OPAY.CA</p>
+                                    <p className="txt-4" style={boldFont}>OPAY INC.</p>
+                                    <p className="txt-4">Unit304 - 3950 14TH AVE,</p>
+                                    <p className="txt-4">MARKHAM, ON L3R 0A9</p>
+                                    <p className="txt-4">647-931-3090</p>
+                                    <p className="txt-4">INFO@OPAY.CA</p>
                                     <br />
-                                    <p style={boldFont}>© 2017 COPYRIGHT OPAY.</p>
+                                    <p className="txt-4" style={boldFont}>© 2017 COPYRIGHT OPAY.</p>
                                 </div>
                             </div>
                             <div style={footerFlexItemStyle}>
@@ -198,7 +232,6 @@ const styles = {
         width: "100%",
         paddingLeft: "36px",
         color: "white",
-        fontSize: "36px",
         fontWeight: "bold"
     },
 
@@ -208,7 +241,6 @@ const styles = {
     },
 
     titleStyle : {
-        fontSize: "24px",
         marginBottom: "12px"
     },
 
@@ -268,7 +300,6 @@ const styles = {
     counterBgTxtStyle: {
         color: "#fff",
         margin: 0,
-        fontSize: "18px",
         fontWeight: "bold",
         textAlign: "center"
     }, 
@@ -277,7 +308,6 @@ const styles = {
         color: "#fff",
         margin: 0,
         textAlign: "center",
-        fontSize: "16px",
     },
 
     counterDescContainerStyle: {
@@ -298,7 +328,6 @@ const styles = {
         margin: 0,
         display: "table-cell",
         verticalAlign: "middle",
-        fontSize: "16px"
     },
     
     paymentContainerStyle: {
@@ -421,7 +450,7 @@ const styles = {
 
     detailFlexItemStyle: {
         width: "50%",
-        minWidth: 400,
+        minWidth: 384,
         padding: 12
     },
 
@@ -436,11 +465,7 @@ const styles = {
         flexWrap: "wrap",
         justifyContent: "space-around"
     },
-
-    teamFlexItemStyle: {
-        width: "33.33%",
-    },
-
+    
     teamImgStyle: {
         display: "block",
         height: 120,

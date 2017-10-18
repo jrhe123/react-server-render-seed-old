@@ -3,10 +3,44 @@ import React, { Component } from 'react';
 // libraries
 import Slider from 'react-slick';
 
+// components
+import Logo from '../components/Logo/Logo';
 
 class Feature extends Component{
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            posting: true
+        }
+    }
+
+    componentDidMount(){
+        setTimeout(() => {
+    		this.setState({posting: false}); }, 1000
+        );
+    }
+
     render(){
+
+        if(this.state.posting){
+            return (
+                <div className="logo-wrapper">
+                    <div className="logo-container">
+                        <Logo 
+                            containerWidth={80}
+                            containerHeight={180}
+                            logoWidth={15}
+                            logoHeight1={60}
+                            logoHeight2={80}
+                            logoHeight3={100}
+                            logoHeight4={70}
+                            borderRadius={12}
+                            textColor={"white"} />
+                    </div>    
+                </div>
+            )
+        }
 
         const {
             bannerContainerStyle,

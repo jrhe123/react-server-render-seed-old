@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-// import './logo.css';
-
 class Logo extends Component {
 
     render(){
@@ -18,16 +16,3 @@ class Logo extends Component {
 }
 
 export default Logo;
-
-
-
-{/* <Logo 
-                        containerWidth={200}
-                        containerHeight={200}
-                        logoWidth={15}
-                        logoHeight1={60}
-                        logoHeight2={80}
-                        logoHeight3={100}
-                        logoHeight4={70}
-                        borderRadius={12}
-                        textColor={"white"} /> */}

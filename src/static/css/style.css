@@ -616,7 +616,7 @@ section.module.parallax-2 {
 }
 
 
-/* responsive font */
+/* basic css */
 .m-t{
     margin-top: 12px;
 }
@@ -691,6 +691,89 @@ section.module.parallax-2 {
     padding-right: 36px;
 }
 
+/* logo styles */
+.logo-wrapper{
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.6);
+}
+.logo-container{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.logo-container{
+    position: relative;
+  }
+  .logo{
+    background: #E5873C;
+    position: absolute;
+    bottom: 50%;
+    text-align: center;
+  }
+  .logo1{
+    animation: MoveUpDown1 1s linear infinite;
+    left: 0;
+  }
+  .logo2{
+    animation: MoveUpDown2 1.8s linear infinite;
+    left: 20px;
+  }
+  .logo3{
+    animation: MoveUpDown3 2s linear infinite;
+    left: 40px;
+  }
+  .logo4{
+    animation: MoveUpDown4 1.6s linear infinite;
+    left: 60px;
+  }
+  @keyframes MoveUpDown1 {
+    0% {
+      bottom: 50%;
+    }
+    50% {
+      bottom: 80px;
+    }
+    100% {
+      bottom: 50%;
+    }
+  }
+  @keyframes MoveUpDown2 {
+    0% {
+      bottom: 50%;
+    }
+    50% {
+      bottom: 70px;
+    }
+    100% {
+      bottom: 50%;
+    }
+  }
+  @keyframes MoveUpDown3 {
+    0% {
+      bottom: 50%;
+    }
+    50% {
+      bottom: 40px;
+    }
+    100% {
+      bottom: 50%;
+    }
+  }
+  @keyframes MoveUpDown4 {
+    0% {
+      bottom: 50%;
+    }
+    50% {
+      bottom: 60px;
+    }
+    100% {
+      bottom: 50%;
+    }
+}
+
+/* responsive font */
 .txt-1{
     font-size: 36px;
 }
@@ -728,6 +811,10 @@ section.module.parallax-2 {
 .slider-item-wrapper{
     padding: 0 12px;
 }
+.team-flex-item{
+    width: 33.33%;
+    margin-bottom: 12px;
+}
 @media only screen and (max-width : 768px) {
     .txt-1{
         font-size: 28px;
@@ -753,6 +840,7 @@ section.module.parallax-2 {
     .counter-desc-container{
         width: calc(100% - 100px);
     }
+    
 }
 @media only screen and (max-width : 414px) {
     .txt-1{
@@ -769,6 +857,9 @@ section.module.parallax-2 {
     }
     .slider-item-wrapper{
         padding: 0 6px;
+    }
+    .team-flex-item{
+        width: 100%;
     }
 }
     

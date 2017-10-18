@@ -4,9 +4,10 @@ import Footer from '../components/Footer';
 import { connect } from 'react-redux';
 import axio from '../constants/axio';
 
+
 class Layout extends React.Component {
 
-constructor(props) {
+    constructor(props) {
         super(props);
         this.state = {
         }
@@ -24,7 +25,6 @@ constructor(props) {
     }
 
     componentDidMount() {
-
         window.addEventListener('resize', this.refactor);
     }
 
@@ -33,7 +33,8 @@ constructor(props) {
     }
 
     render() {
-      return (
+
+        return (
             <div className="root-content">
                 <div style={{ zIndex: '2000', position:'fixed' }}>
                     <Header/>
@@ -42,8 +43,8 @@ constructor(props) {
                     <div>{this.props.children}</div>
                 </div>
             </div>
-    );
-  }
+        );
+    }
 }
 
 export default connect()(Layout);
