@@ -871,3 +871,8 @@ section.module.parallax-2 {
 .bm-menu{
     width: 100%;
 }
+
+#google_translate_element {
+    height: 50px;
+    width: 300px;
+}

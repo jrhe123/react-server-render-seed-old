@@ -19,6 +19,7 @@ class Feature extends Component{
         setTimeout(() => {
     		this.setState({posting: false}); }, 1500
         );
+
     }
 
     render(){

@@ -18,7 +18,7 @@ class NewAboutUs extends Component{
 
     componentDidMount(){
         setTimeout(() => {
-    		this.setState({posting: false}); }, 150000000
+    		this.setState({posting: false}); }, 1500
         );
     }
 
