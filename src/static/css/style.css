@@ -690,6 +690,12 @@ section.module.parallax-2 {
 .p-r-lg{
     padding-right: 36px;
 }
+.bold{
+    font-weight: bold;
+}
+.font-shadow{
+    text-shadow: 0px 0px 2px #fff;
+}
 
 /* logo styles */
 .logo-wrapper{
@@ -777,7 +783,45 @@ section.module.parallax-2 {
     }
 }
 
+/* main page btn */
+.btn-flex-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.btn-flex-item{
+    width: 50%;
+}
+
+/* banner img */
+.banner-img{
+    height: 400px;    
+}
+
+/* count numbers */
+.number-flex-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.number-flex-item{
+    width: 33.33%;
+    text-align: center;
+}
+.counter-txt{
+    color: #CA3B47;
+    letter-spacing: 2px;
+}
+.number-wrapper{
+    width: 90%;
+    margin: 0 auto;
+}
+
+
 /* responsive font */
+.txt-0{
+    font-size: 40px;
+}
 .txt-1{
     font-size: 36px;
 }
@@ -819,7 +863,11 @@ section.module.parallax-2 {
     width: 33.33%;
     margin-bottom: 24px;
 }
+
 @media only screen and (max-width : 768px) {
+    .txt-0{
+        font-size: 32px;
+    }
     .txt-1{
         font-size: 28px;
     }
@@ -844,9 +892,17 @@ section.module.parallax-2 {
     .counter-desc-container{
         width: calc(100% - 100px);
     }
-    
+    .number-flex-item{
+        width: 50%;
+    } 
+    .banner-img{
+        height: 300px;
+    }
 }
 @media only screen and (max-width : 414px) {
+    .txt-0{
+        font-size: 24px;
+    }
     .txt-1{
         font-size: 20px;
     }
@@ -865,14 +921,15 @@ section.module.parallax-2 {
     .team-flex-item{
         width: 100%;
     }
+    .number-flex-item{
+        width: 100%;
+    }
+    .banner-img{
+        height: 250px;
+    }
 }
     
 /* nav bar */
 .bm-menu{
     width: 100%;
-}
-
-#google_translate_element {
-    height: 50px;
-    width: 300px;
 }

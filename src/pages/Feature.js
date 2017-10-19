@@ -6,6 +6,7 @@ import Slider from 'react-slick';
 // components
 import Logo from '../components/Logo/Logo';
 
+
 class Feature extends Component{
 
     constructor(props) {
@@ -98,8 +99,8 @@ class Feature extends Component{
 
             <div>
                 <div style={bannerContainerStyle}>
-                    <p className="txt-1" style={bannerTxtStyle}>FEATURE</p>
-                    <img style={bannerImgStyle} src="/img/feature.png" />
+                    <p className="txt-1" style={bannerTxtStyle}>SERVICE</p>
+                    <img className="banner-img" style={bannerImgStyle} src="/img/feature.png" />
                 </div>
 
                 <div style={mapContainerStyle}>
@@ -162,7 +163,7 @@ class Feature extends Component{
                             <div style={flexDisItemStyle}>
                                 <div style={desContainerStyle}>
                                     <div style={desContainerWrapperStyle}>
-                                        <p className="txt-2 m-b">SCENARIO</p>
+                                        <p className="txt-2 m-b">SCENARIO - (Public Transit)</p>
                                         <div style={delimit}></div>
                                         <ul>
                                             <li className="txt-3">Elminate counterfeit coin</li>
@@ -281,7 +282,6 @@ const styles = {
 
     bannerImgStyle : {
         width: "100vw",
-        height: "400px"
     },
 
     bannerTxtStyle : {

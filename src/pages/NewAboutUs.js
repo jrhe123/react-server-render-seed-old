@@ -38,6 +38,8 @@ class NewAboutUs extends Component{
             detailFlexContainerStyle,
             detailFlexItemStyle,
 
+            numberContainerStyle,
+
             teamContainerStyle,
             teamFlexContainerStyle,
             teamImgStyle,
@@ -89,7 +91,7 @@ class NewAboutUs extends Component{
             <div>
                 <div style={bannerContainerStyle}>
                     <p className="txt-1" style={bannerTxtStyle}>ABOUT US</p>
-                    <img style={bannerImgStyle} src="/img/about_us.png" />
+                    <img className="banner-img" style={bannerImgStyle} src="/img/about_us.png" />
                 </div>
 
                 <div style={detailContainerStyle}>
@@ -115,6 +117,40 @@ class NewAboutUs extends Component{
                     </div>
                 </div>   
 
+                <div style={numberContainerStyle}>
+                    <div style={contentContainerStyle}>
+                        <div className="p-l-md p-r-md number-wrapper">
+                            <p className="txt-2 m-b">OPAY <span className="bold">IN NUMBERS</span></p>
+                            <div style={delimit}></div>
+                            <div className="number-flex-container">
+                                <div className="number-flex-item">
+                                    <p className="txt-4">MERCHANDISES</p>
+                                    <p className="txt-0 counter-txt">2,000</p>
+                                </div>
+                                <div className="number-flex-item">
+                                    <p className="txt-4">PROJECTS DONE IN 2016</p>
+                                    <p className="txt-0 counter-txt">152</p>
+                                </div>
+                                <div className="number-flex-item">
+                                    <p className="txt-4">NEW PROJECT IN 2017</p>
+                                    <p className="txt-0 counter-txt">176</p>
+                                </div>
+                                <div className="number-flex-item">
+                                    <p className="txt-4">TRANSACTIONS</p>
+                                    <p className="txt-0 counter-txt">1,756</p>
+                                </div>
+                                <div className="number-flex-item">
+                                    <p className="txt-4">YEARS IN BUSINESS</p>
+                                    <p className="txt-0 counter-txt">20</p>
+                                </div>
+                                <div className="number-flex-item">
+                                    <p className="txt-4">TEAM MEMBERS</p>
+                                    <p className="txt-0 counter-txt">12</p>
+                                </div>
+                            </div>  
+                        </div>              
+                    </div>
+                </div>
 
                 <div style={teamContainerStyle}>
                     <div style={contentContainerStyle}>
@@ -221,7 +257,6 @@ const styles = {
 
     bannerImgStyle : {
         width: "100vw",
-        height: "400px"
     },
 
     bannerTxtStyle : {
@@ -477,7 +512,15 @@ const styles = {
     teamDescStyle: {
         textAlign: "center",
         margin: 0
-    }
+    },
+
+    numberContainerStyle:{
+        backgroundColor: "#fff",
+        paddingTop: "24px",
+        paddingBottom: "24px"
+    },
+
+
 }
 
 export default NewAboutUs;
