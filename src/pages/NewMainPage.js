@@ -26,12 +26,12 @@ class NewMainPage extends Component{
                     <div style={titleContainer}>
                         <p className="txt-0 p-l p-r bold font-shadow" style={titleStyle}>Life is a journey, pay as you go</p>
                         <p className="txt-2 p-l p-r" style={subtitleStyle}>The integrated payment system for dynamic consumer base</p>
-                        <div className="btn-flex-container m-t-md">
+                        <div className="btn-flex-container">
                             <div className="btn-flex-item">
-                                <RaisedButton label="Merchant" primary={true} />
+                                <RaisedButton className="raised-btn" label="Merchant" backgroundColor="#E5873C" labelColor="#FFF" />
                             </div>
                             <div className="btn-flex-item">
-                                <RaisedButton label="Customer" secondary={true} />
+                                <RaisedButton className="raised-btn" label="Customer" backgroundColor="#E5873C" labelColor="#FFF" />
                             </div>
                         </div>
                     </div>

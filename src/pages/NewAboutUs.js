@@ -91,7 +91,7 @@ class NewAboutUs extends Component{
             <div>
                 <div style={bannerContainerStyle}>
                     <p className="txt-1" style={bannerTxtStyle}>ABOUT US</p>
-                    <img className="banner-img" style={bannerImgStyle} src="/img/about_us.png" />
+                    <img className="banner-img" style={bannerImgStyle} src="/img/bw_2.png" />
                 </div>
 
                 <div style={detailContainerStyle}>
@@ -185,22 +185,12 @@ class NewAboutUs extends Component{
                             <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/profile_icon.png" />
                                 <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Roy He</p>
-                                <p className="txt-4" style={teamDescStyle}>Roy He</p>
+                                <p className="txt-4" style={teamDescStyle}>Software Engineer</p>
                             </div>
                             <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/profile_icon.png" />
                                 <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Yifu Ye</p>
                                 <p className="txt-4" style={teamDescStyle}>System Engineer</p>
-                            </div>
-                            <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/profile_icon.png" />
-                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Who</p>
-                                <p className="txt-4" style={teamDescStyle}>Position Title</p>
-                            </div>
-                            <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/profile_icon.png" />
-                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Who</p>
-                                <p className="txt-4" style={teamDescStyle}>Position Title</p>
                             </div>
                         </div>
                     </div>

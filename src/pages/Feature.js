@@ -98,7 +98,7 @@ class Feature extends Component{
             <div>
                 <div style={bannerContainerStyle}>
                     <p className="txt-1" style={bannerTxtStyle}>SERVICE</p>
-                    <img className="banner-img" style={bannerImgStyle} src="/img/feature.png" />
+                    <img className="banner-img" style={bannerImgStyle} src="/img/bw_1.png" />
                 </div>
 
                 <div style={mapContainerStyle}>
@@ -187,42 +187,42 @@ class Feature extends Component{
                             <Slider {...settings}>
                                 <div style={sliderItemStyle}>
                                     <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
-                                        <img style={sliderItemImgStyle} src="/img/alipay.png" />
+                                        <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_1.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
                                     <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
-                                        <img style={sliderItemImgStyle} src="/img/wechatPay.png" />
+                                        <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_2.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
                                     <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
-                                        <img style={sliderItemImgStyle} src="/img/td.png" />
+                                        <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_3.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
                                     <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
-                                        <img style={sliderItemImgStyle} src="/img/visa.png" />
+                                        <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_4.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
                                     <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
-                                        <img style={sliderItemImgStyle} src="/img/mastercard.png" />
+                                        <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_5.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
                                     <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
-                                        <img style={sliderItemImgStyle} src="/img/bambora.png" />
+                                        <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_6.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
                                     <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
-                                        <img style={sliderItemImgStyle} src="/img/moneris.png" />
+                                        <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_7.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
                                     <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
-                                        <img style={sliderItemImgStyle} src="/img/debit.png" />
+                                        <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_8.png" />
                                     </div>
                                 </div>
                             </Slider>
@@ -415,21 +415,16 @@ const styles = {
     },
 
     sliderItemStyle: {
-        height: 40,
+        height: 80,
     },
 
     sliderItemWrapperStyle: {
         maxWidth: 120,
-        width: "95%",
-        height: 40,
-        margin: "0 auto",
-        backgroundColor: "#D7D8D7",
-        borderRadius: "6px",
+        height: 80,
         display: "table"
     },
 
     sliderItemImgStyle: {
-        height: 30,
         width: "auto",
         display: "block",
         margin: "5px auto"
