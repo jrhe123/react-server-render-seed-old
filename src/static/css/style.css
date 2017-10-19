@@ -788,6 +788,10 @@ section.module.parallax-2 {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
+    width: 80%;
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top: 48px;
 }
 .btn-flex-item{
     width: 50%;
@@ -809,7 +813,7 @@ section.module.parallax-2 {
     text-align: center;
 }
 .counter-txt{
-    color: #CA3B47;
+    color: #E5873C;
     letter-spacing: 2px;
 }
 .number-wrapper{
@@ -859,6 +863,9 @@ section.module.parallax-2 {
 .slider-item-wrapper{
     padding: 0 12px;
 }
+.slider-item-img{
+    height: 60px;
+}
 .team-flex-item{
     width: 33.33%;
     margin-bottom: 24px;
@@ -898,6 +905,9 @@ section.module.parallax-2 {
     .banner-img{
         height: 300px;
     }
+    .slider-item-img{
+        height: 45px;
+    }
 }
 @media only screen and (max-width : 414px) {
     .txt-0{
@@ -927,9 +937,16 @@ section.module.parallax-2 {
     .banner-img{
         height: 250px;
     }
+    .slider-item-img{
+        height: 35px;
+    }
 }
     
 /* nav bar */
 .bm-menu{
     width: 100%;
+}
+
+.raised-btn :hover{
+    background-color: #000 !important;
 }
