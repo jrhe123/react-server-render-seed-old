@@ -33,11 +33,11 @@ class Layout extends React.Component {
     }
 
     render() {
-
+        
         return (
             <div className="root-content">
                 <div style={{ zIndex: '2000', position:'fixed' }}>
-                    <Header/>
+                    <Header pathname={this.props.location.pathname}/>
                 </div>
                 <div className="main_page">
                     <div>{this.props.children}</div>

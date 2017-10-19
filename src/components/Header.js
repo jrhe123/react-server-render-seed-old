@@ -21,7 +21,9 @@ class Header extends Component {
             bg: 'transparent',
             zdepth: 0,
             fontColor: grey50,
+            colorFontColor: orangeA400,
             logoPath: '/img/Logo_White.png',
+            colorLogoPath: '/img/Logo_Orange.png',
             openMenu: false,
             rightIconMarginTop: 5,
             largeScreen: true
@@ -89,6 +91,8 @@ class Header extends Component {
 
     render() {
 
+        //console.log('in here: ', this.props.pathname);
+
         const labelStyle = {
             color: this.state.fontColor,
             fontWeight: 'bold',
@@ -120,8 +124,11 @@ class Header extends Component {
             <MuiThemeProvider>
                 <div>
                     <AppBar
-                        style={{ width: '100vw', opacity:'0.8', fontWeight: 'bold', backgroundColor: this.state.bg, transition: 'background-color 1.3s' }}
+                        style={{ width: '100vw', opacity:'0.8', fontWeight: 'bold', backgroundColor: this.state.bg, transition: 'background-color 1.3s', paddingLeft: 0, paddingRight: 0 }}
                         title={
+                            this.props.pathname === '/' ? 
+                            <div><img style={{  margin: '5px', marginTop: '10px', width: '38px', height: '50px' }} src={this.state.colorLogoPath} /></div>
+                            :
                             <div><img style={{  margin: '5px', marginTop: '10px', width: '38px', height: '50px' }} src={this.state.logoPath} /></div>
                         }
                         titleStyle={ {marginLeft: '30px'} }
@@ -131,21 +138,26 @@ class Header extends Component {
                         iconElementRight={
                             this.state.largeScreen ? <div>
                                 <Link to={`${root_page}`}><FlatButton key={1} label="Home" labelStyle={labelStyle} /></Link>
-                                <Link to={`${root_page}feature`}><FlatButton key={2} label="Feature" labelStyle={labelStyle} /></Link>
+                                <Link to={`${root_page}feature`}><FlatButton key={2} label="Service" labelStyle={labelStyle} /></Link>
                                 <Link to={`${root_page}about`}><FlatButton key={3} label="About Us" labelStyle={labelStyle} /></Link>
                             </div> : <div id="outer-container">
-                                <Menu right pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } isOpen={ this.state.openMenu }>
+                                <Menu style={{}} right pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } isOpen={ this.state.openMenu }>
                                     <div style={barWrapper}>
                                         <div style={closeIconRightTop}><FloatingActionButton mini={true} backgroundColor={"transparent"} onClick={() => this.closeMenu()}><Close /></FloatingActionButton></div>
                                         <div className="m-t-lg">
                                             <div style={smallScreenLabelMargin}><Link to={`${root_page}`}><FlatButton key={1} label="Home" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
-                                            <div style={smallScreenLabelMargin}><Link to={`${root_page}feature`}><FlatButton key={2} label="Feature" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
+                                            <div style={smallScreenLabelMargin}><Link to={`${root_page}feature`}><FlatButton key={2} label="Service" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
                                             <div style={smallScreenLabelMargin}><Link to={`${root_page}about`}><FlatButton key={3} label="About Us" labelStyle={labelStyle} onClick={() => this.closeMenu()} /></Link></div>
                                         </div>
                                     </div>
                                 </Menu>
                                 <main id="page-wrap">
-                                    <div><FormatAlignJustify style={{ marginTop:'14px' }} color={this.state.fontColor}/></div>
+                                    {
+                                        this.props.pathname === '/' ? 
+                                        <div><FormatAlignJustify style={{ marginTop:'14px', width: 48, height: 36 }} color={this.state.colorFontColor}/></div>
+                                        :
+                                        <div><FormatAlignJustify style={{ marginTop:'14px', width: 48, height: 36 }} color={this.state.fontColor}/></div>
+                                    }
                                 </main>
                             </div>
                         }
