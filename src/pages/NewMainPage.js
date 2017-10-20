@@ -39,16 +39,16 @@ class NewMainPage extends Component{
 
                     <div style={logoContainerStyle}>
                             <div style={logoItemStyle}>
-                                <img style={logoImgStyle} src="/img/twitter_white_icon.png" />
+                                <img style={logoImgStyle} src="/img/twitter_icon.png" />
                             </div>
                             <div style={logoItemStyle}>
-                                <img style={logoImgStyle} src="/img/youtube_white_icon.png" />
+                                <img style={logoImgStyle} src="/img/youtube_icon.png" />
                             </div>
                             <div style={logoItemStyle}>
-                                <img style={logoImgStyle} src="/img/instagram_white_icon.png" />
+                                <img style={logoImgStyle} src="/img/instagram_icon.png" />
                             </div>
                             <div style={logoItemStyle}>
-                                <img style={logoImgStyle} src="/img/facebook_white_icon.png" />
+                                <img style={logoImgStyle} src="/img/facebook_icon.png" />
                             </div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@ const styles = {
         position: "relative",
         width: "100vw",
         height: "100vh",
-        backgroundImage: "url('/img/home_bg.png')",
+        backgroundImage: "url('/img/homepage3.png')",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         backgroundPosition: "center top",

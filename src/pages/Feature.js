@@ -164,7 +164,7 @@ class Feature extends Component{
                                         <p className="txt-2 m-b">SCENARIO - (Public Transit)</p>
                                         <div style={delimit}></div>
                                         <ul>
-                                            <li className="txt-3">Elminate counterfeit coin</li>
+                                            <li className="txt-3">Eliminate counterfeit coin</li>
                                             <li className="txt-3">Fast and simple processing</li>
                                             <li className="txt-3">Support multiple currencies</li>
                                             <li className="txt-3">Data analysis</li>

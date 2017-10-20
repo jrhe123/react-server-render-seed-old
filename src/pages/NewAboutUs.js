@@ -91,26 +91,28 @@ class NewAboutUs extends Component{
             <div>
                 <div style={bannerContainerStyle}>
                     <p className="txt-1" style={bannerTxtStyle}>ABOUT US</p>
-                    <img className="banner-img" style={bannerImgStyle} src="/img/bw_2.png" />
+                    <img className="banner-img" style={bannerImgStyle} src="/img/bw_3.png" />
                 </div>
 
                 <div style={detailContainerStyle}>
-                    <div style={contentContainerStyle}>
+                    <div className="relative-block" style={contentContainerStyle}>
+                        <img src="/img/codeiconorange1.png" className="code-1" />
+                        <img src="/img/codeiconorange2.png" className="code-2" />
                         <div style={detailFlexContainerStyle}>
                             <div style={detailFlexItemStyle}>
                                 <p className="txt-3 m-l m-r">
-                                    Opay Inc. established in Toronto and incorporated under the Canadian Federal Government. OPay is the subsidiary of Open Decisions Inc. which has extensive experience with banking and Telco system deploy- ment, IT architecture and production operations. Most of the executive directors come from leading com- puter and networking companies with a lot of system design and management experiences. Open Decisions has established a strong customer base comprising major players in the  nancial and Telco industries. Our major customers include well-known banks such as Bank of China, China Construction Bank, Industrial and Commercial Bank of China, etc.
+                                    OPAY Inc. established in Toronto and incorporated under the Canadian Federal Government. OPAY is the subsidiary of Open Decisions Inc. which has extensive experience with banking and Telco system deployment, IT architecture and production operations. Most of the executive directors come from leading computer and networking companies with a lot of system design and management experiences. Open Decisions has established a strong customer base comprising major players in the  nancial and Telco industries. Our major customers include well-known banks such as Bank of China, China Construction Bank, Industrial and Commercial Bank of China, etc.
                                 </p>
                             </div>
                             <div style={detailFlexItemStyle}>
                                 <p className="txt-3 m-l m-r">
-                                    Registered as a money service business (MSB) by FINTRAC, Opay is planning to take the next strategic step. The company plans to utilize its advantages by enriching its mobile payment platform and expanding its global presence.
+                                    Registered as a money service business (MSB) by FINTRAC, OPAY is planning to take the next strategic step. The company plans to utilize its advantages by enriching its mobile payment platform and expanding its global presence.
                                 </p>
                                 <p className="txt-3 m-l m-r">
-                                    Alipay and Wechat payment have become a fast –adapted payment method in China. Opay will implement these payment method into Canadian market and help the Canadian businesses to attract more Chinese visitors and students who travelling and staying in Canada, as Chinese consumers do not have to carry lots of cash and in- ter-banking limitations in Canada.
+                                    Alipay and Wechat payment have become a fast adapted payment method in China. OPAY will implement these payment method into Canadian market and help the Canadian businesses to attract more Chinese visitors and students who travelling and staying in Canada, as Chinese consumers do not have to carry lots of cash and interbanking limitations in Canada.
                                 </p>
                                 <p className="txt-3 m-l m-r">
-                                    In advance, Opay is seeking a business partnership to extend these advance payment method to non-Chinese consumers. This will add further to the value of the company and strengthen its position in Canadian money service business market.
+                                    In advance, OPAY is seeking a business partnership to extend these advance payment method to non-Chinese consumers. This will add further to the value of the company and strengthen its position in Canadian money service business market.
                                 </p>
                             </div>
                         </div>
@@ -120,8 +122,10 @@ class NewAboutUs extends Component{
                 <div style={numberContainerStyle}>
                     <div style={contentContainerStyle}>
                         <div className="p-l-md p-r-md number-wrapper">
-                            <p className="txt-2 m-b">OPAY <span className="bold">IN NUMBERS</span></p>
-                            <div style={delimit}></div>
+                            <div className="m-b-lg">
+                                <p className="txt-2 m-b text-center">OPAY <span className="bold">IN NUMBERS</span></p>
+                                <div style={Object.assign({}, centerDivStyle, delimit )}></div>
+                            </div>
                             <div className="number-flex-container">
                                 <div className="number-flex-item">
                                     <p className="txt-4">MERCHANDISES</p>
@@ -468,7 +472,7 @@ const styles = {
     detailContainerStyle: {
         backgroundColor: "white",
         paddingTop: "24px",
-        paddingBottom: "24px"
+        paddingBottom: "24px",
     },
 
     detailFlexContainerStyle: {
@@ -486,7 +490,7 @@ const styles = {
     },
 
     teamContainerStyle: {
-        backgroundColor: "#F2F1F1",
+        backgroundColor: "#FFF",
         paddingTop: "24px",
         paddingBottom: "24px"
     },
@@ -510,7 +514,7 @@ const styles = {
     },
 
     numberContainerStyle:{
-        backgroundColor: "#fff",
+        backgroundColor: "#F2F1F1",
         paddingTop: "24px",
         paddingBottom: "24px"
     },
