@@ -91,11 +91,13 @@ class NewAboutUs extends Component{
             <div>
                 <div style={bannerContainerStyle}>
                     <p className="txt-1" style={bannerTxtStyle}>ABOUT US</p>
-                    <img className="banner-img" style={bannerImgStyle} src="/img/bw_2.png" />
+                    <img className="banner-img" style={bannerImgStyle} src="/img/bw_3.png" />
                 </div>
 
                 <div style={detailContainerStyle}>
-                    <div style={contentContainerStyle}>
+                    <div className="relative-block" style={contentContainerStyle}>
+                        <img src="/img/codeiconorange1.png" className="code-1" />
+                        <img src="/img/codeiconorange2.png" className="code-2" />
                         <div style={detailFlexContainerStyle}>
                             <div style={detailFlexItemStyle}>
                                 <p className="txt-3 m-l m-r">
@@ -120,8 +122,10 @@ class NewAboutUs extends Component{
                 <div style={numberContainerStyle}>
                     <div style={contentContainerStyle}>
                         <div className="p-l-md p-r-md number-wrapper">
-                            <p className="txt-2 m-b">OPAY <span className="bold">IN NUMBERS</span></p>
-                            <div style={delimit}></div>
+                            <div className="m-b-lg">
+                                <p className="txt-2 m-b text-center">OPAY <span className="bold">IN NUMBERS</span></p>
+                                <div style={Object.assign({}, centerDivStyle, delimit )}></div>
+                            </div>
                             <div className="number-flex-container">
                                 <div className="number-flex-item">
                                     <p className="txt-4">MERCHANDISES</p>
@@ -468,7 +472,7 @@ const styles = {
     detailContainerStyle: {
         backgroundColor: "white",
         paddingTop: "24px",
-        paddingBottom: "24px"
+        paddingBottom: "24px",
     },
 
     detailFlexContainerStyle: {
@@ -486,7 +490,7 @@ const styles = {
     },
 
     teamContainerStyle: {
-        backgroundColor: "#F2F1F1",
+        backgroundColor: "#FFF",
         paddingTop: "24px",
         paddingBottom: "24px"
     },
@@ -510,7 +514,7 @@ const styles = {
     },
 
     numberContainerStyle:{
-        backgroundColor: "#fff",
+        backgroundColor: "#F2F1F1",
         paddingTop: "24px",
         paddingBottom: "24px"
     },
