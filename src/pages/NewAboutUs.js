@@ -99,18 +99,18 @@ class NewAboutUs extends Component{
                         <div style={detailFlexContainerStyle}>
                             <div style={detailFlexItemStyle}>
                                 <p className="txt-3 m-l m-r">
-                                    Opay Inc. established in Toronto and incorporated under the Canadian Federal Government. OPay is the subsidiary of Open Decisions Inc. which has extensive experience with banking and Telco system deploy- ment, IT architecture and production operations. Most of the executive directors come from leading com- puter and networking companies with a lot of system design and management experiences. Open Decisions has established a strong customer base comprising major players in the  nancial and Telco industries. Our major customers include well-known banks such as Bank of China, China Construction Bank, Industrial and Commercial Bank of China, etc.
+                                    OPAY Inc. established in Toronto and incorporated under the Canadian Federal Government. OPAY is the subsidiary of Open Decisions Inc. which has extensive experience with banking and Telco system deployment, IT architecture and production operations. Most of the executive directors come from leading computer and networking companies with a lot of system design and management experiences. Open Decisions has established a strong customer base comprising major players in the  nancial and Telco industries. Our major customers include well-known banks such as Bank of China, China Construction Bank, Industrial and Commercial Bank of China, etc.
                                 </p>
                             </div>
                             <div style={detailFlexItemStyle}>
                                 <p className="txt-3 m-l m-r">
-                                    Registered as a money service business (MSB) by FINTRAC, Opay is planning to take the next strategic step. The company plans to utilize its advantages by enriching its mobile payment platform and expanding its global presence.
+                                    Registered as a money service business (MSB) by FINTRAC, OPAY is planning to take the next strategic step. The company plans to utilize its advantages by enriching its mobile payment platform and expanding its global presence.
                                 </p>
                                 <p className="txt-3 m-l m-r">
-                                    Alipay and Wechat payment have become a fast –adapted payment method in China. Opay will implement these payment method into Canadian market and help the Canadian businesses to attract more Chinese visitors and students who travelling and staying in Canada, as Chinese consumers do not have to carry lots of cash and in- ter-banking limitations in Canada.
+                                    Alipay and Wechat payment have become a fast adapted payment method in China. OPAY will implement these payment method into Canadian market and help the Canadian businesses to attract more Chinese visitors and students who travelling and staying in Canada, as Chinese consumers do not have to carry lots of cash and interbanking limitations in Canada.
                                 </p>
                                 <p className="txt-3 m-l m-r">
-                                    In advance, Opay is seeking a business partnership to extend these advance payment method to non-Chinese consumers. This will add further to the value of the company and strengthen its position in Canadian money service business market.
+                                    In advance, OPAY is seeking a business partnership to extend these advance payment method to non-Chinese consumers. This will add further to the value of the company and strengthen its position in Canadian money service business market.
                                 </p>
                             </div>
                         </div>
