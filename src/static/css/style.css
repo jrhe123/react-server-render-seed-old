@@ -1085,3 +1085,11 @@ section.module.parallax-2 {
 .raised-btn :hover{
     background-color: #000 !important;
 }
+
+
+.profit-detail-wrapper{
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 48px;
+    margin-bottom: 48px;
+}

@@ -50,6 +50,7 @@ class Feature extends Component{
             centerTitleTxtStyle,
             centerDivStyle,
             delimit,
+            delimit2,
             mapContainerStyle,
             mapImgStyle,
             counterContainerStyle,
@@ -62,6 +63,7 @@ class Feature extends Component{
             counterSmTxtStyle,
             paymentContainerStyle,
             scenarioContainerStyle,
+            scenarioRetailContainerStyle,
             flexDisContainerStyle,
             flexDisItemStyle,
             desContainerStyle,
@@ -79,6 +81,7 @@ class Feature extends Component{
             logoContainerStyle,
             logoItemStyle,
             logoImgStyle,
+            profitContainerStyle,
         } = styles;
 
         const settings = {
@@ -133,25 +136,11 @@ class Feature extends Component{
                     </div>
                 </div>
 
-                <div style={paymentContainerStyle}>
+                <div className="p-t p-b" style={paymentContainerStyle}>
                     <div style={contentContainerStyle}>
-                        <div style={flexDisContainerStyle}>
-                            <div style={flexDisItemStyle}>
-                                <img src="/img/pos.png" />
-                            </div>
-                            <div style={flexDisItemStyle}>
-                                <div style={desContainerStyle}>
-                                    <div style={desContainerWrapperStyle}>
-                                        <p className="txt-2 m-b">PAYMENT SOLUTION</p>
-                                        <div style={delimit}></div>
-                                        <ul>
-                                            <li className="txt-3">Canadian independen third party payment solution</li>
-                                            <li className="txt-3">Providing convenient and efficient mobile paymnet services for the international traveler, local consumers and Merchandise</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <p className="txt-2 m-b p-l p-r" style={centerTitleTxtStyle}>Payment Solution</p>
+                    <div style={Object.assign({}, centerDivStyle, delimit2 )}></div>
+                    <img src="/img/payment-method.gif" />
                     </div>
                 </div>
 
@@ -175,6 +164,47 @@ class Feature extends Component{
                             <div style={flexDisItemStyle}>
                                 <img src="/img/ttc.png" />
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style={scenarioRetailContainerStyle}>
+                    <div style={contentContainerStyle}>
+                        <div className="m-t-md" style={flexDisContainerStyle}>
+                            <div style={flexDisItemStyle}>
+                                <img src="/img/outletsnew.png" />
+                            </div>
+                            <div style={flexDisItemStyle}>
+                                <div style={desContainerStyle}>
+                                    <div style={desContainerWrapperStyle}>
+                                        <p className="txt-2 m-b">SCENARIO - (Retail)</p>
+                                        <div style={delimit}></div>
+                                        <ul>
+                                            <li className="txt-3">Eliminate counterfeit coin</li>
+                                            <li className="txt-3">Fast and simple processing</li>
+                                            <li className="txt-3">Support multiple currencies</li>
+                                            <li className="txt-3">Data analysis</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="p-t p-b" style={profitContainerStyle}>
+                    <div style={contentContainerStyle}>
+                        <div className="p-l p-r m-t-lg m-b-lg profit-detail-wrapper">
+                            <p className="txt-2 m-b p-l p-r" style={centerTitleTxtStyle}>PROFIT MODE</p>
+                            <div style={Object.assign({}, centerDivStyle, delimit )}></div>
+                            <ul className="m-t-lg">
+                                <li className="txt-3">OPAY POS and API Trading Service Fee: Platform RMB + Foreign Currency Payment 0.8-1%.</li>
+                                <li className="txt-3">OPAY wallet: Through the public services(public transport, medical, education) to accumulate the funds.</li>
+                                <li className="txt-3">OPAY technology: Services for international brand online integration to provide API access, retail system integration and Tencent store.</li>
+                                <li className="txt-3">OPAY HuaBei: Cooperate with local bank credit cards, based on user transactions to provide micro-loan installments.</li>
+                                <li className="txt-3">OPAY APP: Based on the amounts of data analysis to attract business promotion, issue points cards, discounts and advertising.</li>
+                                <li className="txt-3">Synchronous promotion of the US market.</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -313,6 +343,12 @@ const styles = {
         marginBottom: "24px"
     },
 
+    delimit2: {
+        height: "2px",
+        width: "60px",
+        backgroundColor: "#000",
+    },
+
     mapContainerStyle : {
         backgroundColor: "white",
         paddingTop: "24px",
@@ -377,6 +413,10 @@ const styles = {
 
     scenarioContainerStyle: {
         backgroundColor: "#fff",
+    },
+
+    scenarioRetailContainerStyle: {
+        backgroundColor: "#EDECEC",
     },
 
     flexDisContainerStyle: {
@@ -472,6 +512,10 @@ const styles = {
         width: 24,
         height: 24,
         display: "block"
+    },
+
+    profitContainerStyle: {
+        backgroundColor: "#fffs"
     }
 
 }
