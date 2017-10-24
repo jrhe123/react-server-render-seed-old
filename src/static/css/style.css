@@ -992,7 +992,10 @@ section.module.parallax-2 {
     margin-bottom: 48px;
 }
 .profit-container{
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
 }
 .profit-item{
@@ -1146,5 +1149,3 @@ section.module.parallax-2 {
 .raised-btn :hover{
     background-color: #000 !important;
 }
-
-
