@@ -206,38 +206,32 @@ class Feature extends Component{
                 <div className="p-t p-b" style={profitContainerStyle}>
                     <div style={contentContainerStyle}>
                         <div className="p-l p-r m-t-lg m-b-lg profit-detail-wrapper">
-                            <p className="txt-2 m-b p-l p-r" style={centerTitleTxtStyle}>PROFIT MODE</p>
+                            <p className="txt-2 m-b p-l p-r" style={centerTitleTxtStyle}>SERVICE MODE</p>
                             <div style={Object.assign({}, centerDivStyle, delimit )}></div>
                             <div className="profit-container">
                                 <div className="profit-item">
                                     <img className="profit-icon" src="/img/profit2.png" />
-                                    <p className="bold txt-5 text-center m-b">OPAY POS & API Trading Service Fee</p>
-                                    <p className="txt-5 text-center profit-desc">Platform RMB + Foreign Currency Payment <span className="bold">0.8-1%</span></p>
+                                    <p className="bold txt-5 text-center m-b">OPAY POS & API Trading Service</p>
                                 </div>
                                 <div className="profit-item">
                                     <img className="profit-icon" src="/img/profit5.png" />
                                     <p className="bold txt-5 text-center m-b">OPAY Wallet</p>
-                                    <p className="txt-5 text-center profit-desc">Through the public services (public transport, medical, education) to accumulate the funds.</p>
                                 </div>
                                 <div className="profit-item">
                                     <img className="profit-icon" src="/img/profit3.png" />
                                     <p className="bold txt-5 text-center m-b">OPAY Technology</p>
-                                    <p className="txt-5 text-center profit-desc">Services for the international brand online integration to provide API access, retail system integration and Tencent store.</p>
                                 </div>
                                 <div className="profit-item">
                                     <img className="profit-icon" src="/img/profit6.png" />
                                     <p className="bold txt-5 text-center m-b">OPAY HuaBei</p>
-                                    <p className="txt-5 text-center profit-desc">Cooperate with local bank credit cards, based on user transactions to provide micro-loan installments.</p>
                                 </div>
                                 <div className="profit-item">
                                     <img className="profit-icon" src="/img/profit4.png" />
                                     <p className="bold txt-5 text-center m-b">OPAY APP</p>
-                                    <p className="txt-5 text-center profit-desc">Based on the amounts of data analysis to attract business promotion, issue points cards, discounts and advertising.</p>
                                 </div>
                                 <div className="profit-item">
                                     <img className="profit-icon" src="/img/profit1.png" />
                                     <p className="bold txt-5 text-center m-b">Synchronous</p>
-                                    <p className="txt-5 text-center profit-desc">Promotion of the US market</p>
                                 </div>
                             </div>
                         </div>
