@@ -138,7 +138,7 @@ class Feature extends Component{
 
                 <div className="p-t p-b" style={paymentContainerStyle}>
                     <div style={contentContainerStyle}>
-                    <p className="txt-2 m-b p-l p-r" style={centerTitleTxtStyle}>Payment Solution</p>
+                    <p className="txt-2 m-b p-l p-r m-t-md" style={centerTitleTxtStyle}>Payment Solution</p>
                     <div style={Object.assign({}, centerDivStyle, delimit2 )}></div>
                     <img src="/img/payment-method.gif" />
                     </div>
