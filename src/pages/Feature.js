@@ -62,6 +62,7 @@ class Feature extends Component{
             counterBgTxtStyle,
             counterSmTxtStyle,
             paymentContainerStyle,
+            solutionContainerStyle,
             scenarioContainerStyle,
             scenarioRetailContainerStyle,
             flexDisContainerStyle,
@@ -144,13 +145,25 @@ class Feature extends Component{
                     </div>
                 </div>
 
+                <div className="p-t p-b" style={solutionContainerStyle}>
+                    <div style={contentContainerStyle}>
+                    <p className="txt-2 m-b p-l p-r m-t-md" style={centerTitleTxtStyle}>API Solution</p>
+                    <div style={Object.assign({}, centerDivStyle, delimit2 )}></div>
+                    <div className="solution-wrapper">
+                        <img src="/img/solution.png" />
+                        <p className="txt-5 text-center m-t-lg solution-desc">OPAY Integration <span className="bold">APIs</span> provide easy to use interfaces to fulfill all kinds of online payment needs. </p>
+                        <p className="txt-5 text-center solution-desc">OPAY supports Alipay, WeChat Pay, and all kinds of Credit Card products.</p>
+                    </div>
+                    </div>
+                </div>
+
                 <div style={scenarioContainerStyle}>
                     <div style={contentContainerStyle}>
                         <div className="m-t-md" style={flexDisContainerStyle}>
                             <div style={flexDisItemStyle}>
                                 <div style={desContainerStyle}>
                                     <div style={desContainerWrapperStyle}>
-                                        <p className="txt-2 m-b">SCENARIO - (Public Transit)</p>
+                                        <p className="txt-2 m-b m-t-md">SCENARIO - (Public Transit)</p>
                                         <div style={delimit}></div>
                                         <ul>
                                             <li className="txt-3">Eliminate counterfeit coin</li>
@@ -180,10 +193,9 @@ class Feature extends Component{
                                         <p className="txt-2 m-b">SCENARIO - (Retail)</p>
                                         <div style={delimit}></div>
                                         <ul>
-                                            <li className="txt-3">Eliminate counterfeit coin</li>
-                                            <li className="txt-3">Fast and simple processing</li>
-                                            <li className="txt-3">Support multiple currencies</li>
-                                            <li className="txt-3">Data analysis</li>
+                                            <li className="txt-3">Spot-checkout system</li>
+                                            <li className="txt-3">Standalone</li>
+                                            <li className="txt-3"> Integrate seamlessly into existing POS flow</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -197,14 +209,38 @@ class Feature extends Component{
                         <div className="p-l p-r m-t-lg m-b-lg profit-detail-wrapper">
                             <p className="txt-2 m-b p-l p-r" style={centerTitleTxtStyle}>PROFIT MODE</p>
                             <div style={Object.assign({}, centerDivStyle, delimit )}></div>
-                            <ul className="m-t-lg">
-                                <li className="txt-3">OPAY POS and API Trading Service Fee: Platform RMB + Foreign Currency Payment 0.8-1%.</li>
-                                <li className="txt-3">OPAY wallet: Through the public services(public transport, medical, education) to accumulate the funds.</li>
-                                <li className="txt-3">OPAY technology: Services for international brand online integration to provide API access, retail system integration and Tencent store.</li>
-                                <li className="txt-3">OPAY HuaBei: Cooperate with local bank credit cards, based on user transactions to provide micro-loan installments.</li>
-                                <li className="txt-3">OPAY APP: Based on the amounts of data analysis to attract business promotion, issue points cards, discounts and advertising.</li>
-                                <li className="txt-3">Synchronous promotion of the US market.</li>
-                            </ul>
+                            <div className="profit-container">
+                                <div className="profit-item">
+                                    <img className="profit-icon" src="/img/profit2.png" />
+                                    <p className="bold txt-5 text-center m-b">OPAY POS & API Trading Service Fee</p>
+                                    <p className="txt-5 text-center profit-desc">Platform RMB + Foreign Currency Payment <span className="bold">0.8-1%</span></p>
+                                </div>
+                                <div className="profit-item">
+                                    <img className="profit-icon" src="/img/profit5.png" />
+                                    <p className="bold txt-5 text-center m-b">OPAY Wallet</p>
+                                    <p className="txt-5 text-center profit-desc">Through the public services (public transport, medical, education) to accumulate the funds.</p>
+                                </div>
+                                <div className="profit-item">
+                                    <img className="profit-icon" src="/img/profit3.png" />
+                                    <p className="bold txt-5 text-center m-b">OPAY Technology</p>
+                                    <p className="txt-5 text-center profit-desc">Services for the international brand online integration to provide API access, retail system integration and Tencent store.</p>
+                                </div>
+                                <div className="profit-item">
+                                    <img className="profit-icon" src="/img/profit6.png" />
+                                    <p className="bold txt-5 text-center m-b">OPAY HuaBei</p>
+                                    <p className="txt-5 text-center profit-desc">Cooperate with local bank credit cards, based on user transactions to provide micro-loan installments.</p>
+                                </div>
+                                <div className="profit-item">
+                                    <img className="profit-icon" src="/img/profit4.png" />
+                                    <p className="bold txt-5 text-center m-b">OPAY APP</p>
+                                    <p className="txt-5 text-center profit-desc">Based on the amounts of data analysis to attract business promotion, issue points cards, discounts and advertising.</p>
+                                </div>
+                                <div className="profit-item">
+                                    <img className="profit-icon" src="/img/profit1.png" />
+                                    <p className="bold txt-5 text-center m-b">Synchronous</p>
+                                    <p className="txt-5 text-center profit-desc">Promotion of the US market</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -412,11 +448,11 @@ const styles = {
     },
 
     scenarioContainerStyle: {
-        backgroundColor: "#fff",
+        backgroundColor: "#EDECEC",
     },
 
     scenarioRetailContainerStyle: {
-        backgroundColor: "#EDECEC",
+        backgroundColor: "#fff",
     },
 
     flexDisContainerStyle: {
@@ -444,7 +480,7 @@ const styles = {
     },
 
     partnerContainerStyle:{
-        backgroundColor: "#EDECEC",
+        backgroundColor: "#fff",
         paddingTop: "24px",
         paddingBottom: "48px"
     },
@@ -515,7 +551,11 @@ const styles = {
     },
 
     profitContainerStyle: {
-        backgroundColor: "#fffs"
+        backgroundColor: "#EDECEC"
+    },
+
+    solutionContainerStyle: {
+        backgroundColor: "#fff"
     }
 
 }

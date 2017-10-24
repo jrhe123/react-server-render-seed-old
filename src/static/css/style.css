@@ -933,6 +933,9 @@ section.module.parallax-2 {
 .txt-4{
     font-size: 16px;
 }
+.txt-5{
+    font-size: 14px;
+}
 
 .flex-item-2{
     width: 50%;
@@ -982,6 +985,42 @@ section.module.parallax-2 {
     left: 24px;
 }
 
+.profit-detail-wrapper{
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 48px;
+    margin-bottom: 48px;
+}
+.profit-container{
+    display: flex;
+    flex-wrap: wrap;
+}
+.profit-item{
+    width: 33.33%;
+    margin-bottom: 24px;
+}
+.profit-icon{
+    display: block;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    margin-bottom: 12px;
+}
+.profit-desc{
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+.solution-wrapper{
+    width: 90%;
+    margin: 0 auto;
+}
+.solution-desc{
+    margin: 0 auto;
+    margin-top: 12px;
+    max-width: 80%;
+}
+
 @media only screen and (max-width : 768px) {
     .txt-0{
         font-size: 32px;
@@ -996,6 +1035,9 @@ section.module.parallax-2 {
         font-size: 14px;
     }
     .txt-4{
+        font-size: 12px;
+    }
+    .txt-5{
         font-size: 12px;
     }
     .flex-item-2{
@@ -1031,6 +1073,9 @@ section.module.parallax-2 {
         bottom: -52px;
         left: 24px;
     }
+    .profit-item{
+        width: 50%;
+    }
 }
 @media only screen and (max-width : 414px) {
     .txt-0{
@@ -1046,6 +1091,9 @@ section.module.parallax-2 {
         font-size: 14px;
     }
     .txt-4{
+        font-size: 12px;
+    }
+    .txt-5{
         font-size: 12px;
     }
     .slider-item-wrapper{
@@ -1075,6 +1123,9 @@ section.module.parallax-2 {
         bottom: -48px;
         left: 24px;
     }
+    .profit-item{
+        width: 100%;
+    }
 }
 
 /* nav bar */
@@ -1087,9 +1138,3 @@ section.module.parallax-2 {
 }
 
 
-.profit-detail-wrapper{
-    width: 90%;
-    margin: 0 auto;
-    margin-top: 48px;
-    margin-bottom: 48px;
-}
