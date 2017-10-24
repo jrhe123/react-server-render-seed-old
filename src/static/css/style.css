@@ -1021,6 +1021,10 @@ section.module.parallax-2 {
     max-width: 80%;
 }
 
+.footer-item{
+    width: 33.33%;
+}
+
 @media only screen and (max-width : 768px) {
     .txt-0{
         font-size: 32px;
@@ -1124,6 +1128,12 @@ section.module.parallax-2 {
         left: 24px;
     }
     .profit-item{
+        width: 100%;
+    }
+    .footer-item{
+        width: 50%;
+    }
+    .footer-item.footer-logo{
         width: 100%;
     }
 }

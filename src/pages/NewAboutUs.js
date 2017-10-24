@@ -47,7 +47,6 @@ class NewAboutUs extends Component{
 
             footerContainerStyle,
             footerFlexContainerStyle,
-            footerFlexItemStyle,
             footerDescContainerStyle,
             boldFont,
             logoContainerStyle,
@@ -208,7 +207,7 @@ class NewAboutUs extends Component{
                 <div style={footerContainerStyle}>
                     <div style={contentContainerStyle}>
                         <div style={footerFlexContainerStyle}>
-                            <div style={footerFlexItemStyle}>
+                            <div className="footer-item">
                                 <div style={footerDescContainerStyle}>
                                     <p className="txt-4" style={boldFont}>OPAY INC.</p>
                                     <p className="txt-4">Unit304 - 3950 14TH AVE,</p>
@@ -219,7 +218,15 @@ class NewAboutUs extends Component{
                                     <p className="txt-4" style={boldFont}>© 2017 COPYRIGHT OPAY.</p>
                                 </div>
                             </div>
-                            <div style={footerFlexItemStyle}>
+                            <div className="footer-item">
+                                <div style={footerDescContainerStyle}>
+                                    <p className="txt-4" style={boldFont}>OPAY CUSTOMER SUPPORT</p>
+                                    <p className="txt-4">1-833-366-6729</p>
+                                    <p className="txt-4">1-833-366-OPAY</p>
+                                    <p className="txt-4">24/7 Hotline</p>
+                                </div>
+                            </div>
+                            <div className="footer-item footer-logo">
                                 <div style={logoContainerStyle}>
                                     <div style={logoItemStyle}>
                                         <img style={logoImgStyle} src="/img/twitter_icon.png" />
@@ -435,10 +442,6 @@ const styles = {
         display: "flex",
         flexWrap: "wrap",
         justifyContent: "space-around"
-    },
-
-    footerFlexItemStyle: {
-        width: "50%",
     },
 
     footerDescContainerStyle: {
