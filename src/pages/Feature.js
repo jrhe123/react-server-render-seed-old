@@ -5,6 +5,7 @@ import Slider from 'react-slick';
 
 // components
 import Logo from '../components/Logo/Logo';
+import Footer from '../components/Footer';
 
 
 class Feature extends Component{
@@ -52,6 +53,7 @@ class Feature extends Component{
             centerTitleTxtStyle,
             centerDivStyle,
             delimit,
+            delimit2,
             mapContainerStyle,
             mapImgStyle,
             counterContainerStyle,
@@ -63,7 +65,9 @@ class Feature extends Component{
             counterBgTxtStyle,
             counterSmTxtStyle,
             paymentContainerStyle,
+            solutionContainerStyle,
             scenarioContainerStyle,
+            scenarioRetailContainerStyle,
             flexDisContainerStyle,
             flexDisItemStyle,
             desContainerStyle,
@@ -73,14 +77,7 @@ class Feature extends Component{
             sliderItemStyle,
             sliderItemWrapperStyle,
             sliderItemImgStyle,
-            footerContainerStyle,
-            footerFlexContainerStyle,
-            footerFlexItemStyle,
-            footerDescContainerStyle,
-            boldFont,
-            logoContainerStyle,
-            logoItemStyle,
-            logoImgStyle,
+            profitContainerStyle,
         } = styles;
 
         const settings = {
@@ -135,25 +132,23 @@ class Feature extends Component{
                     </div>
                 </div>
 
-                <div style={paymentContainerStyle}>
+                <div className="p-t p-b" style={paymentContainerStyle}>
                     <div style={contentContainerStyle}>
-                        <div style={flexDisContainerStyle}>
-                            <div style={flexDisItemStyle}>
-                                <img src="/img/pos.png" />
-                            </div>
-                            <div style={flexDisItemStyle}>
-                                <div style={desContainerStyle}>
-                                    <div style={desContainerWrapperStyle}>
-                                        <p className="txt-2 m-b">PAYMENT SOLUTION</p>
-                                        <div style={delimit}></div>
-                                        <ul>
-                                            <li className="txt-3">Canadian independen third party payment solution</li>
-                                            <li className="txt-3">Providing convenient and efficient mobile paymnet services for the international traveler, local consumers and Merchandise</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <p className="txt-2 m-b p-l p-r m-t-md" style={centerTitleTxtStyle}>Payment Solution</p>
+                    <div style={Object.assign({}, centerDivStyle, delimit2 )}></div>
+                    <img src="/img/payment-method.gif" />
+                    </div>
+                </div>
+
+                <div className="p-t p-b" style={solutionContainerStyle}>
+                    <div style={contentContainerStyle}>
+                    <p className="txt-2 m-b p-l p-r m-t-md" style={centerTitleTxtStyle}>API Solution</p>
+                    <div style={Object.assign({}, centerDivStyle, delimit2 )}></div>
+                    <div className="solution-wrapper">
+                        <img src="/img/solution.png" />
+                        <p className="txt-5 text-center m-t-lg solution-desc">OPAY Integration <span className="bold">APIs</span> provide easy to use interfaces to fulfill all kinds of online payment needs. </p>
+                        <p className="txt-5 text-center solution-desc">OPAY supports Alipay, WeChat Pay, and all kinds of Credit Card products.</p>
+                    </div>
                     </div>
                 </div>
 
@@ -163,10 +158,10 @@ class Feature extends Component{
                             <div style={flexDisItemStyle}>
                                 <div style={desContainerStyle}>
                                     <div style={desContainerWrapperStyle}>
-                                        <p className="txt-2 m-b">SCENARIO - (Public Transit)</p>
+                                        <p className="txt-2 m-b m-t-md">SCENARIO - (Public Transit)</p>
                                         <div style={delimit}></div>
                                         <ul>
-                                            <li className="txt-3">Elminate counterfeit coin</li>
+                                            <li className="txt-3">Eliminate counterfeit coin</li>
                                             <li className="txt-3">Fast and simple processing</li>
                                             <li className="txt-3">Support multiple currencies</li>
                                             <li className="txt-3">Data analysis</li>
@@ -176,6 +171,64 @@ class Feature extends Component{
                             </div>
                             <div style={flexDisItemStyle}>
                                 <img src="/img/ttc.png" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style={scenarioRetailContainerStyle}>
+                    <div style={contentContainerStyle}>
+                        <div className="m-t-md" style={flexDisContainerStyle}>
+                            <div style={flexDisItemStyle}>
+                                <img src="/img/outletsnew.png" />
+                            </div>
+                            <div style={flexDisItemStyle}>
+                                <div style={desContainerStyle}>
+                                    <div style={desContainerWrapperStyle}>
+                                        <p className="txt-2 m-b">SCENARIO - (Retail)</p>
+                                        <div style={delimit}></div>
+                                        <ul>
+                                            <li className="txt-3">Spot-checkout system</li>
+                                            <li className="txt-3">Standalone</li>
+                                            <li className="txt-3"> Integrate seamlessly into existing POS flow</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="p-t p-b" style={profitContainerStyle}>
+                    <div style={contentContainerStyle}>
+                        <div className="p-l p-r m-t-lg m-b-lg profit-detail-wrapper">
+                            <p className="txt-2 m-b p-l p-r" style={centerTitleTxtStyle}>SERVICE MODE</p>
+                            <div style={Object.assign({}, centerDivStyle, delimit )}></div>
+                            <div className="profit-container">
+                                <div className="profit-item">
+                                    <img className="profit-icon" src="/img/profit2.png" />
+                                    <p className="bold txt-5 text-center m-b">OPAY POS & API Trading Service</p>
+                                </div>
+                                <div className="profit-item">
+                                    <img className="profit-icon" src="/img/profit5.png" />
+                                    <p className="bold txt-5 text-center m-b">OPAY Wallet</p>
+                                </div>
+                                <div className="profit-item">
+                                    <img className="profit-icon" src="/img/profit3.png" />
+                                    <p className="bold txt-5 text-center m-b">OPAY Technology</p>
+                                </div>
+                                <div className="profit-item">
+                                    <img className="profit-icon" src="/img/profit6.png" />
+                                    <p className="bold txt-5 text-center m-b">OPAY HuaBei</p>
+                                </div>
+                                <div className="profit-item">
+                                    <img className="profit-icon" src="/img/profit4.png" />
+                                    <p className="bold txt-5 text-center m-b">OPAY APP</p>
+                                </div>
+                                <div className="profit-item">
+                                    <img className="profit-icon" src="/img/profit1.png" />
+                                    <p className="bold txt-5 text-center m-b">Synchronous</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -204,22 +257,12 @@ class Feature extends Component{
                                 </div>
                                 <div style={sliderItemStyle}>
                                     <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
-                                        <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_4.png" />
-                                    </div>
-                                </div>
-                                <div style={sliderItemStyle}>
-                                    <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
                                         <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_5.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
                                     <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
                                         <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_6.png" />
-                                    </div>
-                                </div>
-                                <div style={sliderItemStyle}>
-                                    <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
-                                        <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_7.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
@@ -232,42 +275,7 @@ class Feature extends Component{
                     </div>
                 </div>
 
-                <div style={footerContainerStyle}>
-                    <div style={contentContainerStyle}>
-                        <div style={footerFlexContainerStyle}>
-                            <div style={footerFlexItemStyle}>
-                                <div style={footerDescContainerStyle}>
-                                    <p className="txt-4" style={boldFont}>OPAY INC.</p>
-                                    <p className="txt-4">Unit304 - 3950 14TH AVE,</p>
-                                    <p className="txt-4">MARKHAM, ON L3R 0A9</p>
-                                    <p className="txt-4">647-931-3090</p>
-                                    <p className="txt-4">INFO@OPAY.CA</p>
-                                    <br />
-                                    <p className="txt-4" style={boldFont}>© 2017 COPYRIGHT OPAY.</p>
-                                </div>
-                            </div>
-                            <div style={footerFlexItemStyle}>
-                                <div style={logoContainerStyle}>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/twitter_icon.png" />
-                                    </div>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/youtube_icon.png" />
-                                    </div>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/instagram_icon.png" />
-                                    </div>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/facebook_icon.png" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>    
-
-
-
+                <Footer />
 
             </div>
         )
@@ -313,6 +321,12 @@ const styles = {
         width: "60px",
         backgroundColor: "#000",
         marginBottom: "24px"
+    },
+
+    delimit2: {
+        height: "2px",
+        width: "60px",
+        backgroundColor: "#000",
     },
 
     mapContainerStyle : {
@@ -378,6 +392,10 @@ const styles = {
     },
 
     scenarioContainerStyle: {
+        backgroundColor: "#EDECEC",
+    },
+
+    scenarioRetailContainerStyle: {
         backgroundColor: "#fff",
     },
 
@@ -406,7 +424,7 @@ const styles = {
     },
 
     partnerContainerStyle:{
-        backgroundColor: "#EDECEC",
+        backgroundColor: "#fff",
         paddingTop: "24px",
         paddingBottom: "48px"
     },
@@ -432,48 +450,12 @@ const styles = {
         margin: "5px auto"
     },
 
-    footerContainerStyle: {
-        backgroundColor: "#343434",
-        paddingTop: "24px",
-        paddingBottom: "24px"
+    profitContainerStyle: {
+        backgroundColor: "#EDECEC"
     },
 
-    footerFlexContainerStyle: {
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "space-around"
-    },
-
-    footerFlexItemStyle: {
-        width: "50%",
-    },
-
-    footerDescContainerStyle: {
-        color: "#fff",
-        paddingLeft: 24
-    },
-
-    boldFont: {
-        fontWeight: "bold"
-    },
-
-    logoContainerStyle: {
-        width: "100%",
-        height: 24,
-    },
-
-    logoItemStyle: {
-        float: "right",
-        width: 24,
-        height: 24,
-        marginRight: 12,
-        cursor: "pointer"
-    },
-
-    logoImgStyle: {
-        width: 24,
-        height: 24,
-        display: "block"
+    solutionContainerStyle: {
+        backgroundColor: "#fff"
     }
 
 }

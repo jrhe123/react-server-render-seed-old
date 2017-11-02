@@ -5,6 +5,7 @@ import Slider from 'react-slick';
 
 // components
 import Logo from '../components/Logo/Logo';
+import Footer from '../components/Footer';
 
 class NewAboutUs extends Component{
 
@@ -45,14 +46,7 @@ class NewAboutUs extends Component{
             teamImgStyle,
             teamDescStyle,
 
-            footerContainerStyle,
-            footerFlexContainerStyle,
-            footerFlexItemStyle,
-            footerDescContainerStyle,
             boldFont,
-            logoContainerStyle,
-            logoItemStyle,
-            logoImgStyle,
         } = styles;
 
         const settings = {
@@ -91,26 +85,28 @@ class NewAboutUs extends Component{
             <div>
                 <div style={bannerContainerStyle}>
                     <p className="txt-1" style={bannerTxtStyle}>ABOUT US</p>
-                    <img className="banner-img" style={bannerImgStyle} src="/img/bw_2.png" />
+                    <img className="banner-img" style={bannerImgStyle} src="/img/bw_3.png" />
                 </div>
 
                 <div style={detailContainerStyle}>
-                    <div style={contentContainerStyle}>
+                    <div className="relative-block" style={contentContainerStyle}>
+                        <img src="/img/codeiconorange1.png" className="code-1" />
+                        <img src="/img/codeiconorange2.png" className="code-2" />
                         <div style={detailFlexContainerStyle}>
                             <div style={detailFlexItemStyle}>
                                 <p className="txt-3 m-l m-r">
-                                    Opay Inc. established in Toronto and incorporated under the Canadian Federal Government. OPay is the subsidiary of Open Decisions Inc. which has extensive experience with banking and Telco system deploy- ment, IT architecture and production operations. Most of the executive directors come from leading com- puter and networking companies with a lot of system design and management experiences. Open Decisions has established a strong customer base comprising major players in the  nancial and Telco industries. Our major customers include well-known banks such as Bank of China, China Construction Bank, Industrial and Commercial Bank of China, etc.
+                                    OPAY Inc. established in Toronto and incorporated under the Canadian Federal Government. OPAY is the subsidiary of Open Decisions Inc. which has extensive experience with banking and Telco system deployment, IT architecture and production operations. Most of the executive directors come from leading computer and networking companies with a lot of system design and management experiences. Open Decisions has established a strong clientele base comprising major players in the Financial and Telco industries. Our major clientele include well-known banks such as Bank of China, China Construction Bank, Industrial and Commercial Bank of China, etc.
                                 </p>
                             </div>
                             <div style={detailFlexItemStyle}>
                                 <p className="txt-3 m-l m-r">
-                                    Registered as a money service business (MSB) by FINTRAC, Opay is planning to take the next strategic step. The company plans to utilize its advantages by enriching its mobile payment platform and expanding its global presence.
+                                    Registered as a money service business (MSB) by FINTRAC, OPAY is planning to take the next strategic step. The company plans to utilize its advantages by enriching its mobile payment platform and expanding its global presence.
                                 </p>
                                 <p className="txt-3 m-l m-r">
-                                    Alipay and Wechat payment have become a fast –adapted payment method in China. Opay will implement these payment method into Canadian market and help the Canadian businesses to attract more Chinese visitors and students who travelling and staying in Canada, as Chinese consumers do not have to carry lots of cash and in- ter-banking limitations in Canada.
+                                    Alipay and Wechat payment have become the most adapted payment methods for Chinese consumers. OPAY will integrate these payment methods into Canadian market with our secure and flexible payment options to help the Canadian businesses gaining more sales from Chinese visitors and students while they are travelling and staying in Canada.
                                 </p>
                                 <p className="txt-3 m-l m-r">
-                                    In advance, Opay is seeking a business partnership to extend these advance payment method to non-Chinese consumers. This will add further to the value of the company and strengthen its position in Canadian money service business market.
+                                    In addition, OPAY is seeking a business partnership to extend these advance payment method to local Canadian consumers. This will add further to the value of the company and strengthen its position in Canadian money service business market.
                                 </p>
                             </div>
                         </div>
@@ -120,28 +116,30 @@ class NewAboutUs extends Component{
                 <div style={numberContainerStyle}>
                     <div style={contentContainerStyle}>
                         <div className="p-l-md p-r-md number-wrapper">
-                            <p className="txt-2 m-b">OPAY <span className="bold">IN NUMBERS</span></p>
-                            <div style={delimit}></div>
+                            <div className="m-b-lg">
+                                <p className="txt-2 m-b text-center">OPAY <span className="bold">IN NUMBERS</span></p>
+                                <div style={Object.assign({}, centerDivStyle, delimit )}></div>
+                            </div>
                             <div className="number-flex-container">
                                 <div className="number-flex-item">
                                     <p className="txt-4">MERCHANDISES</p>
-                                    <p className="txt-0 counter-txt">2,000</p>
+                                    <p className="txt-0 counter-txt">2</p>
                                 </div>
                                 <div className="number-flex-item">
-                                    <p className="txt-4">PROJECTS DONE IN 2016</p>
-                                    <p className="txt-0 counter-txt">152</p>
+                                    <p className="txt-4">CITIES IN SERVICES</p>
+                                    <p className="txt-0 counter-txt">1</p>
                                 </div>
                                 <div className="number-flex-item">
-                                    <p className="txt-4">NEW PROJECT IN 2017</p>
-                                    <p className="txt-0 counter-txt">176</p>
+                                    <p className="txt-4">PROJECT IN 2017</p>
+                                    <p className="txt-0 counter-txt">16</p>
                                 </div>
                                 <div className="number-flex-item">
                                     <p className="txt-4">TRANSACTIONS</p>
-                                    <p className="txt-0 counter-txt">1,756</p>
+                                    <p className="txt-0 counter-txt">86</p>
                                 </div>
                                 <div className="number-flex-item">
                                     <p className="txt-4">YEARS IN BUSINESS</p>
-                                    <p className="txt-0 counter-txt">20</p>
+                                    <p className="txt-0 counter-txt">1</p>
                                 </div>
                                 <div className="number-flex-item">
                                     <p className="txt-4">TEAM MEMBERS</p>
@@ -158,37 +156,52 @@ class NewAboutUs extends Component{
                         <div style={Object.assign({}, centerDivStyle, delimit )}></div>
                         <div style={teamFlexContainerStyle}>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <img style={teamImgStyle} src="/img/benjamin.png" />
                                 <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Benjamin Liang</p>
-                                <p className="txt-4" style={teamDescStyle}>CEO, President</p>
+                                <p className="txt-4" style={teamDescStyle}>CEO, President, Founder</p>
                             </div>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <img style={teamImgStyle} src="/img/sophia.png" />
                                 <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Sophia Zhang</p>
-                                <p className="txt-4" style={teamDescStyle}>COO, Co-founder</p>
+                                <p className="txt-4" style={teamDescStyle}>COO</p>
                             </div>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <img style={teamImgStyle} src="/img/xueren.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Xueren Dai</p>
+                                <p className="txt-4" style={teamDescStyle}>Board Adviser</p>
+                            </div>
+                            <div className="team-flex-item">
+                                <img style={teamImgStyle} src="/img/xiaogu.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Xiaogu Jiang</p>
+                                <p className="txt-4" style={teamDescStyle}>Board Adviser</p>
+                            </div>
+                            <div className="team-flex-item">
+                                <img style={teamImgStyle} src="/img/nick.png" />
                                 <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Nick Ning</p>
                                 <p className="txt-4" style={teamDescStyle}>Sales Director</p>
                             </div>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <img style={teamImgStyle} src="/img/tyler.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Tyler Liu</p>
+                                <p className="txt-4" style={teamDescStyle}>Account Manager</p>
+                            </div>
+                            <div className="team-flex-item">
+                                <img style={teamImgStyle} src="/img/yina.png" />
                                 <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Yina Gong</p>
                                 <p className="txt-4" style={teamDescStyle}>Executive Assistant</p>
                             </div>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <img style={teamImgStyle} src="/img/jiamin.png" />
                                 <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Jiamin Ning</p>
                                 <p className="txt-4" style={teamDescStyle}>Software Engineer</p>
                             </div>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <img style={teamImgStyle} src="/img/roy.png" />
                                 <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Roy He</p>
                                 <p className="txt-4" style={teamDescStyle}>Software Engineer</p>
                             </div>
                             <div className="team-flex-item">
-                                <img style={teamImgStyle} src="/img/profile_icon.png" />
+                                <img style={teamImgStyle} src="/img/yifu.png" />
                                 <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Yifu Ye</p>
                                 <p className="txt-4" style={teamDescStyle}>System Engineer</p>
                             </div>
@@ -196,43 +209,7 @@ class NewAboutUs extends Component{
                     </div>
                 </div> 
 
-                <div style={footerContainerStyle}>
-                    <div style={contentContainerStyle}>
-                        <div style={footerFlexContainerStyle}>
-                            <div style={footerFlexItemStyle}>
-                                <div style={footerDescContainerStyle}>
-                                    <p className="txt-4" style={boldFont}>OPAY INC.</p>
-                                    <p className="txt-4">Unit304 - 3950 14TH AVE,</p>
-                                    <p className="txt-4">MARKHAM, ON L3R 0A9</p>
-                                    <p className="txt-4">647-931-3090</p>
-                                    <p className="txt-4">INFO@OPAY.CA</p>
-                                    <br />
-                                    <p className="txt-4" style={boldFont}>© 2017 COPYRIGHT OPAY.</p>
-                                </div>
-                            </div>
-                            <div style={footerFlexItemStyle}>
-                                <div style={logoContainerStyle}>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/twitter_icon.png" />
-                                    </div>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/youtube_icon.png" />
-                                    </div>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/instagram_icon.png" />
-                                    </div>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/facebook_icon.png" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                    
-
-
-
+                <Footer />
 
             </div>
         )
@@ -416,54 +393,14 @@ const styles = {
         margin: "5px auto"
     },
 
-    footerContainerStyle: {
-        backgroundColor: "#343434",
-        paddingTop: "24px",
-        paddingBottom: "24px"
-    },
-
-    footerFlexContainerStyle: {
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "space-around"
-    },
-
-    footerFlexItemStyle: {
-        width: "50%",
-    },
-
-    footerDescContainerStyle: {
-        color: "#fff",
-        paddingLeft: 24
-    },
-
     boldFont: {
         fontWeight: "bold"
-    },
-
-    logoContainerStyle: {
-        width: "100%",
-        height: 24,
-    },
-
-    logoItemStyle: {
-        float: "right",
-        width: 24,
-        height: 24,
-        marginRight: 12,
-        cursor: "pointer"
-    },
-
-    logoImgStyle: {
-        width: 24,
-        height: 24,
-        display: "block"
     },
 
     detailContainerStyle: {
         backgroundColor: "white",
         paddingTop: "24px",
-        paddingBottom: "24px"
+        paddingBottom: "24px",
     },
 
     detailFlexContainerStyle: {
@@ -481,7 +418,7 @@ const styles = {
     },
 
     teamContainerStyle: {
-        backgroundColor: "#F2F1F1",
+        backgroundColor: "#FFF",
         paddingTop: "24px",
         paddingBottom: "24px"
     },
@@ -489,7 +426,7 @@ const styles = {
     teamFlexContainerStyle: {
         display: "flex",
         flexWrap: "wrap",
-        justifyContent: "space-around"
+        justifyContent: "flex-start"
     },
     
     teamImgStyle: {
@@ -505,7 +442,7 @@ const styles = {
     },
 
     numberContainerStyle:{
-        backgroundColor: "#fff",
+        backgroundColor: "#F2F1F1",
         paddingTop: "24px",
         paddingBottom: "24px"
     },

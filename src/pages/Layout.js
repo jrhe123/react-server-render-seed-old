@@ -48,6 +48,3 @@ class Layout extends React.Component {
 }
 
 export default connect()(Layout);
-
-
-{/* <div><Footer className="Footer" /></div> */}
