@@ -5,6 +5,7 @@ import Slider from 'react-slick';
 
 // components
 import Logo from '../components/Logo/Logo';
+import Footer from '../components/Footer';
 
 class NewAboutUs extends Component{
 
@@ -45,13 +46,7 @@ class NewAboutUs extends Component{
             teamImgStyle,
             teamDescStyle,
 
-            footerContainerStyle,
-            footerFlexContainerStyle,
-            footerDescContainerStyle,
             boldFont,
-            logoContainerStyle,
-            logoItemStyle,
-            logoImgStyle,
         } = styles;
 
         const settings = {
@@ -171,6 +166,16 @@ class NewAboutUs extends Component{
                                 <p className="txt-4" style={teamDescStyle}>COO</p>
                             </div>
                             <div className="team-flex-item">
+                                <img style={teamImgStyle} src="/img/xueren.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Xueren Dai</p>
+                                <p className="txt-4" style={teamDescStyle}>Board Adviser</p>
+                            </div>
+                            <div className="team-flex-item">
+                                <img style={teamImgStyle} src="/img/xiaogu.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Xiaogu Jiang</p>
+                                <p className="txt-4" style={teamDescStyle}>Board Adviser</p>
+                            </div>
+                            <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/nick.png" />
                                 <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Nick Ning</p>
                                 <p className="txt-4" style={teamDescStyle}>Sales Director</p>
@@ -204,51 +209,7 @@ class NewAboutUs extends Component{
                     </div>
                 </div> 
 
-                <div style={footerContainerStyle}>
-                    <div style={contentContainerStyle}>
-                        <div style={footerFlexContainerStyle}>
-                            <div className="footer-item">
-                                <div style={footerDescContainerStyle}>
-                                    <p className="txt-4" style={boldFont}>OPAY INC.</p>
-                                    <p className="txt-4">Unit304 - 3950 14TH AVE,</p>
-                                    <p className="txt-4">MARKHAM, ON L3R 0A9</p>
-                                    <p className="txt-4">647-931-3090</p>
-                                    <p className="txt-4">INFO@OPAY.CA</p>
-                                    <br />
-                                    <p className="txt-4" style={boldFont}>© 2017 COPYRIGHT OPAY.</p>
-                                </div>
-                            </div>
-                            <div className="footer-item">
-                                <div style={footerDescContainerStyle}>
-                                    <p className="txt-4" style={boldFont}>OPAY CUSTOMER SUPPORT</p>
-                                    <p className="txt-4">1-833-366-6729</p>
-                                    <p className="txt-4">1-833-366-OPAY</p>
-                                    <p className="txt-4">24/7 Hotline</p>
-                                </div>
-                            </div>
-                            <div className="footer-item footer-logo">
-                                <div style={logoContainerStyle}>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/twitter_icon.png" />
-                                    </div>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/youtube_icon.png" />
-                                    </div>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/instagram_icon.png" />
-                                    </div>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/facebook_icon.png" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                    
-
-
-
+                <Footer />
 
             </div>
         )
@@ -432,44 +393,8 @@ const styles = {
         margin: "5px auto"
     },
 
-    footerContainerStyle: {
-        backgroundColor: "#343434",
-        paddingTop: "24px",
-        paddingBottom: "24px"
-    },
-
-    footerFlexContainerStyle: {
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "space-around"
-    },
-
-    footerDescContainerStyle: {
-        color: "#fff",
-        paddingLeft: 24
-    },
-
     boldFont: {
         fontWeight: "bold"
-    },
-
-    logoContainerStyle: {
-        width: "100%",
-        height: 24,
-    },
-
-    logoItemStyle: {
-        float: "right",
-        width: 24,
-        height: 24,
-        marginRight: 12,
-        cursor: "pointer"
-    },
-
-    logoImgStyle: {
-        width: 24,
-        height: 24,
-        display: "block"
     },
 
     detailContainerStyle: {

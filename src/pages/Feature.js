@@ -5,6 +5,7 @@ import Slider from 'react-slick';
 
 // components
 import Logo from '../components/Logo/Logo';
+import Footer from '../components/Footer';
 
 class Feature extends Component{
 
@@ -74,13 +75,6 @@ class Feature extends Component{
             sliderItemStyle,
             sliderItemWrapperStyle,
             sliderItemImgStyle,
-            footerContainerStyle,
-            footerFlexContainerStyle,
-            footerDescContainerStyle,
-            boldFont,
-            logoContainerStyle,
-            logoItemStyle,
-            logoImgStyle,
             profitContainerStyle,
         } = styles;
 
@@ -261,22 +255,12 @@ class Feature extends Component{
                                 </div>
                                 <div style={sliderItemStyle}>
                                     <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
-                                        <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_4.png" />
-                                    </div>
-                                </div>
-                                <div style={sliderItemStyle}>
-                                    <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
                                         <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_5.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
                                     <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
                                         <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_6.png" />
-                                    </div>
-                                </div>
-                                <div style={sliderItemStyle}>
-                                    <div className="slider-item-wrapper" style={sliderItemWrapperStyle}>
-                                        <img className="slider-item-img" style={sliderItemImgStyle} src="/img/p_7.png" />
                                     </div>
                                 </div>
                                 <div style={sliderItemStyle}>
@@ -289,50 +273,7 @@ class Feature extends Component{
                     </div>
                 </div>
 
-                <div style={footerContainerStyle}>
-                    <div style={contentContainerStyle}>
-                        <div style={footerFlexContainerStyle}>
-                            <div className="footer-item">
-                                <div style={footerDescContainerStyle}>
-                                    <p className="txt-4" style={boldFont}>OPAY INC.</p>
-                                    <p className="txt-4">Unit304 - 3950 14TH AVE,</p>
-                                    <p className="txt-4">MARKHAM, ON L3R 0A9</p>
-                                    <p className="txt-4">647-931-3090</p>
-                                    <p className="txt-4">INFO@OPAY.CA</p>
-                                    <br />
-                                    <p className="txt-4" style={boldFont}>© 2017 COPYRIGHT OPAY.</p>
-                                </div>
-                            </div>
-                            <div className="footer-item">
-                                <div style={footerDescContainerStyle}>
-                                    <p className="txt-4" style={boldFont}>OPAY CUSTOMER SUPPORT</p>
-                                    <p className="txt-4">1-833-366-6729</p>
-                                    <p className="txt-4">1-833-366-OPAY</p>
-                                    <p className="txt-4">24/7 Hotline</p>
-                                </div>
-                            </div>
-                            <div className="footer-item footer-logo">
-                                <div style={logoContainerStyle}>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/twitter_icon.png" />
-                                    </div>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/youtube_icon.png" />
-                                    </div>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/instagram_icon.png" />
-                                    </div>
-                                    <div style={logoItemStyle}>
-                                        <img style={logoImgStyle} src="/img/facebook_icon.png" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>    
-
-
-
+                <Footer />
 
             </div>
         )
@@ -505,46 +446,6 @@ const styles = {
         width: "auto",
         display: "block",
         margin: "5px auto"
-    },
-
-    footerContainerStyle: {
-        backgroundColor: "#343434",
-        paddingTop: "24px",
-        paddingBottom: "24px"
-    },
-
-    footerFlexContainerStyle: {
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "space-around"
-    },
-
-    footerDescContainerStyle: {
-        color: "#fff",
-        paddingLeft: 24
-    },
-
-    boldFont: {
-        fontWeight: "bold"
-    },
-
-    logoContainerStyle: {
-        width: "100%",
-        height: 24,
-    },
-
-    logoItemStyle: {
-        float: "right",
-        width: 24,
-        height: 24,
-        marginRight: 12,
-        cursor: "pointer"
-    },
-
-    logoImgStyle: {
-        width: 24,
-        height: 24,
-        display: "block"
     },
 
     profitContainerStyle: {

@@ -1149,3 +1149,11 @@ section.module.parallax-2 {
 .raised-btn :hover{
     background-color: #000 !important;
 }
+
+.doc-background {
+    background-color: #E0E0E0;
+    width: 100vw;
+    padding-top: 80px;
+    padding-left: 40px;
+    padding-right: 40px;
+}
