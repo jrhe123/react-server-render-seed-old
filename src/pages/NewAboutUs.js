@@ -168,12 +168,12 @@ class NewAboutUs extends Component{
                             <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/xueren.png" />
                                 <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Xueren Dai</p>
-                                <p className="txt-4" style={teamDescStyle}>Board Adviser</p>
+                                <p className="txt-4" style={teamDescStyle}>Board Advisor</p>
                             </div>
                             <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/xiaogu.png" />
                                 <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Xiaogu Jiang</p>
-                                <p className="txt-4" style={teamDescStyle}>Board Adviser</p>
+                                <p className="txt-4" style={teamDescStyle}>Board Advisor</p>
                             </div>
                             <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/nick.png" />
@@ -182,6 +182,11 @@ class NewAboutUs extends Component{
                             </div>
                             <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/tyler.png" />
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Tyler Liu</p>
+                                <p className="txt-4" style={teamDescStyle}>Account Manager</p>
+                            </div>
+                            <div className="team-flex-item">
+                                <img style={teamImgStyle} src="/img/jason.png" />
                                 <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Tyler Liu</p>
                                 <p className="txt-4" style={teamDescStyle}>Account Manager</p>
                             </div>
@@ -431,8 +436,8 @@ const styles = {
     
     teamImgStyle: {
         display: "block",
-        height: 120,
-        width: 120,
+        height: 150,
+        width: 150,
         margin: "0 auto"
     },
 
