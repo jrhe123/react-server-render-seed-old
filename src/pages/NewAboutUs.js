@@ -187,7 +187,7 @@ class NewAboutUs extends Component{
                             </div>
                             <div className="team-flex-item">
                                 <img style={teamImgStyle} src="/img/jason.png" />
-                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Tyler Liu</p>
+                                <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Jason Yeh</p>
                                 <p className="txt-4" style={teamDescStyle}>Account Manager</p>
                             </div>
                             <div className="team-flex-item">

@@ -145,7 +145,7 @@ class Feature extends Component{
                     <p className="txt-2 m-b p-l p-r m-t-md" style={centerTitleTxtStyle}>API Solution</p>
                     <div style={Object.assign({}, centerDivStyle, delimit2 )}></div>
                     <div className="solution-wrapper">
-                        <img src="/img/solution.png" />
+                        <img src="/img/api_solution.png" />
                         <p className="txt-5 text-center m-t-lg solution-desc">OPAY Integration <span className="bold">APIs</span> provide easy to use interfaces to fulfill all kinds of online payment needs. </p>
                         <p className="txt-5 text-center solution-desc">OPAY supports Alipay, WeChat Pay, and all kinds of Credit Card products.</p>
                     </div>
