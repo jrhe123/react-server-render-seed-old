@@ -28,3 +28,10 @@ export const mainPageMoveToSection = (section_y) => {
         section_y: section_y
     }
 }
+
+export const hideHeader = (hide_header) => {
+    return {
+        type: LAYOUT.HIDE_HEADER,
+        hide_header: hide_header
+    }
+}

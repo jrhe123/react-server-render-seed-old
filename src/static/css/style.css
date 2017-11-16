@@ -106,7 +106,7 @@ footer p {
 
 /*<!-- not found section --> */
 
-.not-found {
+.notfound {
     margin: 0 auto;
     max-width: 800px;
     padding: 2em;
@@ -114,12 +114,12 @@ footer p {
     width: 100%;
 }
 
-.not-found h1 {
+.notfound h1 {
     font-size: 3em;
     font-weight: bold;
 }
 
-.not-found h2 {
+.notfound h2 {
     font-size: 2em;
     font-weight: bold;
 }
@@ -947,7 +947,7 @@ section.module.parallax-2 {
     margin-top: 10px;
     height: 60px;
     width: 100px;
-    padding: "6px 12px";
+    padding: 6px 12px;
     border-radius: 12px;
 }
 .counter-desc-container{

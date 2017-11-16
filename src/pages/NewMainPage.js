@@ -3,6 +3,10 @@ import React, { Component } from 'react';
 // libraries
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
+import { Link } from 'react-router';
+
+import { root_page, merchant_login } from '../utilities/urlPath'
+
 
 
 class NewMainPage extends Component{
@@ -28,7 +32,7 @@ class NewMainPage extends Component{
                         <p className="txt-2 p-l p-r" style={subtitleStyle}>The integrated payment system for dynamic consumer base</p>
                         <div className="btn-flex-container">
                             <div className="btn-flex-item">
-                                <RaisedButton className="raised-btn" label="Merchant" backgroundColor="#E5873C" labelColor="#FFF" />
+                                <Link to={`${root_page}${merchant_login}`}><RaisedButton className="raised-btn" label="Merchant" backgroundColor="#E5873C" labelColor="#FFF" /></Link>
                             </div>
                             <div className="btn-flex-item">
                                 <RaisedButton className="raised-btn" label="Customer" backgroundColor="#E5873C" labelColor="#FFF" />
