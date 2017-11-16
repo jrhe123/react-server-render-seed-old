@@ -9,8 +9,9 @@ import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 
-import { hideHeader }  from '../actions/layout_action';
+import { hideHeader, showSnackbar }  from '../actions/layout_action';
 import { root_page } from '../utilities/urlPath'
+
 
 class AdminPage extends Component{
 
@@ -19,14 +20,17 @@ class AdminPage extends Component{
         this.state = {
             merListOpenPop: [false, false, false],
             merListAnEl: [null,null,null],
-            merList: [{ UserGuID: 'aaaaaaaaaaaaaaaaaaaa', AgentID: 'aaaaaaaaaaaaaaaaaaaa', Name: 'aaaaaaaaaaaaaaaaaaaa', Email: 'aaaaaaaaaaaaaaaaaaaa', Phone: 'aaaaaaaaaaaaaaaaaaaa', Platform: 'aaaaaaaaaaaaaaaaaaaa', status:'aaaaaaaaaaaaaaaaaaaa' },
-                { UserGuID: 'aaaaaaaaaaaaaaaaaaaa', AgentID: 'aaaaaaaaaaaaaaaaaaaa', Name: 'aaaaaaaaaaaaaaaaaaaa', Email: 'aaaaaaaaaaaaaaaaaaaa', Phone: 'aaaaaaaaaaaaaaaaaaaa', Platform: 'aaaaaaaaaaaaaaaaaaaa', status:'aaaaaaaaaaaaaaaaaaaa' },
-                { UserGuID: 'aaaaaaaaaaaaaaaaaaaa', AgentID: 'aaaaaaaaaaaaaaaaaaaa', Name: 'aaaaaaaaaaaaaaaaaaaa', Email: 'aaaaaaaaaaaaaaaaaaaa', Phone: 'aaaaaaaaaaaaaaaaaaaa', Platform: 'aaaaaaaaaaaaaaaaaaaa', status:'aaaaaaaaaaaaaaaaaaaa' }]
+            merList: [{ UserGuID: 'aaaaaaaaaaaaaaaaaaaa', AgentID: 'aaaaaaaaaaaaaaaaaaaa', Name: 'aaaaaaaaaaaaaaaaaaaa', Email: 'aaaaaaaaaaaaaaaaaaaa', Phone: 'aaaaaaaaaaaaaaaaaaaa', Platform: 'aaaaaaaaaaaaaaaaaaaa', status:'ACTIVE' },
+                { UserGuID: 'aaaaaaaaaaaaaaaaaaaa', AgentID: 'aaaaaaaaaaaaaaaaaaaa', Name: 'aaaaaaaaaaaaaaaaaaaa', Email: 'aaaaaaaaaaaaaaaaaaaa', Phone: 'aaaaaaaaaaaaaaaaaaaa', Platform: 'aaaaaaaaaaaaaaaaaaaa', status:'INACTIVE' },
+                { UserGuID: 'aaaaaaaaaaaaaaaaaaaa', AgentID: 'aaaaaaaaaaaaaaaaaaaa', Name: 'aaaaaaaaaaaaaaaaaaaa', Email: 'aaaaaaaaaaaaaaaaaaaa', Phone: 'aaaaaaaaaaaaaaaaaaaa', Platform: 'aaaaaaaaaaaaaaaaaaaa', status:'ACTIVE' }]
         }
 
         this.props.dispatch(hideHeader(true));
         this.logout = this.logout.bind(this);
         this.getMerList = this.getMerList.bind(this);
+        this.handleAction = this.handleAction.bind(this);
+        this.handleRequestClose = this.handleRequestClose.bind(this);
+        this.active = this.active.bind(this);
     }
 
     getMerList = () => {
@@ -37,16 +41,48 @@ class AdminPage extends Component{
         browserHistory.push(`${root_page}`);
     }
 
-    handleAction = (event) => {
+    active = () => {
+
+    }
+
+    handleRequestClose = (idx) => {
+
+        let merListOpenPop = [];
+
+        for (let i = 0;i < this.state.merListOpenPop.length;i++) {
+            merListOpenPop[i] = false;//this.state.merListOpenPop[i];
+        }
+
+        merListOpenPop[idx] = false;
+
+        this.setState({
+            merListOpenPop: merListOpenPop
+        })
+    }
+
+    handleAction = (event,idx) => {
         // This prevents ghost click.
         event.preventDefault();
 
         let merListOpenPop = [];
         let merListAnEl = [];
 
+        //this.props.dispatch(showSnackbar('good', false));
+
+        for (let i = 0;i < this.state.merListOpenPop.length;i++) {
+            merListOpenPop[i] = this.state.merListOpenPop[i];
+        }
+
+        for (let i = 0;i < this.state.merListAnEl.length;i++) {
+            merListAnEl[i] = this.state.merListAnEl[i];
+        }
+
+        merListOpenPop[idx] = true;
+        merListAnEl[idx] = event.currentTarget;
+
         this.setState({
-            open: true,
-            anchorEl: event.currentTarget,
+            merListOpenPop: merListOpenPop,
+            merListAnEl: merListAnEl,
         });
     }
 
@@ -63,13 +99,13 @@ class AdminPage extends Component{
                 <div style={mainPageStyle}>
 
                     <div>
-                        <Drawer open={true} width={160}>
+                        <Drawer open={true} width={150}>
                             <MenuItem primaryText="Merchants" />
                             <MenuItem primaryText="Log out" onClick={this.logout} />
                         </Drawer>
                     </div>
 
-                    <div style={{ marginLeft: '170px', marginRight: '10px' }}>
+                    <div style={{ marginLeft: '160px', marginRight: '10px' }}>
                         <Table>
                             <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                                 <TableRow>
@@ -95,10 +131,12 @@ class AdminPage extends Component{
                                         <TableRowColumn style={tableCellStyle}>{msg.status}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}><div style={{textAlign: 'center'}}>
                                             <RaisedButton
-                                                onClick={this.handleAction}
-                                                label="Action"
+                                                onClick={msg.status === 'ACTIVE' ? (e) => this.handleAction(e, idx) : () => this.active}
+                                                secondary={msg.status !== 'ACTIVE'}
+                                                label={msg.status === 'ACTIVE' ? 'ACTION' : 'ACTIVE'}
                                             />
-                                            <Popover
+                                            { msg.status === 'INACTIVE' ? '' : <Popover
+                                                onRequestClose={(e, idx) => this.handleRequestClose(idx)}
                                                 open={this.state.merListOpenPop[idx]}
                                                 anchorEl={this.state.merListAnEl[idx]}
                                                 anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
@@ -108,7 +146,7 @@ class AdminPage extends Component{
                                                     <MenuItem primaryText="Active" />
                                                     <MenuItem primaryText="Set" />
                                                 </Menu>
-                                            </Popover>
+                                            </Popover> }
                                         </div></TableRowColumn>
                                     </TableRow>
                                 ))}

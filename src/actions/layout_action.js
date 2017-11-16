@@ -7,10 +7,11 @@ export const toggleMenu = (toggle) => {
     };
 }
 
-export const showSnackbar = (message) => {
+export const showSnackbar = (message, success) => {
     return {
         type: LAYOUT.SNACKBAR,
-        msg: message
+        msg: message,
+        success: success
     }
 }
 
