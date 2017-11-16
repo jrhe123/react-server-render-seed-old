@@ -1,8 +1,8 @@
 import React from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import { connect } from 'react-redux';
-import axio from '../constants/axio';
+
+import Header from '../components/Header';
+import SnackBar from '../components/SnackBar';
 
 
 class Layout extends React.Component {
@@ -41,6 +41,9 @@ class Layout extends React.Component {
                   </div> }
                 <div className="main_page">
                     <div>{this.props.children}</div>
+                </div>
+                <div>
+                    <SnackBar />
                 </div>
             </div>
         );

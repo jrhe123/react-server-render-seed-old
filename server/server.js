@@ -72,7 +72,7 @@ app.get('*', (req, res) => {
     );
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 const env = process.env.NODE_ENV || 'production';
 server.listen(port, err => {
   if (err) {
