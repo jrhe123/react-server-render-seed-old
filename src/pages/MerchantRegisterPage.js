@@ -7,12 +7,11 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import validator from 'validator';
 
-
 // Redux
 import { connect } from 'react-redux';
 import { hideHeader, showSnackbar }  from '../actions/layout_action';
 
-//
+// API
 import { opay_url } from '../utilities/apiUrl';
 import * as apiManager from '../helpers/apiManager';
 
@@ -134,7 +133,7 @@ class MerchantRegisterPage extends Component{
 
                         this.props.dispatch(showSnackbar(`Registration form has been sent to your email`, true));
                     }else{
-                        this.props.dispatch(showSnackbar(`Error: ${response.data.Message}`, false));
+                        this.props.dispatch(showSnackbar(`${response.data.Message}`, false));
                     }
                 })
                 .catch((error) => {
