@@ -1,17 +1,26 @@
 import React, { Component } from 'react';
+
+// Libaries
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-import * as apiManager from '../helpers/apiManager';
+// Redux
+import { connect } from 'react-redux';
+import { hideHeader, showSnackbar }  from '../actions/layout_action';
+
+//
 import { opay_url } from '../utilities/apiUrl';
+import * as apiManager from '../helpers/apiManager';
 
 
 class MerchantRegisterPage extends Component{
 
     constructor(props) {
+
         super(props);
+        this.refactor = this.refactor.bind(this);
         this.state = {
             floatLabelStyle: { fontSize: '19px' },
             inputStyle: { fontSize: '19px'  },
@@ -19,9 +28,10 @@ class MerchantRegisterPage extends Component{
             loginBtnStyle: { marginTop: '19px' },
             paperSize: { height: '60%', width: '50%' },
             merchantName: '',
-            email: ''
+            email: '',
+            emailErrorText: ''
         }
-        this.refactor = this.refactor.bind(this);
+        this.props.dispatch(hideHeader(true));
     }
 
     componentDidMount() {
@@ -52,7 +62,6 @@ class MerchantRegisterPage extends Component{
     }
 
     onFieldChange = (field, e, value) => {
-
         let updated = Object.assign({}, this.state);
         updated[field] = value;
         this.setState(updated);
@@ -61,6 +70,7 @@ class MerchantRegisterPage extends Component{
     handlerSubmit = () => {
         console.log('state: ', this.state.merchantName);
         console.log('state: ', this.state.email);
+        this.props.dispatch(showSnackbar('good', true));
     }
 
     render() {
@@ -81,11 +91,15 @@ class MerchantRegisterPage extends Component{
                                         inputStyle={this.state.inputStyle}
                                         floatingLabelStyle={this.state.floatLabelStyle} 
                                         style={this.state.textFieldStyle}
+                                        onBlur={this.onFieldBlur.bind(this, 'email')}
+                                        errorText={this.state.emailErrorText}
                                         onChange={this.onFieldChange.bind(this, 'merchantName')} /><br />
                             <TextField floatingLabelText="Email" 
                                         inputStyle={this.state.inputStyle}
                                         floatingLabelStyle={this.state.floatLabelStyle} 
                                         style={this.state.textFieldStyle}
+                                        onBlur={this.onFieldBlur.bind(this, 'email')}
+                                        errorText={this.state.emailErrorText}
                                         onChange={this.onFieldChange.bind(this, 'email')} /><br /><br />
                             <RaisedButton label="Sign Up" 
                                             primary={true} 
@@ -128,4 +142,4 @@ const styles = {
 
 }
 
-export default MerchantRegisterPage;
+export default connect()(MerchantRegisterPage);
