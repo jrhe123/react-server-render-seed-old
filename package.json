@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "async": "^2.4.0",
-    "axios": "^0.16.1",
+    "axios": "^0.16.2",
     "babel-cli": "^6.11.4",
     "babel-core": "^6.13.2",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
@@ -38,6 +38,7 @@
     "babel-preset-react": "^6.11.1",
     "babel-register": "^6.24.1",
     "bcryptjs": "^2.4.3",
+    "bluebird": "^3.5.1",
     "body-parser": "^1.17.1",
     "bootstrap": "^4.0.0-alpha.6",
     "classnames": "^2.2.5",

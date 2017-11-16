@@ -4,6 +4,8 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
+import * as apiManager from '../helpers/apiManager';
+
 class MerchantRegisterPage extends Component{
 
     constructor(props) {
@@ -48,6 +50,23 @@ class MerchantRegisterPage extends Component{
 
     componentDidMount() {
         window.addEventListener('resize', this.refactor);
+        let params = {
+            "Params": {
+                "Limit": "-1",
+                "Offset": "0",
+                "Extra": {
+                    "SearchType": "DATE",
+                    "SearchField": "TODAY"
+                }
+            }
+        }
+        apiManager.opayApi('http://localhost:3000/merchant/transaction_list', params, true)
+            .then((response) => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
     }
 
 

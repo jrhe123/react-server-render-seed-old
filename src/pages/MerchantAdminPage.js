@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { browserHistory } from 'react-router';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Drawer from 'material-ui/Drawer';
+import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
+import RaisedButton from 'material-ui/RaisedButton';
 
 import { hideHeader }  from '../actions/layout_action';
+import { root_page } from '../utilities/urlPath'
+import * as apiManager from '../helpers/apiManager';
 
 class MerchantAdminPage extends Component{
 
@@ -25,11 +30,13 @@ class MerchantAdminPage extends Component{
         }
     }
 
-
     componentDidMount() {
         window.addEventListener('resize', this.refactor);
     }
 
+    logout = () => {
+        browserHistory.push(`${root_page}`);
+    }
 
     render() {
 
@@ -37,11 +44,16 @@ class MerchantAdminPage extends Component{
             mainMerchantAdminPageStyle,
         } = styles;
 
-
         return (
             <MuiThemeProvider>
                 <div style={mainMerchantAdminPageStyle}>
-
+                    <div>
+                        <Drawer open={true} width={160}>
+                            <MenuItem primaryText="Transactions" />
+                            <MenuItem primaryText="Employee" />
+                            <MenuItem primaryText="Log out" onClick={this.logout} />
+                        </Drawer>
+                    </div>
                 </div>
             </MuiThemeProvider>
         )
