@@ -11,6 +11,7 @@ import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 
 import { hideHeader, showSnackbar }  from '../actions/layout_action';
 import { root_page } from '../utilities/urlPath'
+import { opayApi } from  '../helpers/apiManager';
 
 
 class AdminPage extends Component{
@@ -50,7 +51,7 @@ class AdminPage extends Component{
         let merListOpenPop = [];
 
         for (let i = 0;i < this.state.merListOpenPop.length;i++) {
-            merListOpenPop[i] = false;//this.state.merListOpenPop[i];
+            merListOpenPop[i] = false;
         }
 
         merListOpenPop[idx] = false;
@@ -143,7 +144,7 @@ class AdminPage extends Component{
                                                 targetOrigin={{horizontal: 'left', vertical: 'top'}}
                                                 animation={PopoverAnimationVertical}>
                                                 <Menu>
-                                                    <MenuItem primaryText="Active" />
+                                                    <MenuItem primaryText="Add POS" />
                                                     <MenuItem primaryText="Set" />
                                                 </Menu>
                                             </Popover> }
