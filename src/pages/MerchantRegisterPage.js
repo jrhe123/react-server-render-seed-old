@@ -1,24 +1,41 @@
 import React, { Component } from 'react';
+
+// Libaries
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
+// Redux
+import { connect } from 'react-redux';
+import { hideHeader, showSnackbar }  from '../actions/layout_action';
+
+//
+import { opay_url } from '../utilities/apiUrl';
 import * as apiManager from '../helpers/apiManager';
+
 
 class MerchantRegisterPage extends Component{
 
     constructor(props) {
+
         super(props);
+        this.refactor = this.refactor.bind(this);
         this.state = {
             floatLabelStyle: { fontSize: '19px' },
             inputStyle: { fontSize: '19px'  },
             textFieldStyle: { width: '58%' },
             loginBtnStyle: { marginTop: '19px' },
-            paperSize: { height: '60%', width: '50%' }
+            paperSize: { height: '60%', width: '50%' },
+            merchantName: '',
+            email: '',
+            emailErrorText: ''
         }
-        this.refactor = this.refactor.bind(this);
-        this.SignUp = this.SignUp.bind(this);
+        this.props.dispatch(hideHeader(true));
+    }
+
+    componentDidMount() {
+        window.addEventListener('resize', this.refactor);
     }
 
     refactor = () => {
@@ -44,31 +61,17 @@ class MerchantRegisterPage extends Component{
         }
     }
 
-    SignUp = () => {
-
+    onFieldChange = (field, e, value) => {
+        let updated = Object.assign({}, this.state);
+        updated[field] = value;
+        this.setState(updated);
     }
 
-    componentDidMount() {
-        window.addEventListener('resize', this.refactor);
-        let params = {
-            "Params": {
-                "Limit": "-1",
-                "Offset": "0",
-                "Extra": {
-                    "SearchType": "DATE",
-                    "SearchField": "TODAY"
-                }
-            }
-        }
-        apiManager.opayApi('http://localhost:3000/merchant/transaction_list', params, true)
-            .then((response) => {
-                console.log(response);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+    handlerSubmit = () => {
+        console.log('state: ', this.state.merchantName);
+        console.log('state: ', this.state.email);
+        this.props.dispatch(showSnackbar('good', true));
     }
-
 
     render() {
 
@@ -78,22 +81,33 @@ class MerchantRegisterPage extends Component{
             verticalCenter
         } = styles;
 
-
         return (
             <MuiThemeProvider>
                 <div style={mainMerchantRegisterPageStyle}>
-
                     <Paper zDepth={3} style={Object.assign({}, this.state.paperSize, paperStyle )}>
+                       
                         <div style={verticalCenter}>
-                            <TextField floatingLabelText="Username" inputStyle={this.state.inputStyle}
-                                       floatingLabelStyle={this.state.floatLabelStyle} style={this.state.textFieldStyle} /><br />
-                            <TextField floatingLabelText="Email" inputStyle={this.state.inputStyle}
-                                       floatingLabelStyle={this.state.floatLabelStyle} style={this.state.textFieldStyle} /><br /><br />
-                            <RaisedButton label="Sign Up" primary={true} style={this.state.loginBtnStyle} /> <br /> <br />
-
+                            <TextField floatingLabelText="Merchant name" 
+                                        inputStyle={this.state.inputStyle}
+                                        floatingLabelStyle={this.state.floatLabelStyle} 
+                                        style={this.state.textFieldStyle}
+                                        onBlur={this.onFieldBlur.bind(this, 'email')}
+                                        errorText={this.state.emailErrorText}
+                                        onChange={this.onFieldChange.bind(this, 'merchantName')} /><br />
+                            <TextField floatingLabelText="Email" 
+                                        inputStyle={this.state.inputStyle}
+                                        floatingLabelStyle={this.state.floatLabelStyle} 
+                                        style={this.state.textFieldStyle}
+                                        onBlur={this.onFieldBlur.bind(this, 'email')}
+                                        errorText={this.state.emailErrorText}
+                                        onChange={this.onFieldChange.bind(this, 'email')} /><br /><br />
+                            <RaisedButton label="Sign Up" 
+                                            primary={true} 
+                                            style={this.state.loginBtnStyle}
+                                            onClick={() => this.handlerSubmit()} /> <br /> <br />
                         </div>
-                    </Paper>
 
+                    </Paper>
                 </div>
             </MuiThemeProvider>
         )
@@ -123,7 +137,9 @@ const styles = {
         position: 'relative',
         top: '50%',
         transform: 'translateY(-50%)'
-    }
+    },
+
+
 }
 
-export default MerchantRegisterPage;
+export default connect()(MerchantRegisterPage);
