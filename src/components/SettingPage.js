@@ -39,6 +39,7 @@ class SettingPage extends Component{
             userName: '',
             password: ''
         }
+        this.props.hideHeader();
     }
 
     componentDidMount(){
@@ -58,10 +59,10 @@ class SettingPage extends Component{
                 this.props.fetch_merchant_pos_login(posLogin);
             })
             .catch((error) => {
-                // localStorage.removeItem('token');
-                // localStorage.removeItem('userTypeID');
-                // localStorage.removeItem('agentID');
-                // browserHistory.push(`${root_page}`);
+                localStorage.removeItem('token');
+                localStorage.removeItem('userTypeID');
+                localStorage.removeItem('agentID');
+                browserHistory.push(`${root_page}`);
             })        
     }
 

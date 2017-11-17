@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import AppBar from 'material-ui/AppBar';
-import ReactDOM from 'react-dom';
 import { browserHistory } from 'react-router';
 import FlatButton from 'material-ui/FlatButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -31,7 +30,7 @@ class Header extends Component {
         this.refactor = this.refactor.bind(this);
         this.scrollEvent = this.scrollEvent.bind(this);
         this.gotoHome = this.gotoHome.bind(this);
-        this.gotoFeature = this.gotoFeature.bind(this);
+        //this.gotoFeature = this.gotoFeature.bind(this);
         this.closeMenu = this.closeMenu.bind(this);
        // this.scrollTo = this.scrollTo.bind(this);
     }
@@ -44,12 +43,12 @@ class Header extends Component {
         this.scrollTo(0, 10)
     }
 
-    gotoFeature = () => {
-        let second_section = ReactDOM.findDOMNode(this.refs.second_section);
-        let offset = this.props.section_y.second_section.offset
-        let height = this.props.section_y.second_section.height
-        this.scrollTo(offset, height)
-    }
+    // gotoFeature = () => {
+    //     let second_section = ReactDOM.findDOMNode(this.refs.second_section);
+    //     let offset = this.props.section_y.second_section.offset
+    //     let height = this.props.section_y.second_section.height
+    //     this.scrollTo(offset, height)
+    // }
 
     scrollEvent = () => {
 
@@ -78,7 +77,6 @@ class Header extends Component {
         window.addEventListener('resize', this.refactor);
         window.addEventListener('scroll', this.scrollEvent);
         this.setState({ 
-            user: sessionStorage.getItem('user'), 
             rightIconMarginTop: window.innerWidth >= 414 ? 5 : -8,
             largeScreen: window.innerWidth >= 414
         });
@@ -122,7 +120,7 @@ class Header extends Component {
 
         return (
             <MuiThemeProvider>
-                <div>
+                <div style={{ zIndex: '2000', position: 'fixed' }}>
                     <AppBar
                         style={{ width: '100vw', opacity:'0.8', fontWeight: 'bold', backgroundColor: this.state.bg, transition: 'background-color 1.3s', paddingLeft: 0, paddingRight: 0 }}
                         title={
@@ -169,13 +167,14 @@ class Header extends Component {
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        section_y: state.layout_reducer.section_y
-    };
-}
-
-export default connect(mapStateToProps)(Header);
+// function mapStateToProps(state) {
+//     return {
+//         section_y: state.layout_reducer.section_y
+//     };
+// }
+//
+// export default connect(mapStateToProps)(Header);
+export default Header;
 
 
 /*

@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { green400, pinkA400 } from 'material-ui/styles/colors';
 import Snackbar from 'material-ui/Snackbar';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { showSnackbar }  from '../actions/layout_action';
 
 class SnackBar extends Component {
 
@@ -19,7 +17,6 @@ class SnackBar extends Component {
         this.setState({
             open: false,
         });
-        this.props.dispatch(showSnackbar('', this.props.success));
     };
 
     componentWillReceiveProps(nextProps) {
@@ -45,8 +42,5 @@ class SnackBar extends Component {
     }
 }
 
-function mapStateToProps(state) {
-    return { msg: state.snackbar_reducer.msg, success: state.snackbar_reducer.success };
-}
 
-export default connect(mapStateToProps)(SnackBar);
+export default SnackBar;

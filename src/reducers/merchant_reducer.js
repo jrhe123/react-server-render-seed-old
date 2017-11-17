@@ -15,8 +15,8 @@ export default function(state = INITIAL_STATE, action) {
 
             console.log('reducer received, call back to component');
             return {
-                ...state,
-                posLogin: action.posLogin
+               ...state,
+               posLogin: action.posLogin
             };
 
         default :

@@ -30,9 +30,9 @@ export const mainPageMoveToSection = (section_y) => {
     }
 }
 
-export const hideHeader = (hide_header) => {
-    return {
-        type: LAYOUT.HIDE_HEADER,
-        hide_header: hide_header
-    }
-}
+// export const hideHeader = (hide_header) => {
+//     return {
+//         type: LAYOUT.HIDE_HEADER,
+//         hide_header: hide_header
+//     }
+// }

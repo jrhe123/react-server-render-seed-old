@@ -6,7 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { Link } from 'react-router';
 
 import { root_page, merchant_login } from '../utilities/urlPath'
-
+import Header from '../components/Header';
 
 
 class NewMainPage extends Component{
@@ -26,6 +26,9 @@ class NewMainPage extends Component{
 
         return (
             <MuiThemeProvider>
+                <div style={{ zIndex: '2000', position:'fixed' }}>
+                    <Header pathname={this.props.location.pathname}/>
+                </div>
                 <div style={mainContainerStyle}>
                     <div style={titleContainer}>
                         <p className="txt-0 p-l p-r bold font-shadow" style={titleStyle}>Life is a journey, pay as you go</p>
@@ -39,7 +42,6 @@ class NewMainPage extends Component{
                             </div>
                         </div>
                     </div>
-                    
 
                     <div style={logoContainerStyle}>
                             <div style={logoItemStyle}>
