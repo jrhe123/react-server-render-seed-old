@@ -9,7 +9,7 @@ import TextField from 'material-ui/TextField';
 
 // Redux
 import { connect } from 'react-redux';
-import { hideHeader, showSnackbar }  from '../actions/layout_action';
+import { showSnackbar }  from '../actions/layout_action';
 
 // Router
 import { browserHistory } from 'react-router';
@@ -42,7 +42,6 @@ class MerchantLoginPage extends Component{
             userName: '',
             password: ''
         }
-        this.props.dispatch(hideHeader(true));
     }
 
     componentDidMount() {

@@ -29,30 +29,34 @@ class SettingPage extends Component{
         super(props);
         this.state = {
         }
+        this.props.hideHeader();
     }
 
     componentDidMount(){
-        let params = {
-            Params: {
-                AgentID: localStorage.getItem('agentID')
-            }
-        };
-        apiManager.opayApi(opay_url+'merchant/view_pos_login', params, true)
-            .then((response) => {
-                let res = response.data.Response;
-                let posLogin = {
-                    isCreated: res.IsCreated,
-                    loginKeyword: res.LoginKeyword
-                };
-                this.props.hideHeader();
-                this.props.fetch_merchant_pos_login(posLogin);
-            })
-            .catch((error) => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('userTypeID');
-                localStorage.removeItem('agentID');
-                browserHistory.push(`${root_page}`);
-            })        
+
+        let posLogin = {a:1,b:2,c:3}
+
+        this.props.fetch_merchant_pos_login(posLogin);
+        // let params = {
+        //     Params: {
+        //         AgentID: localStorage.getItem('agentID')
+        //     }
+        // };
+        // apiManager.opayApi(opay_url+'merchant/view_pos_login', params, true)
+        //     .then((response) => {
+        //         let res = response.data.Response;
+        //         let posLogin = {
+        //             isCreated: res.IsCreated,
+        //             loginKeyword: res.LoginKeyword
+        //         };
+        //
+        //     })
+        //     .catch((error) => {
+        //         // localStorage.removeItem('token');
+        //         // localStorage.removeItem('userTypeID');
+        //         // localStorage.removeItem('agentID');
+        //         // browserHistory.push(`${root_page}`);
+        //     })
     }
 
     render() {

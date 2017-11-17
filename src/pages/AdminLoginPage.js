@@ -9,7 +9,7 @@ import TextField from 'material-ui/TextField';
 import * as apiManager from  '../helpers/apiManager';
 import { opay_url, admin_login } from "../utilities/apiUrl";
 import { root_page, admin_page } from '../utilities/urlPath'
-import { hideHeader, showSnackbar }  from '../actions/layout_action';
+import { showSnackbar }  from '../actions/layout_action';
 
 class AdminLoginPage extends Component{
 
@@ -28,7 +28,6 @@ class AdminLoginPage extends Component{
         this.login = this.login.bind(this);
         this.usernameChange = this.usernameChange.bind(this);
         this.passwordChange = this.passwordChange.bind(this);
-        this.props.dispatch(hideHeader(true));
     }
 
     usernameChange = (e, newString) => {

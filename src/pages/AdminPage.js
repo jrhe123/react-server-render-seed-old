@@ -10,7 +10,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 import UltimatePagination from 'react-ultimate-pagination-material-ui';
 
-import { hideHeader, showSnackbar }  from '../actions/layout_action';
+import { showSnackbar }  from '../actions/layout_action';
 import { root_page } from '../utilities/urlPath'
 import { opay_url, admin_merchantlist, admin_logout, admin_active_merchant } from "../utilities/apiUrl";
 import * as apiManager from  '../helpers/apiManager';
@@ -106,6 +106,26 @@ class AdminPage extends Component{
     }
 
     active = (idx) => {
+
+        /*
+        {
+    "Confirmation": "Success",
+    "Response": {
+        "UserGUID": "d50d5845-cece-486d-83be-15309470cb81",
+        "FirstName": "jiamin Test",
+        "LastName": "legal",
+        "UserTypeID": 2,
+        "Email": "jiamin.ning@opay.ca",
+        "PhoneNumber": "1234567890",
+        "CountryCode": "1",
+        "TaxNumber": "1234567890",
+        "Status": "ACTIVE",
+        "IsVerified": 1,
+        "AgentID": "2153250942",
+        "CreatedAt": "2017-11-17T15:41:09.000Z"
+    }
+}
+        * */
 
         let params = { Params: { UserGUID: this.state.merList[idx].UserGUID } };
 
@@ -267,9 +287,3 @@ const styles = {
 }
 
 export default connect()(AdminPage);
-
-/*
-merList: [{ UserGuID: 'aaaaaaaaaaaaaaaaaaaa', AgentID: 'aaaaaaaaaaaaaaaaaaaa', Name: 'aaaaaaaaaaaaaaaaaaaa', Email: 'aaaaaaaaaaaaaaaaaaaa', Phone: 'aaaaaaaaaaaaaaaaaaaa', Platform: 'aaaaaaaaaaaaaaaaaaaa', status:'ACTIVE' },
-                { UserGuID: 'aaaaaaaaaaaaaaaaaaaa', AgentID: 'aaaaaaaaaaaaaaaaaaaa', Name: 'aaaaaaaaaaaaaaaaaaaa', Email: 'aaaaaaaaaaaaaaaaaaaa', Phone: 'aaaaaaaaaaaaaaaaaaaa', Platform: 'aaaaaaaaaaaaaaaaaaaa', status:'INACTIVE' },
-                { UserGuID: 'aaaaaaaaaaaaaaaaaaaa', AgentID: 'aaaaaaaaaaaaaaaaaaaa', Name: 'aaaaaaaaaaaaaaaaaaaa', Email: 'aaaaaaaaaaaaaaaaaaaa', Phone: 'aaaaaaaaaaaaaaaaaaaa', Platform: 'aaaaaaaaaaaaaaaaaaaa', status:'ACTIVE' }]
-* */
