@@ -32,7 +32,6 @@ class AdminPage extends Component{
                 { AgentID: 'aaaaaaaaaaaaaaaaaaaa', FirstName: 'aaaaaaaaaaaaaaaaaaaa', Email: 'aaaaaaaaaaaaaaaaaaaa', PhoneNumber: 'aaaaaaaaaaaaaaaaaaaa', CreatedAt: 'aaaaaaaaaaaaaaaaaaaa', Status:'ACTIVE' }]
         }
 
-        this.props.dispatch(hideHeader(true));
         this.logout = this.logout.bind(this);
         this.getMerList = this.getMerList.bind(this);
         this.handleAction = this.handleAction.bind(this);

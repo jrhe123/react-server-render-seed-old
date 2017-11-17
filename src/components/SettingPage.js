@@ -12,7 +12,7 @@ import { green400, pinkA400 } from 'material-ui/styles/colors';
 
 // Redux
 import { connect } from 'react-redux';
-import { hideHeader, showSnackbar }  from '../actions/layout_action';
+import { showSnackbar }  from '../actions/layout_action';
 import { fetch_merchant_pos_login }  from '../actions/merchant_action';
 
 // Router
@@ -39,7 +39,6 @@ class SettingPage extends Component{
             userName: '',
             password: ''
         }
-        this.props.hideHeader();
     }
 
     componentDidMount(){
@@ -278,7 +277,6 @@ const stateToProps = (state) => {
 const dispatchToProps = (dispatch) => {
 
 	return {
-        showSnackbar: (msg, isFalse) => dispatch(showSnackbar(msg, isFalse)),
 		fetch_merchant_pos_login: (posLogin) => dispatch(fetch_merchant_pos_login(posLogin))
 	}
 }

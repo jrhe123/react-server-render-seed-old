@@ -9,7 +9,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 // Redux
 import { connect } from 'react-redux';
-import { hideHeader, showSnackbar }  from '../actions/layout_action';
+import { showSnackbar }  from '../actions/layout_action';
 
 // Router
 import { browserHistory } from 'react-router';

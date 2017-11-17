@@ -14,7 +14,7 @@ import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 
 // Redux
 import { connect } from 'react-redux';
-import { hideHeader, showSnackbar }  from '../actions/layout_action';
+import { showSnackbar }  from '../actions/layout_action';
 
 // Router
 import { browserHistory } from 'react-router';
@@ -41,8 +41,6 @@ class MerchantAdminPage extends Component{
             open: false,
         }
         this.refactor = this.refactor.bind(this);
-
-        this.props.dispatch(hideHeader(true));
     }
 
     refactor = () => {

@@ -16,7 +16,7 @@ import moment from 'moment';
 
 // Redux
 import { connect } from 'react-redux';
-import { hideHeader, showSnackbar }  from '../actions/layout_action';
+import { showSnackbar }  from '../actions/layout_action';
 
 // Router
 import { browserHistory } from 'react-router';

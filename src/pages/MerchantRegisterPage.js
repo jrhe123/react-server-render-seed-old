@@ -9,7 +9,7 @@ import validator from 'validator';
 
 // Redux
 import { connect } from 'react-redux';
-import { hideHeader, showSnackbar }  from '../actions/layout_action';
+import { showSnackbar }  from '../actions/layout_action';
 
 // API
 import { opay_url } from '../utilities/apiUrl';
@@ -37,7 +37,6 @@ class MerchantRegisterPage extends Component{
             emailErrorText: '',
             isValidEmail: false
         }
-        this.props.dispatch(hideHeader(true));
     }
 
     componentDidMount() {
