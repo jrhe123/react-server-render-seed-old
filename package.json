@@ -38,6 +38,7 @@
     "babel-preset-react": "^6.11.1",
     "babel-register": "^6.24.1",
     "bcryptjs": "^2.4.3",
+    "better-react-spinkit": "^2.0.2",
     "bluebird": "^3.5.1",
     "body-parser": "^1.17.1",
     "bootstrap": "^4.0.0-alpha.6",
@@ -49,7 +50,10 @@
     "glob": "^7.1.1",
     "google-translate-api": "^2.3.0",
     "material-ui": "^0.19.4",
+    "material-ui-pagination": "^1.1.6",
     "materialize-css": "^0.100.2",
+    "materialui-pagination": "0.0.6",
+    "moment": "^2.19.2",
     "postcss-loader": "^1.2.0",
     "react": "^16.0.0",
     "react-addons-css-transition-group": "^15.5.2",
@@ -68,6 +72,6 @@
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0",
     "style-loader": "^0.16.1",
-    "validator": "^7.0.0"
+    "validator": "^7.2.0"
   }
 }

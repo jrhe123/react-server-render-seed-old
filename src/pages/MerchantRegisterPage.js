@@ -5,12 +5,13 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import validator from 'validator';
 
 // Redux
 import { connect } from 'react-redux';
 import { hideHeader, showSnackbar }  from '../actions/layout_action';
 
-//
+// API
 import { opay_url } from '../utilities/apiUrl';
 import * as apiManager from '../helpers/apiManager';
 
@@ -27,9 +28,14 @@ class MerchantRegisterPage extends Component{
             textFieldStyle: { width: '58%' },
             loginBtnStyle: { marginTop: '19px' },
             paperSize: { height: '60%', width: '50%' },
+
+            btnTxt: 'Sign Up',
+            isResend: false,
             merchantName: '',
+            merchantNameErrorText: '',
             email: '',
-            emailErrorText: ''
+            emailErrorText: '',
+            isValidEmail: false
         }
         this.props.dispatch(hideHeader(true));
     }
@@ -61,6 +67,41 @@ class MerchantRegisterPage extends Component{
         }
     }
 
+    onFieldBlur = (field, e) => {
+
+        let value = e.target.value;
+        if(field === 'merchantName'){
+            if(!value){
+                let updated = Object.assign({}, this.state);
+                updated['merchantNameErrorText'] = "Merchant name is required.";
+                this.setState(updated);
+            }else{
+                let updated = Object.assign({}, this.state);
+                updated['merchantNameErrorText'] = '';
+                this.setState(updated);
+            }
+        }else if(field === 'email'){
+            if(value){          
+                if(!validator.isEmail(value)){
+                    let updated = Object.assign({}, this.state);
+                    updated['emailErrorText'] = "Your email address is invalid. Please enter a valid address.";
+                    updated['isValidEmail'] = false;
+                    this.setState(updated);
+                }else{
+                    let updated = Object.assign({}, this.state);
+                    updated['emailErrorText'] = '';
+                    updated['isValidEmail'] = true;
+                    this.setState(updated);
+                }
+            }else{
+                let updated = Object.assign({}, this.state);
+                updated['emailErrorText'] = "Email address is required.";
+                updated['isValidEmail'] = false;
+                this.setState(updated);
+            }
+        }
+    }
+
     onFieldChange = (field, e, value) => {
         let updated = Object.assign({}, this.state);
         updated[field] = value;
@@ -68,9 +109,37 @@ class MerchantRegisterPage extends Component{
     }
 
     handlerSubmit = () => {
-        console.log('state: ', this.state.merchantName);
-        console.log('state: ', this.state.email);
-        this.props.dispatch(showSnackbar('good', true));
+        if(!this.state.merchantName){
+            this.props.dispatch(showSnackbar('Please enter your merchant name', false));
+        }else if(!this.state.email){
+            this.props.dispatch(showSnackbar('Please enter your email', false));
+        }else if(!this.state.isValidEmail){
+            this.props.dispatch(showSnackbar('Invalid email address', false));
+        }else{
+            let params = {
+                Params: {
+                    MerchantName: this.state.merchantName,
+                    Email: this.state.email
+                }
+            };
+            apiManager.opayApi(opay_url+'merchant/send_register_email', params, false)
+                .then((response) => {
+                    if(response.data.Confirmation === 'Success'){
+
+                        let updated = Object.assign({}, this.state);
+                        updated['btnTxt'] = 'Resend';
+                        updated['isResend'] = true;
+                        this.setState(updated);
+
+                        this.props.dispatch(showSnackbar(`Registration form has been sent to your email`, true));
+                    }else{
+                        this.props.dispatch(showSnackbar(`${response.data.Message}`, false));
+                    }
+                })
+                .catch((error) => {
+                    this.props.dispatch(showSnackbar(`Error: ${error}`, false));
+                })
+        }        
     }
 
     render() {
@@ -78,9 +147,12 @@ class MerchantRegisterPage extends Component{
         const {
             mainMerchantRegisterPageStyle,
             paperStyle,
-            verticalCenter
+            verticalCenter,
+            resendStyle
         } = styles;
 
+        const resendText = (this.state.isResend) 
+            ? <p style={resendStyle}>Didn't receive email? Resend it.</p> : null;
         return (
             <MuiThemeProvider>
                 <div style={mainMerchantRegisterPageStyle}>
@@ -91,8 +163,8 @@ class MerchantRegisterPage extends Component{
                                         inputStyle={this.state.inputStyle}
                                         floatingLabelStyle={this.state.floatLabelStyle} 
                                         style={this.state.textFieldStyle}
-                                        onBlur={this.onFieldBlur.bind(this, 'email')}
-                                        errorText={this.state.emailErrorText}
+                                        onBlur={this.onFieldBlur.bind(this, 'merchantName')}
+                                        errorText={this.state.merchantNameErrorText}
                                         onChange={this.onFieldChange.bind(this, 'merchantName')} /><br />
                             <TextField floatingLabelText="Email" 
                                         inputStyle={this.state.inputStyle}
@@ -101,10 +173,11 @@ class MerchantRegisterPage extends Component{
                                         onBlur={this.onFieldBlur.bind(this, 'email')}
                                         errorText={this.state.emailErrorText}
                                         onChange={this.onFieldChange.bind(this, 'email')} /><br /><br />
-                            <RaisedButton label="Sign Up" 
+                            <RaisedButton label={this.state.btnTxt} 
                                             primary={true} 
                                             style={this.state.loginBtnStyle}
-                                            onClick={() => this.handlerSubmit()} /> <br /> <br />
+                                            onClick={() => this.handlerSubmit()} /> <br />
+                            { resendText }
                         </div>
 
                     </Paper>
@@ -139,6 +212,10 @@ const styles = {
         transform: 'translateY(-50%)'
     },
 
+    resendStyle: {
+        marginTop: 12,
+        color: '#B2B2B2',
+    }
 
 }
 
