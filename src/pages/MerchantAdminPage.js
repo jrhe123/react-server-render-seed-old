@@ -6,6 +6,11 @@ import Drawer from 'material-ui/Drawer';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import AppBar from 'material-ui/AppBar';
+import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
+
+
 
 // Redux
 import { connect } from 'react-redux';
@@ -23,6 +28,7 @@ import * as apiManager from '../helpers/apiManager';
 import Loading from '../components/Loading';
 import MerchantTransactions from '../components/MerchantTransactions';
 import MerchantEmployees from '../components/MerchantEmployees';
+import SettingPage from '../components/SettingPage';
 
 
 class MerchantAdminPage extends Component{
@@ -32,6 +38,7 @@ class MerchantAdminPage extends Component{
         this.state = {
             isLoading: true,
             tab: 'transactions',
+            open: false,
         }
         this.refactor = this.refactor.bind(this);
 
@@ -61,23 +68,42 @@ class MerchantAdminPage extends Component{
         window.addEventListener('resize', this.refactor);
     }
 
+    handleTouchTap = (event) => {
+        // This prevents ghost click.
+        event.preventDefault();
+    
+        this.setState({
+          open: true,
+          anchorEl: event.currentTarget,
+        });
+    };
+    
+    handleRequestClose = () => {
+        this.setState({
+          open: false,
+        });
+    };
+
     logout = () => {
         apiManager.opayApi(opay_url+'user/logout', null, true)
             .then((response) => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('userTypeID');
+                localStorage.removeItem('agentID');
                 browserHistory.push(`${root_page}`);
             })
             .catch((error) => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('userTypeID');
+                localStorage.removeItem('agentID');
                 browserHistory.push(`${root_page}`);
             })
     }
 
     switchTab(tab){
         this.setState({
-            tab
+            tab: tab,
+            open: false,
         })
     }
 
@@ -91,6 +117,10 @@ class MerchantAdminPage extends Component{
                 return (
                     <MerchantEmployees />
                 );
+            case 'setting':
+                return (
+                    <SettingPage />
+                );    
             default:
                 return (
                     <MerchantTransactions />
@@ -117,12 +147,39 @@ class MerchantAdminPage extends Component{
 
         return (
             <MuiThemeProvider>
+                <div style={{width: "100%", height: 64}}>
+                    <AppBar
+                        showMenuIconButton={false}
+                        iconElementRight={
+                            <div>
+                                <FlatButton
+                                    style={{color: '#fff', marginTop: 6}}
+                                    onClick={this.handleTouchTap}
+                                    label="Account"
+                                />
+                                <Popover
+                                    open={this.state.open}
+                                    anchorEl={this.state.anchorEl}
+                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                    onRequestClose={this.handleRequestClose}
+                                    animation={PopoverAnimationVertical}
+                                >
+                                <Menu>
+                                    <MenuItem primaryText="Setting" onClick={this.switchTab.bind(this, 'setting')} />
+                                    <MenuItem primaryText="POS" />
+                                    <MenuItem primaryText="Sign out" onClick={this.logout} />
+                                </Menu>
+                                </Popover>
+                            </div>
+                        }
+                    />
+                </div>
                 <div style={mainContainer}>
                     <div style={drawerContainer}>
-                        <Drawer open={true} width={160}>
-                            <MenuItem primaryText="Transactions" onClick={this.switchTab.bind(this, 'transactions')} />
+                        <Drawer open={true} width={160} containerStyle={{zIndex: 0}}>
+                            <MenuItem style={{paddingTop: 64}} primaryText="Transactions" onClick={this.switchTab.bind(this, 'transactions')} />
                             <MenuItem primaryText="Employees" onClick={this.switchTab.bind(this, 'employees')} />
-                            <MenuItem primaryText="Log out" onClick={this.logout} />
                         </Drawer>
                     </div>
                     <div style={contentContainer}>
@@ -138,19 +195,19 @@ const styles = {
 
     mainContainer: {
         width: '100vw',
-        height: '100vh',
+        height: '100vh - 64px)',
     },
     drawerContainer: {
         display: 'inline-block', 
         float: 'left',
         width: '160px',
-        height: '100vh'
+        height: 'calc(100vh - 64px)',
     },
     contentContainer: {
         display: 'inline-block', 
         float: 'left',
         width: 'calc(100% - 160px)',
-        height: '100vh'
+        height: 'calc(100vh - 64px)'
     },
     loadingContainer: {
         width: '100vw',

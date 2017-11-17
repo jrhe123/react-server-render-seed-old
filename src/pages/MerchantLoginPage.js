@@ -19,6 +19,10 @@ import { root_page, merchant_admin, merchant_register } from '../utilities/urlPa
 import { opay_url } from '../utilities/apiUrl';
 import * as apiManager from '../helpers/apiManager';
 
+// Component
+import Loading from '../components/Loading';
+
+
 class MerchantLoginPage extends Component{
 
     constructor(props) {
@@ -33,6 +37,7 @@ class MerchantLoginPage extends Component{
             loginBtnStyle: { marginTop: '19px' },
             paperSize: { height: '60%', width: '50%' },
 
+            isLoading: true,
             agentID: '',
             userName: '',
             password: ''
@@ -42,11 +47,16 @@ class MerchantLoginPage extends Component{
 
     componentDidMount() {
         let token = localStorage.getItem('token');
-        if(token){
-            browserHistory.push(`${root_page}${merchant_admin}`);
-        }else{
-            window.addEventListener('resize', this.refactor);
-        }
+        setTimeout(() => { 
+            if(!token){
+                this.setState({
+                    isLoading: false,
+                })
+                window.addEventListener('resize', this.refactor);
+            }else{
+                browserHistory.push(`${root_page}${merchant_admin}`);
+            }
+        }, 1000);
     }
 
     refactor = () => {
@@ -103,6 +113,7 @@ class MerchantLoginPage extends Component{
                     if(response.data.Confirmation === 'Success'){
                         localStorage.setItem('token', response.data.Token);
                         localStorage.setItem('userTypeID', response.data.Response.UserTypeID);
+                        localStorage.setItem('agentID', this.state.agentID);
                         browserHistory.push(`${root_page}${merchant_admin}`);
                     }else{
                         this.props.dispatch(showSnackbar(`${response.data.Message}`, false));
@@ -119,8 +130,17 @@ class MerchantLoginPage extends Component{
         const {
             mainMerchantRegisterPageStyle,
             paperStyle,
-            verticalCenter
+            verticalCenter,
+            loadingContainer
         } = styles;
+
+        if(this.state.isLoading){
+            return (
+                <div style={loadingContainer}>
+                    <Loading />
+                </div>
+            )
+        }
 
         return (
             <MuiThemeProvider>
@@ -182,6 +202,11 @@ const styles = {
         position: 'relative',
         top: '50%',
         transform: 'translateY(-50%)'
+    },
+
+    loadingContainer: {
+        width: '100vw',
+        height: '100vh',
     }
 }
 
