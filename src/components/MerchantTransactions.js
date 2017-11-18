@@ -101,7 +101,7 @@ class MerchantTransactions extends Component{
 
         return (
             <MuiThemeProvider>
-                    <Card>
+                    <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
                         <Table>
                             <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                                 <TableRow displayBorder={false}>

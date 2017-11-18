@@ -9,7 +9,10 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import AppBar from 'material-ui/AppBar';
 import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
-
+import ActionAndroid from 'material-ui/svg-icons/action/android';
+import HardwareKeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
+import SocialPeople from 'material-ui/svg-icons/social/people';
+import ActionSearch from 'material-ui/svg-icons/action/search';
 
 
 // Redux
@@ -29,6 +32,7 @@ import Loading from '../components/Loading';
 import MerchantTransactions from '../components/MerchantTransactions';
 import MerchantEmployees from '../components/MerchantEmployees';
 import SettingPage from '../components/SettingPage';
+import PosSettingPage from '../components/PosSettingPage';
 
 
 class MerchantAdminPage extends Component{
@@ -107,6 +111,14 @@ class MerchantAdminPage extends Component{
 
     renderTab(tab) {
         switch(tab) {
+            case 'setting':
+                return (
+                    <SettingPage />
+                );    
+            case 'possetting':
+                return (
+                    <PosSettingPage />
+                ); 
             case 'transactions':
                 return (
                     <MerchantTransactions />
@@ -115,10 +127,6 @@ class MerchantAdminPage extends Component{
                 return (
                     <MerchantEmployees />
                 );
-            case 'setting':
-                return (
-                    <SettingPage />
-                );    
             default:
                 return (
                     <MerchantTransactions />
@@ -133,6 +141,7 @@ class MerchantAdminPage extends Component{
             drawerContainer,
             contentContainer,
             loadingContainer,
+            logoContainer
         } = styles;
 
         if(this.state.isLoading){
@@ -147,13 +156,19 @@ class MerchantAdminPage extends Component{
             <MuiThemeProvider>
                 <div style={{width: "100%", height: 64}}>
                     <AppBar
-                        showMenuIconButton={false}
+                        style={{backgroundColor:'#fff', padding: 0}}
+                        iconElementLeft={
+                            <div style={logoContainer}></div>
+                        }
                         iconElementRight={
                             <div>
                                 <FlatButton
-                                    style={{color: '#fff', marginTop: 6}}
+                                    style={{color: '#000', height: 64, marginTop: '-8px', paddingLeft: 12, paddingRight: 24, borderLeft: '1px solid #CCCCCC'}}
                                     onClick={this.handleTouchTap}
                                     label="Account"
+                                    labelPosition="before"
+                                    primary={true}
+                                    icon={<HardwareKeyboardArrowDown />}
                                 />
                                 <Popover
                                     open={this.state.open}
@@ -164,9 +179,9 @@ class MerchantAdminPage extends Component{
                                     animation={PopoverAnimationVertical}
                                 >
                                 <Menu>
-                                    <MenuItem primaryText="Setting" onClick={this.switchTab.bind(this, 'setting')} />
-                                    <MenuItem primaryText="POS" />
-                                    <MenuItem primaryText="Sign out" onClick={this.logout} />
+                                    <MenuItem primaryText="My Settings" onClick={this.switchTab.bind(this, 'setting')} />
+                                    <MenuItem primaryText="POS Credential" onClick={this.switchTab.bind(this, 'possetting')} />
+                                    <MenuItem primaryText="Logout" onClick={this.logout} />
                                 </Menu>
                                 </Popover>
                             </div>
@@ -174,10 +189,17 @@ class MerchantAdminPage extends Component{
                     />
                 </div>
                 <div style={mainContainer}>
+                    
                     <div style={drawerContainer}>
-                        <Drawer open={true} width={160} containerStyle={{zIndex: 0}}>
-                            <MenuItem style={{paddingTop: 64}} primaryText="Transactions" onClick={this.switchTab.bind(this, 'transactions')} />
-                            <MenuItem primaryText="Employees" onClick={this.switchTab.bind(this, 'employees')} />
+                        <Drawer open={true} width={220} containerStyle={{zIndex: 0, backgroundColor: '#123659'}}>
+                            <MenuItem style={{marginTop: 80, color: '#fff'}} 
+                                        primaryText="Transactions" 
+                                        leftIcon={<ActionSearch color="#fff" />}
+                                        onClick={this.switchTab.bind(this, 'transactions')} />
+                            <MenuItem style={{color: '#fff'}} 
+                                        primaryText="Employees" 
+                                        leftIcon={<SocialPeople color="#fff" />}
+                                        onClick={this.switchTab.bind(this, 'employees')} />
                         </Drawer>
                     </div>
                     <div style={contentContainer}>
@@ -198,18 +220,26 @@ const styles = {
     drawerContainer: {
         display: 'inline-block', 
         float: 'left',
-        width: '160px',
+        width: '220px',
         height: 'calc(100vh - 64px)',
     },
     contentContainer: {
         display: 'inline-block', 
         float: 'left',
-        width: 'calc(100% - 160px)',
-        height: 'calc(100vh - 64px)'
+        width: 'calc(100% - 220px)',
+        height: 'calc(100vh - 64px)',
+        backgroundColor: '#F8F8F8'
     },
     loadingContainer: {
         width: '100vw',
         height: '100vh',
+    },
+    logoContainer: {
+        backgroundColor: '#284F7A',
+        height: 64,
+        width: 220,
+        marginTop: -8,
+        marginLeft: 16
     }
 
 }

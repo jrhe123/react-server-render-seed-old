@@ -9,6 +9,21 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import { green400, pinkA400 } from 'material-ui/styles/colors';
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import {List, ListItem} from 'material-ui/List';
+import Divider from 'material-ui/Divider';
+import CommunicationPhone from 'material-ui/svg-icons/communication/phone';
+import CommunicationBusiness from 'material-ui/svg-icons/communication/business';
+import CommunicationEmail from 'material-ui/svg-icons/communication/email';
+import ActionAccountBox from 'material-ui/svg-icons/action/account-box';
+import ActionBuild from 'material-ui/svg-icons/action/build';
+import ActionHttps from 'material-ui/svg-icons/action/https';
+import Dialog from 'material-ui/Dialog';
+import InputMask from 'react-input-mask';
+
+
+
 
 // Redux
 import { connect } from 'react-redux';
@@ -26,45 +41,55 @@ import * as apiManager from '../helpers/apiManager';
 // Component
 import Snackbar from 'material-ui/Snackbar';
 
+// helper
+import * as formattor from '../helpers/formattor';
+
 
 class SettingPage extends Component{
 
     constructor(props) {
         super(props);
         this.state = {
+            modalOpen: false,
             open: false,
             message: '',
             success: true,
 
-            userName: '',
-            password: ''
+            agentID: '',
+            firstName: '',
+            lastName: '',
+            email: '',
+            disPhoneNumber: '',
+            disFaxNumber: '',
+            phoneNumber: '',
+            faxNumber: ''
         }
     }
 
     componentDidMount(){
-
-        let params = {
-            Params: {
-                AgentID: localStorage.getItem('agentID')
-            }
-        };
-        apiManager.opayApi(opay_url+'merchant/view_pos_login', params, true)
+       
+        apiManager.opayApi(opay_url+'merchant/view_profile', null, true)
             .then((response) => {
-                let res = response.data.Response;
-                let posLogin = {
-                    isCreated: res.IsCreated,
-                    loginKeyword: res.LoginKeyword
-                };
-                this.props.fetch_merchant_pos_login(posLogin);
+                
+                let merchant = response.data.Response;
+                let updated = Object.assign({}, this.state);
+                updated.agentID = merchant.AgentID;
+                updated.firstName = merchant.FirstName;
+                updated.lastName = merchant.LastName;
+                updated.email = merchant.Email;
+                updated.phoneNumber = merchant.PhoneNumber;
+                updated.faxNumber = merchant.FaxNumber;
+                this.setState(updated);
             })
             .catch((error) => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('userTypeID');
                 localStorage.removeItem('agentID');
                 browserHistory.push(`${root_page}`);
-            })        
+            }) 
     }
 
+    // Snack
     handleTouchTap = (msg, isSuccess) => {
         this.setState({
             open: true,
@@ -79,149 +104,102 @@ class SettingPage extends Component{
         });
     };
 
+    // Modal
+    handleOpen = () => {
+        this.setState({modalOpen: true});
+    };
+
+    handleClose = () => {
+        this.setState({modalOpen: false});
+    };
+
     onFieldChange = (e, value, field) => {
-        let updated = Object.assign({}, this.state);
-        updated[field] = value;
-        this.setState(updated);
+        // let updated = Object.assign({}, this.state);
+        // updated[field] = value;
+        // this.setState(updated);
     }
 
-    handleCreatePosLogin = () => {
-
-        let agentID = localStorage.getItem('agentID');
-        if(!agentID){
-            this.handleTouchTap('AgentID not found. Please login again', false);
-        }else if(!this.state.userName){
-            this.handleTouchTap('Please enter your user name', false);
-        }else if(!this.state.password){
-            this.handleTouchTap('Please enter password', false);
-        }else{
-            let params = {
-                Params: {
-                    AgentID: agentID,
-                    UserName: this.state.userName,
-                    Password: this.state.password
-                }
-            };
-            apiManager.opayApi(opay_url+'merchant/create_pos_login', params, true)
-                .then((response) => {
-                    if(response.data.Confirmation === 'Success'){
-
-                        let res = response.data.Response;
-                        let posLogin = {
-                            isCreated: true,
-                            loginKeyword: res.LoginKeyword
-                        };
-                        this.props.fetch_merchant_pos_login(posLogin);  
-                        this.handleTouchTap(`POS login has been created`, true);
-                    }else{
-                        this.handleTouchTap(`${response.data.Message}`, false);
-                    }
-                })
-                .catch((error) => {
-                    this.handleTouchTap(`Error: ${error}`, false);
-                })
-        }
+    handleUpdatePriofile = () => {
+        
     }
-
-    handleUpdatePosLogin = () => {
-
-        let agentID = localStorage.getItem('agentID');
-        if(!agentID){
-            this.handleTouchTap('AgentID not found. Please login again', false);
-        }else if(!this.state.userName){
-            this.handleTouchTap('Please enter your user name', false);
-        }else if(!this.state.password){
-            this.handleTouchTap('Please enter password', false);
-        }else{
-            let params = {
-                Params: {
-                    AgentID: agentID,
-                    UserName: this.state.userName,
-                    Password: this.state.password
-                }
-            };
-            apiManager.opayApi(opay_url+'merchant/update_pos_login', params, true)
-                .then((response) => {
-                    if(response.data.Confirmation === 'Success'){
-
-                        let res = response.data.Response;
-                        let posLogin = {
-                            isCreated: true,
-                            loginKeyword: res.LoginKeyword
-                        };
-                        this.props.fetch_merchant_pos_login(posLogin);  
-                        this.handleTouchTap(`POS login has been updated`, true);
-                    }else{
-                        this.handleTouchTap(`${response.data.Message}`, false);
-                    }
-                })
-                .catch((error) => {
-                    this.handleTouchTap(`Error: ${error}`, false);
-                })
-        }
-    }
+    
 
     render() {
 
         const {
             mainContainer,
-            formContainer,
             formControl,
-            btnControl
+            btnControl,
         } = styles;
 
-        if(!this.props.posLogin){
-            return null;
-        }
-
-        const card = (this.props.posLogin.isCreated) ? 
-
-        (<Paper zDepth={3} style={{width: 500, height: 320, margin: '0 auto'}}>
-                <p style={{textAlign: 'center', paddingTop: 24, marginBottom: 12, fontSize: '19px'}}>POS machine credential</p>
-                <div style={formControl}>
-                    <TextField floatingLabelText="Username" 
-                                defaultValue={this.props.posLogin.loginKeyword ? this.props.posLogin.loginKeyword : ''}
-                                onChange={(e, value) => this.onFieldChange(e,value,'userName')}
-                                />
-                </div>
-                <div style={formControl}>
-                    <TextField floatingLabelText="Password" 
-                                onChange={(e, value) => this.onFieldChange(e,value,'password')}
-                                type="password"/>
-                </div>     
-                <div style={btnControl}>       
-                    <RaisedButton label="Update" 
-                                primary={true}
-                                onClick={this.handleUpdatePosLogin} />
-                </div>                
-        </Paper>): 
-
-        (<Paper zDepth={3} style={{width: 500, height: 320, margin: '0 auto'}}>
-                <p style={{textAlign: 'center', paddingTop: 24, marginBottom: 12, fontSize: '19px'}}>POS machine credential</p>
-                <div style={formControl}>
-                    <TextField floatingLabelText="Username" 
-                                onChange={(e, value) => this.onFieldChange(e,value,'userName')}
-                                />
-                </div>
-                <div style={formControl}>
-                    <TextField floatingLabelText="Password" 
-                                onChange={(e, value) => this.onFieldChange(e,value,'password')}
-                                type="password"/>
-                </div>     
-                <div style={btnControl}>       
-                    <RaisedButton label="Create" 
-                                primary={true}
-                                onClick={this.handleCreatePosLogin} />
-                </div>                
-        </Paper>);
 
         return (
             <MuiThemeProvider>
+
                 <div style={mainContainer}>
-                    <div style={formContainer}>
-                        { card }
-                    </div>    
+
+                    <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
+                        <CardHeader
+                            title={this.state.firstName}
+                            subtitle={this.state.lastName}
+                            avatar="/img/avatar.png"
+                        />
+                        <List style={{marginBottom: 24}}>
+                            <ListItem primaryText={this.state.agentID} leftIcon={<ActionAccountBox />} />
+                            <ListItem primaryText={this.state.email} leftIcon={<CommunicationEmail />} />
+                            <ListItem primaryText={formattor.addFormatPhoneNumber(this.state.phoneNumber)} leftIcon={<CommunicationPhone />} />
+                            <ListItem primaryText={formattor.addFormatPhoneNumber(this.state.faxNumber)} leftIcon={<CommunicationBusiness />} />
+                        </List>
+                        <Divider />
+                        <CardActions>
+                            <FlatButton label="Edit Profile"
+                                        onClick={this.handleOpen.bind(this)}
+                                        primary={true} 
+                                        icon={<ActionBuild />} />
+                            <FlatButton label="Change Password" 
+                                        primary={true} 
+                                        icon={<ActionHttps />} />
+                        </CardActions>
+                        
+                    </Card>    
+
                 </div>
+
+                <Dialog
+                    title="Profile"
+                    modal={false}
+                    open={this.state.modalOpen}
+                    onRequestClose={this.handleClose.bind(this)}
+                >
+                    <div style={formControl}>
+                        <TextField floatingLabelText="Email" 
+                                    defaultValue={this.state.email}
+                                    onChange={(e, value) => this.onFieldChange(e,value,'email')}
+                                    />
+                    </div>
+                    <div style={formControl}>
+                        <TextField floatingLabelText="PhoneNumber">
+                            <InputMask mask="(999)999-9999" 
+                                        maskChar=" "
+                                        defaultValue={this.state.phoneNumber} 
+                                        onChange={(e, value) => this.onFieldChange(e,value,'phoneNumber')} />        
+                        </TextField>            
+                    </div>    
+                    <div style={formControl}>
+                        <TextField floatingLabelText="FaxNumber">
+                            <InputMask mask="(999)999-9999" 
+                                        maskChar=" "
+                                        defaultValue={this.state.faxNumber} 
+                                        onChange={(e, value) => this.onFieldChange(e,value,'faxNumber')} />          
+                        </TextField>            
+                    </div>   
+                    <div style={btnControl}>       
+                        <RaisedButton label="Update" 
+                                    primary={true}
+                                    onClick={this.handleUpdatePriofile} />
+                    </div> 
+                </Dialog>
+
                 <Snackbar
                     open={this.state.open}
                     message={this.state.message}
@@ -234,21 +212,11 @@ class SettingPage extends Component{
     }
 }
 
-// 
-
 const styles = {
 
     mainContainer: {
         width: '100%',
         height: 'calc(100vh - 64px)',
-        display: 'table',
-    },
-
-    formContainer: {
-        width: 500,
-        height: 320,
-        display: 'table-cell',
-        verticalAlign: 'middle'
     },
 
     formControl: {
@@ -263,21 +231,21 @@ const styles = {
         paddingHorizontal: 24,
         marginTop: 36,
         marginBottom: 12
-    }
+    },
 
 }
 
 const stateToProps = (state) => {
 
 	return {
-		posLogin: state.merchant_reducer.posLogin,
+		// posLogin: state.merchant_reducer.posLogin,
 	}
 }
 
 const dispatchToProps = (dispatch) => {
 
 	return {
-		fetch_merchant_pos_login: (posLogin) => dispatch(fetch_merchant_pos_login(posLogin))
+		// fetch_merchant_pos_login: (posLogin) => dispatch(fetch_merchant_pos_login(posLogin))
 	}
 }
 
