@@ -89,6 +89,7 @@ class MerchantTransactions extends Component{
                 localStorage.removeItem('token');
                 localStorage.removeItem('userTypeID');
                 localStorage.removeItem('agentID');
+                localStorage.removeItem('loginKeyword');
                 browserHistory.push(`${root_page}`);
             })
     }
@@ -116,7 +117,7 @@ class MerchantTransactions extends Component{
                                     <TableHeaderColumn style={tableCellStyle}>UpdatedAt</TableHeaderColumn>
                                 </TableRow>
                             </TableHeader>
-                            <TableBody displayRowCheckbox={false}>
+                            <TableBody displayRowCheckbox={false} showRowHover={true}>
                                 {this.state.transactionList.map((tran, idx)=>(
                                     <TableRow key={tran.GUID} selectable={false}>
                                         <TableRowColumn style={tableCellStyle}>{tran.Platform}</TableRowColumn>

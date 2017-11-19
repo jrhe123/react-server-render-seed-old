@@ -21,14 +21,14 @@ import ActionBuild from 'material-ui/svg-icons/action/build';
 import ActionHttps from 'material-ui/svg-icons/action/https';
 import Dialog from 'material-ui/Dialog';
 import InputMask from 'react-input-mask';
-
+import validator from 'validator';
 
 
 
 // Redux
 import { connect } from 'react-redux';
 import { showSnackbar }  from '../actions/layout_action';
-import { fetch_merchant_pos_login }  from '../actions/merchant_action';
+import { fetch_merchant_profile }  from '../actions/merchant_action';
 
 // Router
 import { browserHistory } from 'react-router';
@@ -50,7 +50,8 @@ class SettingPage extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            modalOpen: false,
+            passwordModalOpen: false,
+            profileModalOpen: false,
             open: false,
             message: '',
             success: true,
@@ -59,11 +60,16 @@ class SettingPage extends Component{
             firstName: '',
             lastName: '',
             email: '',
-            disPhoneNumber: '',
-            disFaxNumber: '',
             phoneNumber: '',
-            faxNumber: ''
+            faxNumber: '',
+
+            oldPassword: '',
+            newPassword: '',
+            newPasswordErrMsg: '',
+            confirmPassword: '',
+            confirmPasswordErrMsg: ''
         }
+        this.onFieldChange = this.onFieldChange.bind(this);
     }
 
     componentDidMount(){
@@ -72,21 +78,36 @@ class SettingPage extends Component{
             .then((response) => {
                 
                 let merchant = response.data.Response;
-                let updated = Object.assign({}, this.state);
-                updated.agentID = merchant.AgentID;
-                updated.firstName = merchant.FirstName;
-                updated.lastName = merchant.LastName;
-                updated.email = merchant.Email;
-                updated.phoneNumber = merchant.PhoneNumber;
-                updated.faxNumber = merchant.FaxNumber;
-                this.setState(updated);
+                let profile = {
+                    agentID: merchant.AgentID,
+                    firstName: merchant.FirstName,
+                    lastName: merchant.LastName,
+                    email: merchant.Email,
+                    phoneNumber: merchant.PhoneNumber,
+                    faxNumber: merchant.FaxNumber
+                }
+                this.props.fetch_merchant_profile(profile);
             })
             .catch((error) => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('userTypeID');
                 localStorage.removeItem('agentID');
+                localStorage.removeItem('loginKeyword');
                 browserHistory.push(`${root_page}`);
             }) 
+    }
+
+    componentWillReceiveProps(nextProps) {
+        let profile = nextProps.profile;
+        let { agentID, email, faxNumber, firstName, lastName, phoneNumber } = profile;
+        this.setState({
+            agentID,
+            email,
+            faxNumber,
+            firstName,
+            lastName,
+            phoneNumber
+        })
     }
 
     // Snack
@@ -106,21 +127,148 @@ class SettingPage extends Component{
 
     // Modal
     handleOpen = () => {
-        this.setState({modalOpen: true});
+        this.setState({profileModalOpen: true});
     };
 
     handleClose = () => {
-        this.setState({modalOpen: false});
+        this.setState({profileModalOpen: false});
+    };
+
+    handleOpenPass = () => {
+        this.setState({passwordModalOpen: true});
+    };
+
+    handleClosePass = () => {
+        this.setState({passwordModalOpen: false});
     };
 
     onFieldChange = (e, value, field) => {
-        // let updated = Object.assign({}, this.state);
-        // updated[field] = value;
-        // this.setState(updated);
+        let updated = Object.assign({}, this.state);
+        updated[field] = value;
+        this.setState(updated);
+    }
+
+    onMaskFieldChange = (e, field) => {
+        let updated = Object.assign({}, this.state);
+        updated[field] = e.target.value;
+        this.setState(updated);
     }
 
     handleUpdatePriofile = () => {
         
+        let tempProfile = Object.assign({}, this.state);
+        let { agentID, email, phoneNumber, faxNumber } = tempProfile;
+
+        phoneNumber = formattor.removeFormatPhoneNumber(phoneNumber.toString());
+        faxNumber = formattor.removeFormatPhoneNumber(faxNumber.toString());
+        
+        if(!validator.isEmail(email)){
+            this.handleTouchTap(`Invalid email address`, false);
+        }else if(phoneNumber.toString().length != 10){
+            this.handleTouchTap(`Invalid phone number`, false);
+        }else{
+
+            let params = {
+                Params: {
+                    Email: email,
+                    PhoneNumber: phoneNumber,
+                    FaxNumber: faxNumber
+                }
+            };
+            apiManager.opayApi(opay_url+'merchant/update_profile', params, true)
+                .then((response) => {
+                    if(response.data.Confirmation === 'Success'){
+                        let merchant = response.data.Response;
+                        let profile = {
+                            agentID: merchant.AgentID,
+                            firstName: merchant.FirstName,
+                            lastName: merchant.LastName,
+                            email: merchant.Email,
+                            phoneNumber: merchant.PhoneNumber,
+                            faxNumber: merchant.FaxNumber
+                        }
+                        this.props.fetch_merchant_profile(profile);
+                        this.handleTouchTap(`Profile has been updated`, true);
+                        this.handleClose();
+                    }else{
+                        this.handleTouchTap(`${response.data.Message}`, false);
+                    }
+                })
+                .catch((error) => {
+                    this.handleTouchTap(`Error: ${error}`, false);
+                })
+        }
+    }
+
+    onFieldBlur = (field, e) => {
+
+        let value = e.target.value;
+        if(field === 'newPassword'){
+            if(value.length < 6){
+                let updated = Object.assign({}, this.state);
+                updated['newPasswordErrMsg'] = "Password must be at least 6 characters";
+                this.setState(updated);
+            }else{
+                let updated = Object.assign({}, this.state);
+                updated['newPasswordErrMsg'] = '';
+                this.setState(updated);
+            }
+        }
+    }
+
+    handleConfirmKeyup = (e) => {
+        if(this.state.newPassword !== e.target.value){
+            this.setState({
+                confirmPasswordErrMsg: 'Must match the previous entry'
+            })
+        }else{
+            this.setState({
+                confirmPasswordErrMsg: ''
+            })
+        }
+    }
+
+    handleUpdatePassword = () => {
+
+        let agentID = localStorage.getItem('agentID');
+        let loginKeyword = localStorage.getItem('loginKeyword');
+        let oldPassword = this.state.oldPassword;
+        let newPassword = this.state.newPassword;
+        let confirmPassword = this.state.confirmPassword;
+
+        if(!agentID){
+            this.handleTouchTap(`Agent ID not found. Please login again.`, false);
+        }else if(!loginKeyword){
+            this.handleTouchTap(`User name not found. Please login again`, false);
+        }else if(!oldPassword){
+            this.handleTouchTap(`Old password is required`, false);
+        }else if(!newPassword){
+            this.handleTouchTap(`New password is required`, false);
+        }else if(newPassword !== confirmPassword){
+            this.handleTouchTap(`Please confirm your new password`, false);
+        }else{
+
+            let params = {
+                Params: {
+                    AgentID: agentID,
+                    LoginKeyword: loginKeyword,
+                    Password: oldPassword,
+                    NewPassword: newPassword
+                }
+            };
+            apiManager.opayApi(opay_url+'user/update_password', params, true)
+                .then((response) => {
+                    if(response.data.Confirmation === 'Success'){
+                        this.handleTouchTap(`Password has been updated`, true);
+                        this.handleClosePass();
+                    }else{
+                        this.handleTouchTap(`${response.data.Message}`, false);
+                    }
+                })
+                .catch((error) => {
+                    this.handleTouchTap(`Error: ${error}`, false);
+                })
+        }
     }
     
 
@@ -132,6 +280,9 @@ class SettingPage extends Component{
             btnControl,
         } = styles;
 
+        if(!this.props.profile){
+            return null;
+        }
 
         return (
             <MuiThemeProvider>
@@ -140,15 +291,16 @@ class SettingPage extends Component{
 
                     <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
                         <CardHeader
-                            title={this.state.firstName}
-                            subtitle={this.state.lastName}
+                            title={this.props.profile ? this.props.profile.firstName : ''}
+                            subtitle={this.props.profile ? this.props.profile.lastName : ''}
                             avatar="/img/avatar.png"
                         />
+                        <Divider />
                         <List style={{marginBottom: 24}}>
-                            <ListItem primaryText={this.state.agentID} leftIcon={<ActionAccountBox />} />
-                            <ListItem primaryText={this.state.email} leftIcon={<CommunicationEmail />} />
-                            <ListItem primaryText={formattor.addFormatPhoneNumber(this.state.phoneNumber)} leftIcon={<CommunicationPhone />} />
-                            <ListItem primaryText={formattor.addFormatPhoneNumber(this.state.faxNumber)} leftIcon={<CommunicationBusiness />} />
+                            <ListItem primaryText={this.props.profile.agentID} leftIcon={<ActionAccountBox />} />
+                            <ListItem primaryText={this.props.profile.email} leftIcon={<CommunicationEmail />} />
+                            <ListItem primaryText={this.props.profile.phoneNumber ? formattor.addFormatPhoneNumber(this.props.profile.phoneNumber) : ''} leftIcon={<CommunicationPhone />} />
+                            <ListItem primaryText={this.props.profile.faxNumber ? formattor.addFormatPhoneNumber(this.props.profile.faxNumber) : ''} leftIcon={<CommunicationBusiness />} />
                         </List>
                         <Divider />
                         <CardActions>
@@ -157,47 +309,82 @@ class SettingPage extends Component{
                                         primary={true} 
                                         icon={<ActionBuild />} />
                             <FlatButton label="Change Password" 
+                                        onClick={this.handleOpenPass.bind(this)}
                                         primary={true} 
                                         icon={<ActionHttps />} />
                         </CardActions>
-                        
                     </Card>    
 
                 </div>
 
                 <Dialog
-                    title="Profile"
-                    modal={false}
-                    open={this.state.modalOpen}
-                    onRequestClose={this.handleClose.bind(this)}
-                >
-                    <div style={formControl}>
-                        <TextField floatingLabelText="Email" 
-                                    defaultValue={this.state.email}
-                                    onChange={(e, value) => this.onFieldChange(e,value,'email')}
-                                    />
-                    </div>
-                    <div style={formControl}>
-                        <TextField floatingLabelText="PhoneNumber">
-                            <InputMask mask="(999)999-9999" 
-                                        maskChar=" "
-                                        defaultValue={this.state.phoneNumber} 
-                                        onChange={(e, value) => this.onFieldChange(e,value,'phoneNumber')} />        
-                        </TextField>            
-                    </div>    
-                    <div style={formControl}>
-                        <TextField floatingLabelText="FaxNumber">
-                            <InputMask mask="(999)999-9999" 
-                                        maskChar=" "
-                                        defaultValue={this.state.faxNumber} 
-                                        onChange={(e, value) => this.onFieldChange(e,value,'faxNumber')} />          
-                        </TextField>            
-                    </div>   
-                    <div style={btnControl}>       
-                        <RaisedButton label="Update" 
-                                    primary={true}
-                                    onClick={this.handleUpdatePriofile} />
-                    </div> 
+                        title="Profile"
+                        modal={false}
+                        open={this.state.profileModalOpen}
+                        onRequestClose={this.handleClose.bind(this)}
+                    >
+                        <div style={formControl}>
+                            <TextField floatingLabelText="Email" 
+                                        defaultValue={this.props.profile.email}
+                                        onChange={(e, value) => this.onFieldChange(e,value,'email')}
+                                        />
+                        </div>
+                        <div style={formControl}>
+                            <TextField floatingLabelText="PhoneNumber">
+                                <InputMask mask="(999)999-9999" 
+                                            maskChar=" "
+                                            defaultValue={this.props.profile.phoneNumber} 
+                                            onChange={(e) => this.onMaskFieldChange(e,'phoneNumber')} />        
+                            </TextField>            
+                        </div>    
+                        <div style={formControl}>
+                            <TextField floatingLabelText="FaxNumber">
+                                <InputMask mask="(999)999-9999" 
+                                            maskChar=" "
+                                            defaultValue={this.props.profile.faxNumber} 
+                                            onChange={(e, value) => this.onMaskFieldChange(e,'faxNumber')} />          
+                            </TextField>            
+                        </div>   
+                        <div style={btnControl}>       
+                            <RaisedButton label="Update" 
+                                        primary={true}
+                                        onClick={this.handleUpdatePriofile} />
+                        </div> 
+                </Dialog>
+
+                <Dialog
+                        title="Password"
+                        modal={false}
+                        open={this.state.passwordModalOpen}
+                        onRequestClose={this.handleClosePass.bind(this)}
+                    >
+                        <div style={formControl}>
+                            <TextField floatingLabelText="Old Password" 
+                                type="password" 
+                                onChange={(e, value) => this.onFieldChange(e,value,'oldPassword')}
+                                />
+                        </div>
+                        <div style={formControl}>
+                            <TextField floatingLabelText="New Password" 
+                                type="password" 
+                                errorText={this.state.newPasswordErrMsg}
+                                onBlur={this.onFieldBlur.bind(this, 'newPassword')}
+                                onChange={(e, value) => this.onFieldChange(e,value,'newPassword')}
+                                />
+                        </div>    
+                        <div style={formControl}>
+                            <TextField floatingLabelText="Confirm Password"
+                                type="password"
+                                errorText={this.state.confirmPasswordErrMsg}  
+                                onKeyUp={(e, value) => this.handleConfirmKeyup(e)}
+                                onChange={(e, value) => this.onFieldChange(e,value,'confirmPassword')}
+                                />                                        
+                        </div>   
+                        <div style={btnControl}>       
+                            <RaisedButton label="Update" 
+                                        primary={true}
+                                        onClick={this.handleUpdatePassword} />
+                        </div> 
                 </Dialog>
 
                 <Snackbar
@@ -238,15 +425,15 @@ const styles = {
 const stateToProps = (state) => {
 
 	return {
-		// posLogin: state.merchant_reducer.posLogin,
+		profile: state.merchant_reducer.profile,
 	}
 }
 
 const dispatchToProps = (dispatch) => {
 
 	return {
-		// fetch_merchant_pos_login: (posLogin) => dispatch(fetch_merchant_pos_login(posLogin))
+		fetch_merchant_profile: (profile) => dispatch(fetch_merchant_profile(profile))
 	}
 }
 
-export default connect(stateToProps, dispatchToProps)(SettingPage);
+export default connect(stateToProps, dispatchToProps)(SettingPage);                 

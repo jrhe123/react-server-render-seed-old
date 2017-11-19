@@ -9,6 +9,12 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import { green400, pinkA400 } from 'material-ui/styles/colors';
+import ActionLock from 'material-ui/svg-icons/action/lock';
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import {List, ListItem} from 'material-ui/List';
+import Divider from 'material-ui/Divider';
+import Dialog from 'material-ui/Dialog';
 
 // Redux
 import { connect } from 'react-redux';
@@ -32,6 +38,7 @@ class PosSettingPage extends Component{
     constructor(props) {
         super(props);
         this.state = {
+            modalOpen: false,
             open: false,
             message: '',
             success: true,
@@ -39,6 +46,7 @@ class PosSettingPage extends Component{
             userName: '',
             password: ''
         }
+        this.onFieldChange = this.onFieldChange.bind(this);
     }
 
     componentDidMount(){
@@ -61,10 +69,20 @@ class PosSettingPage extends Component{
                 localStorage.removeItem('token');
                 localStorage.removeItem('userTypeID');
                 localStorage.removeItem('agentID');
+                localStorage.removeItem('loginKeyword');
                 browserHistory.push(`${root_page}`);
             })        
     }
 
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.posLogin.isCreated){
+            this.setState({
+                userName: nextProps.posLogin.loginKeyword
+            })
+        }
+    }
+
+    // Snack
     handleTouchTap = (msg, isSuccess) => {
         this.setState({
             open: true,
@@ -78,6 +96,16 @@ class PosSettingPage extends Component{
             open: false,
         });
     };
+
+    // Modal
+    handleOpen = () => {
+        this.setState({modalOpen: true});
+    };
+
+    handleClose = () => {
+        this.setState({modalOpen: false});
+    };
+
 
     onFieldChange = (e, value, field) => {
         let updated = Object.assign({}, this.state);
@@ -113,6 +141,7 @@ class PosSettingPage extends Component{
                         };
                         this.props.fetch_merchant_pos_login(posLogin);  
                         this.handleTouchTap(`POS login has been created`, true);
+                        this.handleClose();
                     }else{
                         this.handleTouchTap(`${response.data.Message}`, false);
                     }
@@ -151,6 +180,7 @@ class PosSettingPage extends Component{
                         };
                         this.props.fetch_merchant_pos_login(posLogin);  
                         this.handleTouchTap(`POS login has been updated`, true);
+                        this.handleClose();
                     }else{
                         this.handleTouchTap(`${response.data.Message}`, false);
                     }
@@ -176,8 +206,8 @@ class PosSettingPage extends Component{
 
         const card = (this.props.posLogin.isCreated) ? 
 
-        (<Paper zDepth={3} style={{ height: 320, margin: '0 auto'}}>
-                <p style={{textAlign: 'center', paddingTop: 24, marginBottom: 12, fontSize: '19px'}}>POS machine credential</p>
+        (
+            <div>
                 <div style={formControl}>
                     <TextField floatingLabelText="Username" 
                                 defaultValue={this.props.posLogin.loginKeyword ? this.props.posLogin.loginKeyword : ''}
@@ -193,11 +223,12 @@ class PosSettingPage extends Component{
                     <RaisedButton label="Update" 
                                 primary={true}
                                 onClick={this.handleUpdatePosLogin} />
-                </div>                
-        </Paper>): 
+                </div>    
+            </div>                
+        ): 
 
-        (<Paper zDepth={3} style={{ height: 320, margin: '0 auto'}}>
-                <p style={{textAlign: 'center', paddingTop: 24, marginBottom: 12, fontSize: '19px'}}>POS machine credential</p>
+        (
+            <div>
                 <div style={formControl}>
                     <TextField floatingLabelText="Username" 
                                 onChange={(e, value) => this.onFieldChange(e,value,'userName')}
@@ -212,16 +243,40 @@ class PosSettingPage extends Component{
                     <RaisedButton label="Create" 
                                 primary={true}
                                 onClick={this.handleCreatePosLogin} />
-                </div>                
-        </Paper>);
+                </div>   
+            </div>                 
+        );
 
         return (
             <MuiThemeProvider>
                 <div style={mainContainer}>
-                    <div style={formContainer}>
-                        { card }
-                    </div>    
+
+                    <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
+                        <CardHeader
+                            title={this.props.posLogin.loginKeyword ? this.props.posLogin.loginKeyword : 'Not Assigned'}
+                            subtitle="POS machines login credential"
+                            avatar="/img/avatar.png"
+                        />
+                        <Divider />
+                        <CardActions>
+                            <FlatButton label={this.props.posLogin.isCreated ? 'Edit Credential' : 'Create Credential'}
+                                        onClick={this.handleOpen.bind(this)}
+                                        primary={true} 
+                                        icon={<ActionLock />} />
+                        </CardActions>
+                        
+                    </Card>   
                 </div>
+
+                <Dialog
+                    title="Pos Credential"
+                    modal={false}
+                    open={this.state.modalOpen}
+                    onRequestClose={this.handleClose.bind(this)}
+                >
+                     { card }
+                </Dialog>
+
                 <Snackbar
                     open={this.state.open}
                     message={this.state.message}

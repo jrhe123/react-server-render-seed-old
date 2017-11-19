@@ -1,5 +1,6 @@
 export const addFormatPhoneNumber = (phone) => {
-    phone = phone.replace(/[+()-]\s/g, '');
+    const numberPattern = /\d+/g;
+    phone = phone.match( numberPattern ).join([]);
     let length = phone.toString().length;
     if(length > 10){
         phone = phone.substring(length - 10);
@@ -12,7 +13,8 @@ export const addFormatPhoneNumber = (phone) => {
 }
 
 export const removeFormatPhoneNumber = (phone) => {
-    phone = phone.replace(/[+()-]\s/g, '');
+    const numberPattern = /\d+/g;
+    phone = phone.match( numberPattern ).join([]);
     let length = phone.toString().length;
     if(length > 10){
         phone = phone.substring(length - 10);

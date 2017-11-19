@@ -6,6 +6,7 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import validator from 'validator';
+import { green400, pinkA400 } from 'material-ui/styles/colors';
 
 // Redux
 import { connect } from 'react-redux';
@@ -15,6 +16,9 @@ import { showSnackbar }  from '../actions/layout_action';
 import { opay_url } from '../utilities/apiUrl';
 import * as apiManager from '../helpers/apiManager';
 
+// Component
+import Snackbar from 'material-ui/Snackbar';
+
 
 class MerchantRegisterPage extends Component{
 
@@ -23,6 +27,11 @@ class MerchantRegisterPage extends Component{
         super(props);
         this.refactor = this.refactor.bind(this);
         this.state = {
+
+            open: false,
+            message: '',
+            success: true,
+
             floatLabelStyle: { fontSize: '19px' },
             inputStyle: { fontSize: '19px'  },
             textFieldStyle: { width: '58%' },
@@ -65,6 +74,22 @@ class MerchantRegisterPage extends Component{
             this.setState({ paperSize: { height: '60%', width: '50%' } });
         }
     }
+
+    // Snack
+    handleTouchTap = (msg, isSuccess) => {
+        this.setState({
+            open: true,
+            message: msg,
+            success: isSuccess
+        });
+    };
+
+    handleRequestClose = () => {
+        this.setState({
+            open: false,
+        });
+    };
+
 
     onFieldBlur = (field, e) => {
 
@@ -109,11 +134,11 @@ class MerchantRegisterPage extends Component{
 
     handlerSubmit = () => {
         if(!this.state.merchantName){
-            this.props.dispatch(showSnackbar('Please enter your merchant name', false));
+            this.handleTouchTap('Please enter your merchant name', false);
         }else if(!this.state.email){
-            this.props.dispatch(showSnackbar('Please enter your email', false));
+            this.handleTouchTap('Please enter your email', false);
         }else if(!this.state.isValidEmail){
-            this.props.dispatch(showSnackbar('Invalid email address', false));
+            this.handleTouchTap('Invalid email address', false);
         }else{
             let params = {
                 Params: {
@@ -130,13 +155,13 @@ class MerchantRegisterPage extends Component{
                         updated['isResend'] = true;
                         this.setState(updated);
 
-                        this.props.dispatch(showSnackbar(`Registration form has been sent to your email`, true));
+                        this.handleTouchTap('Registration form has been sent to your email', true);
                     }else{
-                        this.props.dispatch(showSnackbar(`${response.data.Message}`, false));
+                        this.handleTouchTap(`${response.data.Message}`, false);
                     }
                 })
                 .catch((error) => {
-                    this.props.dispatch(showSnackbar(`Error: ${error}`, false));
+                    this.handleTouchTap(`Error: ${error}`, false);
                 })
         }        
     }
@@ -181,6 +206,13 @@ class MerchantRegisterPage extends Component{
 
                     </Paper>
                 </div>
+                <Snackbar
+                    open={this.state.open}
+                    message={this.state.message}
+                    autoHideDuration={3000}
+                    onRequestClose={this.handleRequestClose}
+                    bodyStyle={{backgroundColor: this.state.success ? green400 : pinkA400, textAlign: 'center' }}
+                    />
             </MuiThemeProvider>
         )
     }

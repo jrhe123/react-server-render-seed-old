@@ -6,6 +6,8 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
+import { green400, pinkA400 } from 'material-ui/styles/colors';
+
 
 // Redux
 import { connect } from 'react-redux';
@@ -21,6 +23,7 @@ import * as apiManager from '../helpers/apiManager';
 
 // Component
 import Loading from '../components/Loading';
+import Snackbar from 'material-ui/Snackbar';
 
 
 class MerchantLoginPage extends Component{
@@ -31,6 +34,11 @@ class MerchantLoginPage extends Component{
         this.login = this.login.bind(this);
         this.SignUp = this.SignUp.bind(this);
         this.state = {
+
+            open: false,
+            message: '',
+            success: true,
+
             floatLabelStyle: { fontSize: '19px' },
             inputStyle: { fontSize: '19px'  },
             textFieldStyle: { width: '58%' },
@@ -81,6 +89,21 @@ class MerchantLoginPage extends Component{
         }
     }
 
+    // Snack
+    handleTouchTap = (msg, isSuccess) => {
+        this.setState({
+            open: true,
+            message: msg,
+            success: isSuccess
+        });
+    };
+
+    handleRequestClose = () => {
+        this.setState({
+            open: false,
+        });
+    };
+
     SignUp = () => {
         browserHistory.push(`${root_page}${merchant_register}`);
     }
@@ -94,11 +117,11 @@ class MerchantLoginPage extends Component{
     login = () => {
 
         if(!this.state.agentID){
-            this.props.dispatch(showSnackbar('Please enter your agentID', false));
+            this.handleTouchTap('Please enter your agentID', false);
         }else if(!this.state.userName){
-            this.props.dispatch(showSnackbar('Please enter your userName', false));
+            this.handleTouchTap('Please enter your userName', false);
         }else if(!this.state.password){
-            this.props.dispatch(showSnackbar('Please enter password', false));
+            this.handleTouchTap('Please enter password', false);
         }else{
             let params = {
                 Params: {
@@ -113,13 +136,14 @@ class MerchantLoginPage extends Component{
                         localStorage.setItem('token', response.data.Token);
                         localStorage.setItem('userTypeID', response.data.Response.UserTypeID);
                         localStorage.setItem('agentID', this.state.agentID);
+                        localStorage.setItem('loginKeyword', this.state.userName);
                         browserHistory.push(`${root_page}${merchant_admin}`);
                     }else{
-                        this.props.dispatch(showSnackbar(`${response.data.Message}`, false));
+                        this.handleTouchTap(`${response.data.Message}`, false);
                     }
                 })
                 .catch((error) => {
-                    this.props.dispatch(showSnackbar(`Error: ${error}`, false));
+                    this.handleTouchTap(`Error: ${error}`, false);
                 })
         }
     }
@@ -173,6 +197,13 @@ class MerchantLoginPage extends Component{
                     </Paper>
 
                 </div>
+                <Snackbar
+                    open={this.state.open}
+                    message={this.state.message}
+                    autoHideDuration={3000}
+                    onRequestClose={this.handleRequestClose}
+                    bodyStyle={{backgroundColor: this.state.success ? green400 : pinkA400, textAlign: 'center' }}
+                    />
             </MuiThemeProvider>
         )
     }

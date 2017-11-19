@@ -92,12 +92,14 @@ class MerchantAdminPage extends Component{
                 localStorage.removeItem('token');
                 localStorage.removeItem('userTypeID');
                 localStorage.removeItem('agentID');
+                localStorage.removeItem('loginKeyword');
                 browserHistory.push(`${root_page}`);
             })
             .catch((error) => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('userTypeID');
                 localStorage.removeItem('agentID');
+                localStorage.removeItem('loginKeyword');
                 browserHistory.push(`${root_page}`);
             })
     }
@@ -192,7 +194,7 @@ class MerchantAdminPage extends Component{
                     
                     <div style={drawerContainer}>
                         <Drawer open={true} width={220} containerStyle={{zIndex: 0, backgroundColor: '#123659'}}>
-                            <MenuItem style={{marginTop: 80, color: '#fff'}} 
+                            <MenuItem style={{marginTop: 72, color: '#fff'}} 
                                         primaryText="Transactions" 
                                         leftIcon={<ActionSearch color="#fff" />}
                                         onClick={this.switchTab.bind(this, 'transactions')} />
