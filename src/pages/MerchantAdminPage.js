@@ -13,6 +13,8 @@ import ActionAndroid from 'material-ui/svg-icons/action/android';
 import HardwareKeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 import SocialPeople from 'material-ui/svg-icons/social/people';
 import ActionSearch from 'material-ui/svg-icons/action/search';
+import HardwareSmartphone from 'material-ui/svg-icons/hardware/smartphone';
+import CommunicationBusiness from 'material-ui/svg-icons/communication/business';
 
 
 // Redux
@@ -31,6 +33,8 @@ import * as apiManager from '../helpers/apiManager';
 import Loading from '../components/Loading';
 import MerchantTransactions from '../components/MerchantTransactions';
 import MerchantEmployees from '../components/MerchantEmployees';
+import MerchantAddresses from '../components/MerchantAddresses';
+import MerchantPOSMachines from '../components/MerchantPOSMachines';
 import SettingPage from '../components/SettingPage';
 import PosSettingPage from '../components/PosSettingPage';
 
@@ -129,6 +133,14 @@ class MerchantAdminPage extends Component{
                 return (
                     <MerchantEmployees />
                 );
+            case 'posMachines':
+                return (
+                    <MerchantPOSMachines />
+                );    
+            case 'address':
+                return (
+                    <MerchantAddresses />
+                );    
             default:
                 return (
                     <MerchantTransactions />
@@ -199,9 +211,17 @@ class MerchantAdminPage extends Component{
                                         leftIcon={<ActionSearch color="#fff" />}
                                         onClick={this.switchTab.bind(this, 'transactions')} />
                             <MenuItem style={{color: '#fff'}} 
-                                        primaryText="Employees" 
+                                        primaryText="Employee" 
                                         leftIcon={<SocialPeople color="#fff" />}
                                         onClick={this.switchTab.bind(this, 'employees')} />
+                            <MenuItem style={{color: '#fff'}} 
+                                        primaryText="POS" 
+                                        leftIcon={<HardwareSmartphone color="#fff" />}
+                                        onClick={this.switchTab.bind(this, 'posMachines')} />              
+                            <MenuItem style={{color: '#fff'}} 
+                                        primaryText="Address" 
+                                        leftIcon={<CommunicationBusiness color="#fff" />}
+                                        onClick={this.switchTab.bind(this, 'address')} />            
                         </Drawer>
                     </div>
                     <div style={contentContainer}>
