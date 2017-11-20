@@ -1,5 +1,5 @@
+// Libraries
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
@@ -10,10 +10,16 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 import UltimatePagination from 'react-ultimate-pagination-material-ui';
 
-import { showSnackbar }  from '../actions/layout_action';
+// Router
 import { root_page } from '../utilities/urlPath'
+
+// API
 import { opay_url, admin_merchantlist, admin_logout, admin_active_merchant } from "../utilities/apiUrl";
 import * as apiManager from  '../helpers/apiManager';
+
+// Component
+import PosList from '../components/PosList';
+import Loading from '../components/Loading';
 
 
 class AdminPage extends Component{
@@ -24,12 +30,13 @@ class AdminPage extends Component{
             showPagination: false, currentPage: 1, totalPages: 1, boundaryPagesRange: 1,
             siblingPagesRange: 1, hidePreviousAndNextPageLinks: false, start: 0, end: 9,
             hideFirstAndLastPageLinks: false, hideEllipsis: false,
-            merListOpenPop: [false, false, false],
-            merListAnEl: [null,null,null],
+            merListOpenPop: [false],
+            merListAnEl: [null],
             merListTitle: ['AgentID', 'Name', 'Email', 'Phone', 'CreatedAt', 'Status', 'Action'],
-            merList: [{ AgentID: 'aaaaaaaaaaaaaaaaaaaa', FirstName: 'aaaaaaaaaaaaaaaaaaaa', Email: 'aaaaaaaaaaaaaaaaaaaa', PhoneNumber: 'aaaaaaaaaaaaaaaaaaaa', CreatedAt: 'aaaaaaaaaaaaaaaaaaaa', Status:'ACTIVE' },
-                { AgentID: 'aaaaaaaaaaaaaaaaaaaa', FirstName: 'aaaaaaaaaaaaaaaaaaaa', Email: 'aaaaaaaaaaaaaaaaaaaa', PhoneNumber: 'aaaaaaaaaaaaaaaaaaaa', CreatedAt: 'aaaaaaaaaaaaaaaaaaaa', Status:'INACTIVE' },
-                { AgentID: 'aaaaaaaaaaaaaaaaaaaa', FirstName: 'aaaaaaaaaaaaaaaaaaaa', Email: 'aaaaaaaaaaaaaaaaaaaa', PhoneNumber: 'aaaaaaaaaaaaaaaaaaaa', CreatedAt: 'aaaaaaaaaaaaaaaaaaaa', Status:'ACTIVE' }]
+            merList: [],
+            UserGUID: '',
+            isLoading: true,
+            tab: 0,
         }
 
         this.logout = this.logout.bind(this);
@@ -38,9 +45,17 @@ class AdminPage extends Component{
         this.handleRequestClose = this.handleRequestClose.bind(this);
         this.active = this.active.bind(this);
         this.onPageChangeFromPagination = this.onPageChangeFromPagination.bind(this);
+        this.addPos = this.addPos.bind(this);
+        this.renderTab = this.renderTab.bind(this);
+        this.adminMain = this.adminMain.bind(this);
+    }
 
-        this.getMerList();
+    adminMain = () => {
+        this.setState({ tab: 0 })
+    }
 
+    addPos = (idx) => {
+        this.setState({ tab: 1, UserGUID: this.state.merList[idx].UserGUID });
     }
 
     getMerList = () => {
@@ -106,26 +121,6 @@ class AdminPage extends Component{
 
     active = (idx) => {
 
-        /*
-        {
-    "Confirmation": "Success",
-    "Response": {
-        "UserGUID": "d50d5845-cece-486d-83be-15309470cb81",
-        "FirstName": "jiamin Test",
-        "LastName": "legal",
-        "UserTypeID": 2,
-        "Email": "jiamin.ning@opay.ca",
-        "PhoneNumber": "1234567890",
-        "CountryCode": "1",
-        "TaxNumber": "1234567890",
-        "Status": "ACTIVE",
-        "IsVerified": 1,
-        "AgentID": "2153250942",
-        "CreatedAt": "2017-11-17T15:41:09.000Z"
-    }
-}
-        * */
-
         let params = { Params: { UserGUID: this.state.merList[idx].UserGUID } };
 
         apiManager.opayApi(opay_url + admin_active_merchant, params, true).then((res) => {
@@ -189,6 +184,87 @@ class AdminPage extends Component{
 
     componentDidMount() {
         this.getMerList();
+        let token = localStorage.getItem('token');
+        setTimeout(() => {
+            if(!token){
+                browserHistory.push(`${root_page}`);
+            }else{
+                this.setState({
+                    isLoading: false,
+                })
+            }
+        }, 1000);
+    }
+
+    renderTab(tab) {
+
+        const {
+            tableCellStyle,
+        } = styles;
+
+        switch(tab) {
+            case 1:
+                return (
+                    <PosList UserGUID={this.state.UserGUID}/>
+                );
+            default:
+                return (
+
+                        <div>
+                            <Table>
+                                <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+                                    <TableRow>
+                                        {this.state.merListTitle.map((item) => (
+                                            <TableHeaderColumn style={tableCellStyle}>{item}</TableHeaderColumn>
+                                        ))}
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody displayRowCheckbox={false}>
+                                    {this.state.merList.slice(this.state.start,this.state.end).map((msg, idx)=>(
+                                        <TableRow selectable={false}>
+                                            <TableRowColumn style={tableCellStyle}>{msg.AgentID}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{msg.FirstName}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{msg.Email}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{msg.PhoneNumber}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{msg.CreatedAt}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{msg.Status}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}><div style={{textAlign: 'center'}}>
+                                                <RaisedButton
+                                                    onClick={msg.Status === 'ACTIVE' ? (e) => this.handleAction(e, idx) : () => this.active(idx)}
+                                                    secondary={msg.Status !== 'ACTIVE'}
+                                                    label={msg.Status === 'ACTIVE' ? 'ACTION' : 'ACTIVE'}
+                                                />
+                                                { msg.Status === 'INACTIVE' ? '' : <Popover
+                                                    onRequestClose={(e, idx) => this.handleRequestClose(idx)}
+                                                    open={this.state.merListOpenPop[idx]}
+                                                    anchorEl={this.state.merListAnEl[idx]}
+                                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                                                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                                    animation={PopoverAnimationVertical}>
+                                                    <Menu>
+                                                        <MenuItem primaryText="Add POS" onClick={() => this.addPos(idx)}/>
+                                                    </Menu>
+                                                </Popover> }
+                                            </div></TableRowColumn>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+
+                            <div style={{ textAlign: 'center' }}><UltimatePagination
+                                currentPage={this.state.currentPage}
+                                totalPages={this.state.totalPages}
+                                boundaryPagesRange={this.state.boundaryPagesRange}
+                                siblingPagesRange={this.state.siblingPagesRange}
+                                hidePreviousAndNextPageLinks={this.state.hidePreviousAndNextPageLinks}
+                                hideFirstAndLastPageLinks={this.state.hideFirstAndLastPageLinks}
+                                hideEllipsis={this.state.hideEllipsis}
+                                onChange={this.onPageChangeFromPagination}
+                            /></div>
+
+                        </div>
+                );
+        }
     }
 
 
@@ -196,74 +272,34 @@ class AdminPage extends Component{
 
         const {
             mainPageStyle,
-            tableCellStyle
+            drawerContainer,
+            contentContainer,
+            loadingContainer
         } = styles;
+
+        if(this.state.isLoading){
+            return (
+                <div style={loadingContainer}>
+                    <Loading />
+                </div>
+            )
+        }
 
         return (
             <MuiThemeProvider>
                 <div style={mainPageStyle}>
 
-                    <div>
+                    <div style={drawerContainer}>
                         <Drawer open={true} width={150}>
-                            <MenuItem primaryText="Merchants" />
+                            <MenuItem primaryText="Merchants" onClick={this.adminMain}/>
                             <MenuItem primaryText="Log out" onClick={this.logout} />
                         </Drawer>
                     </div>
 
-                    <div style={{ marginLeft: '160px', marginRight: '10px' }}>
-                        <Table>
-                            <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-                                <TableRow>
-                                    {this.state.merListTitle.map((item) => (
-                                        <TableHeaderColumn style={tableCellStyle}>{item}</TableHeaderColumn>
-                                    ))}
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody displayRowCheckbox={false}>
-                                {this.state.merList.slice(this.state.start,this.state.end).map((msg, idx)=>(
-                                    <TableRow selectable={false}>
-                                        <TableRowColumn style={tableCellStyle}>{msg.AgentID}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{msg.FirstName}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{msg.Email}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{msg.PhoneNumber}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{msg.CreatedAt}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{msg.Status}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}><div style={{textAlign: 'center'}}>
-                                            <RaisedButton
-                                                onClick={msg.Status === 'ACTIVE' ? (e) => this.handleAction(e, idx) : () => this.active(idx)}
-                                                secondary={msg.Status !== 'ACTIVE'}
-                                                label={msg.Status === 'ACTIVE' ? 'ACTION' : 'ACTIVE'}
-                                            />
-                                            { msg.Status === 'INACTIVE' ? '' : <Popover
-                                                onRequestClose={(e, idx) => this.handleRequestClose(idx)}
-                                                open={this.state.merListOpenPop[idx]}
-                                                anchorEl={this.state.merListAnEl[idx]}
-                                                anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                                                targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                                                animation={PopoverAnimationVertical}>
-                                                <Menu>
-                                                    <MenuItem primaryText="Add POS" />
-                                                    <MenuItem primaryText="Set" />
-                                                </Menu>
-                                            </Popover> }
-                                        </div></TableRowColumn>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-
-                        <div style={{ textAlign: 'center' }}><UltimatePagination
-                            currentPage={this.state.currentPage}
-                            totalPages={this.state.totalPages}
-                            boundaryPagesRange={this.state.boundaryPagesRange}
-                            siblingPagesRange={this.state.siblingPagesRange}
-                            hidePreviousAndNextPageLinks={this.state.hidePreviousAndNextPageLinks}
-                            hideFirstAndLastPageLinks={this.state.hideFirstAndLastPageLinks}
-                            hideEllipsis={this.state.hideEllipsis}
-                            onChange={this.onPageChangeFromPagination}
-                        /></div>
-
+                    <div style={contentContainer}>
+                        {this.renderTab(this.state.tab)}
                     </div>
+
                 </div>
             </MuiThemeProvider>
         )
@@ -281,8 +317,27 @@ const styles = {
         width: '12.8%',
         whiteSpace: 'normal',
         wordWrap: 'break-word'
-    }
+    },
+
+    drawerContainer: {
+        display: 'inline-block',
+        float: 'left',
+        width: '150px',
+        height: '100vh',
+    },
+
+    contentContainer: {
+        display: 'inline-block',
+        float: 'left',
+        width: 'calc(100% - 150px)',
+        height: '100vh',
+    },
+
+    loadingContainer: {
+        width: '100vw',
+        height: '100vh',
+    },
 
 }
 
-export default connect()(AdminPage);
+export default AdminPage;

@@ -237,7 +237,7 @@ const styles = {
 
     mainContainer: {
         width: '100vw',
-        height: '100vh - 64px)',
+        height: '100vh - 64px',
     },
     drawerContainer: {
         display: 'inline-block', 
