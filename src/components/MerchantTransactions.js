@@ -97,45 +97,60 @@ class MerchantTransactions extends Component{
     render() {
 
         const {
-            tableCellStyle
+            tableCellStyle,
+            infoContainer,
+            infoWrapper,
+            infoStyle,
         } = styles;
 
         return (
             <MuiThemeProvider>
                     <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
-                        <Table>
-                            <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-                                <TableRow displayBorder={false}>
-                                    <TableHeaderColumn style={tableCellStyle}>Platform</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>Amount</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>Type</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>Currency</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>TransCurrency</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>Rate</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>Status</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>CreatedAt</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>UpdatedAt</TableHeaderColumn>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody displayRowCheckbox={false} showRowHover={true}>
-                                {this.state.transactionList.map((tran, idx)=>(
-                                    <TableRow key={tran.GUID} selectable={false}>
-                                        <TableRowColumn style={tableCellStyle}>{tran.Platform}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{tran.Currency === 'CAD' ? '$' : '¥'} {tran.Amount}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{tran.Type}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{tran.Currency}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{tran.TransCurrency}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{tran.Rate}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{tran.Status}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{tran.CreatedAt}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{tran.UpdatedAt}</TableRowColumn>
+
+                        {
+                            this.state.transactionList.length > 0 ?
+
+                            (<Table>
+                                <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+                                    <TableRow displayBorder={false}>
+                                        <TableHeaderColumn style={tableCellStyle}>Platform</TableHeaderColumn>
+                                        <TableHeaderColumn style={tableCellStyle}>Amount</TableHeaderColumn>
+                                        <TableHeaderColumn style={tableCellStyle}>Type</TableHeaderColumn>
+                                        <TableHeaderColumn style={tableCellStyle}>Currency</TableHeaderColumn>
+                                        <TableHeaderColumn style={tableCellStyle}>TransCurrency</TableHeaderColumn>
+                                        <TableHeaderColumn style={tableCellStyle}>Rate</TableHeaderColumn>
+                                        <TableHeaderColumn style={tableCellStyle}>Status</TableHeaderColumn>
+                                        <TableHeaderColumn style={tableCellStyle}>CreatedAt</TableHeaderColumn>
+                                        <TableHeaderColumn style={tableCellStyle}>UpdatedAt</TableHeaderColumn>
                                     </TableRow>
-                                ))}
-                            </TableBody> 
-                        </Table>
-
+                                </TableHeader>
+                                
+                                <TableBody displayRowCheckbox={false} showRowHover={true}>
+                                        {this.state.transactionList.map((tran, idx)=>(
+                                            <TableRow key={tran.GUID} selectable={false}>
+                                                <TableRowColumn style={tableCellStyle}>{tran.Platform}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{tran.Currency === 'CAD' ? '$' : '¥'} {tran.Amount}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{tran.Type}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{tran.Currency}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{tran.TransCurrency}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{tran.Rate}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{tran.Status}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{tran.CreatedAt}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{tran.UpdatedAt}</TableRowColumn>
+                                            </TableRow>
+                                        ))}
+                                </TableBody>                            
+                            </Table>)
+                            :
+                            (<div style={infoContainer}>
+                                <div style={infoWrapper}>
+                                    <p style={infoStyle}>No Transactions Found</p>
+                                </div>
+                            </div>)
+                        }
+                        
                         <Divider />
-
+        
                         <div style={{textAlign: 'right', paddingRight: 12, paddingVertical: 12}}>        
                             <Pagination
                                 total = { Math.ceil(this.state.totalRecords/parseInt(this.state.Limit)) }
@@ -144,7 +159,6 @@ class MerchantTransactions extends Component{
                                 onChange = { currentPage => this.handleChangePage(currentPage) }
                             />
                         </div>
-
                     </Card>
             </MuiThemeProvider>
         )
@@ -159,6 +173,25 @@ const styles = {
         wordWrap: 'break-word',
         padding: 0,
         textAlign: 'center'
+    },
+
+    infoContainer:{
+        margin: '0 auto',
+        height: 200,
+        width: 400,
+        display: 'table'
+    },
+    infoWrapper: {
+        width: 400,
+        display: 'table-cell',
+        verticalAlign: 'middle',
+    },
+    infoStyle:{
+        margin: '0 auto',
+        textAlign: 'center',
+        fontSize: 19,
+        fontWeight: 'bold',
+        wordWrap: 'break-word'
     }
 
 }
