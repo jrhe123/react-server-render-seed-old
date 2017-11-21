@@ -66,8 +66,6 @@ class MerchantTransactions extends Component{
             }
         };
 
-        console.log('params: ', params);
-
         apiManager.opayApi(opay_url+'merchant/transaction_list', params, true)
             .then((response) => {
                 let res = response.data.Response;

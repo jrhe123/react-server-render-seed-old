@@ -106,7 +106,6 @@ class PosSettingPage extends Component{
         this.setState({modalOpen: false});
     };
 
-
     onFieldChange = (e, value, field) => {
         let updated = Object.assign({}, this.state);
         updated[field] = value;
@@ -195,7 +194,6 @@ class PosSettingPage extends Component{
 
         const {
             mainContainer,
-            formContainer,
             formControl,
             btnControl
         } = styles;

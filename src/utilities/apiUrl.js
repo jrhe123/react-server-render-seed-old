@@ -7,3 +7,5 @@ export const admin_logout = 'admin/logout';
 export const admin_active_merchant = 'admin/active_merchant';
 
 export const merchant_pos_machines = 'merchant/pos_machine_list_by_guid';
+
+export const admin_create_pos = 'admin/create_merchant_pos';
