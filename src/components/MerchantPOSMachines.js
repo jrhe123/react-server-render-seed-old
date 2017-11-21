@@ -154,22 +154,3 @@ const styles = {
 }
 
 export default connect()(MerchantPOSMachines);
-
-
-
-
-{/* <TableBody displayRowCheckbox={false} showRowHover={true}>
-                            {this.state.posMachinesList.map((tran, idx)=>(
-                                <TableRow key={tran.GUID} selectable={false}>
-                                    <TableRowColumn style={tableCellStyle}>{tran.Platform}</TableRowColumn>
-                                    <TableRowColumn style={tableCellStyle}>{tran.Currency === 'CAD' ? '$' : '¥'} {tran.Amount}</TableRowColumn>
-                                    <TableRowColumn style={tableCellStyle}>{tran.Type}</TableRowColumn>
-                                    <TableRowColumn style={tableCellStyle}>{tran.Currency}</TableRowColumn>
-                                    <TableRowColumn style={tableCellStyle}>{tran.TransCurrency}</TableRowColumn>
-                                    <TableRowColumn style={tableCellStyle}>{tran.Rate}</TableRowColumn>
-                                    <TableRowColumn style={tableCellStyle}>{tran.Status}</TableRowColumn>
-                                    <TableRowColumn style={tableCellStyle}>{tran.CreatedAt}</TableRowColumn>
-                                    <TableRowColumn style={tableCellStyle}>{tran.UpdatedAt}</TableRowColumn>
-                                </TableRow>
-                            ))}
-                        </TableBody>  */}
