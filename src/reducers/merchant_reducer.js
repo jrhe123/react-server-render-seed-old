@@ -15,6 +15,7 @@ const INITIAL_STATE = {
         loginKeyword: '',
     },
     
+    employeeList: [],
 };
 
 export default function(state = INITIAL_STATE, action) {
@@ -36,6 +37,21 @@ export default function(state = INITIAL_STATE, action) {
                ...state,
                posLogin: action.posLogin
             };
+
+        case MERCHANT.FETCH_MERCHANT_EMPLOYEE_LIST:
+
+            console.log('reducer received, call back to component');
+            return {
+               ...state,
+               employeeList: action.employeeList
+            };
+
+        case MERCHANT.CREATE_MERCHANT_EMPLOYEE:
+
+            console.log('reducer received, call back to component');
+            let updated = Object.assign({}, state);
+            updated.employeeList.unshift(action.newEmployee);
+            return updated;    
 
         default :
             return false;

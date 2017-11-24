@@ -120,11 +120,7 @@ class MerchantAdminPage extends Component{
             case 'setting':
                 return (
                     <SettingPage />
-                );    
-            case 'possetting':
-                return (
-                    <PosSettingPage />
-                ); 
+                );     
             case 'transactions':
                 return (
                     <MerchantTransactions />
@@ -194,7 +190,6 @@ class MerchantAdminPage extends Component{
                                 >
                                 <Menu>
                                     <MenuItem primaryText="My Settings" onClick={this.switchTab.bind(this, 'setting')} />
-                                    <MenuItem primaryText="POS Credential" onClick={this.switchTab.bind(this, 'possetting')} />
                                     <MenuItem primaryText="Logout" onClick={this.logout} />
                                 </Menu>
                                 </Popover>

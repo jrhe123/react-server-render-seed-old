@@ -17,3 +17,21 @@ export const fetch_merchant_profile = (profile) => {
         profile: profile
     }
 }
+
+export const fetch_employee_list = (employeeList) => {
+
+    console.log('action called, now go to reducer');
+    return {
+        type: MERCHANT.FETCH_MERCHANT_EMPLOYEE_LIST,
+        employeeList: employeeList
+    }
+}
+
+export const create_merchant_employee = (newEmployee) => {
+
+    console.log('action called, now go to reducer');
+    return {
+        type: MERCHANT.CREATE_MERCHANT_EMPLOYEE,
+        newEmployee: newEmployee
+    }
+}
