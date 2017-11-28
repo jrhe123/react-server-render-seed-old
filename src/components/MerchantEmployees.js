@@ -469,12 +469,10 @@ class MerchantEmplyees extends Component{
                             <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                                 <TableRow displayBorder={false}>
                                     <TableHeaderColumn style={tableCellStyle}>#</TableHeaderColumn>
+                                    <TableHeaderColumn style={tableCellStyle}>UserType</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>FirstName</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>LastName</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>Email</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>UserType</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>CreatedAt</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>UpdatedAt</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>Action</TableHeaderColumn>
                                 </TableRow>
                             </TableHeader>
@@ -483,12 +481,10 @@ class MerchantEmplyees extends Component{
                                 {this.props.employeeList.map((emp, idx)=>(
                                     <TableRow key={emp.UserGUID} selectable={false}>
                                         <TableRowColumn style={tableCellStyle}>{idx + 1}</TableRowColumn>
+                                        <TableRowColumn style={tableCellStyle}>{emp.UserTypeID === 5 ? 'Manager' : 'Employee'}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{emp.FirstName}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{emp.LastName}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{emp.Email}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{emp.UserTypeID === 5 ? 'Manager' : 'Employee'}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{emp.CreatedAt}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{emp.UpdatedAt}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>
                                             <FlatButton
                                                 onClick={(e) => this.handleActionOpen(e, emp, idx)}

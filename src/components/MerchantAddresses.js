@@ -91,8 +91,6 @@ class MerchantAddresses extends Component{
                                     <TableHeaderColumn style={tableCellStyle}>City</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>Province</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>Postal Code</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>CreatedAt</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>UpdatedAt</TableHeaderColumn>
                                 </TableRow>
                             </TableHeader>
     
@@ -105,8 +103,6 @@ class MerchantAddresses extends Component{
                                         <TableRowColumn style={tableCellStyle}>{addr.City}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{addr.Province}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{addr.PostalCode}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{addr.CreatedAt}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{addr.UpdatedAt}</TableRowColumn>
                                     </TableRow>
                                 ))}
                             </TableBody>         

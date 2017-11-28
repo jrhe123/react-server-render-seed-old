@@ -118,8 +118,7 @@ class MerchantTransactions extends Component{
                                         <TableHeaderColumn style={tableCellStyle}>TransCurrency</TableHeaderColumn>
                                         <TableHeaderColumn style={tableCellStyle}>Rate</TableHeaderColumn>
                                         <TableHeaderColumn style={tableCellStyle}>Status</TableHeaderColumn>
-                                        <TableHeaderColumn style={tableCellStyle}>CreatedAt</TableHeaderColumn>
-                                        <TableHeaderColumn style={tableCellStyle}>UpdatedAt</TableHeaderColumn>
+                                        <TableHeaderColumn style={tableCellStyle}>Timestamp</TableHeaderColumn>
                                     </TableRow>
                                 </TableHeader>
                                 
@@ -134,7 +133,6 @@ class MerchantTransactions extends Component{
                                                 <TableRowColumn style={tableCellStyle}>{tran.Rate}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{tran.Status}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{tran.CreatedAt}</TableRowColumn>
-                                                <TableRowColumn style={tableCellStyle}>{tran.UpdatedAt}</TableRowColumn>
                                             </TableRow>
                                         ))}
                                 </TableBody>                            
