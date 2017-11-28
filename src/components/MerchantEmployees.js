@@ -17,6 +17,9 @@ import SelectField from 'material-ui/SelectField';
 import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 import ActionSettings from 'material-ui/svg-icons/action/settings';
 import moment from 'moment';
+import SearchBar from 'material-ui-search-bar'
+import ActionSearch from 'material-ui/svg-icons/action/search';
+
 
 // Redux
 import { connect } from 'react-redux';
@@ -44,6 +47,10 @@ class MerchantEmplyees extends Component{
     constructor(props) {
         super(props);
         this.state = {
+
+            searchType: 'FirstLastName',
+            isSearching: false,
+
             credentialEmpModalOpen: false,
             assignEmpModalOpen: false,
             empModalOpen: false,
@@ -71,6 +78,7 @@ class MerchantEmplyees extends Component{
         this.onFieldChange = this.onFieldChange.bind(this);
         this.handleActionOpen = this.handleActionOpen.bind(this);
         this.handleManagerChange = this.handleManagerChange.bind(this);
+        this.handleSearchTypeChange = this.handleSearchTypeChange.bind(this);
     }
 
     componentDidMount(){
@@ -108,6 +116,54 @@ class MerchantEmplyees extends Component{
                 localStorage.removeItem('loginKeyword');
                 browserHistory.push(`${root_page}`);
             })
+    }
+
+    // Search 
+    handleSearchTypeChange = (event, index, value) => {
+        this.setState({searchType : value});
+    }
+
+    handleSearchEmployee = (val) => {
+
+        if(!this.state.isSearching){
+
+            this.setState({
+                isSearching: true
+            });
+        
+            let params = {
+                Params: {
+                    Limit: "-1",
+                    Offset: "0",
+                    Extra: {
+                        SearchType: this.state.searchType,
+                        SearchField: val
+                    }
+                }
+            };
+
+            apiManager.opayApi(opay_url+'user_role/merchant_child_list', params, true)
+                .then((response) => {
+                    
+                    if(response.data.Confirmation === 'Success'){
+                        let employeeList = response.data.Response.EmployeeList;
+                        for(let emp of employeeList){
+                            emp.IsOpen = false;
+                            emp.CreatedAt = emp.CreatedAt ? moment(emp.CreatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
+                            emp.UpdatedAt = emp.UpdatedAt ? moment(emp.UpdatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
+                        }
+                        this.props.fetch_employee_list(employeeList);
+                        this.setState({
+                            isSearching: false
+                        });
+                    }else{
+                        this.handleTouchTap(`${response.data.Message}`, false);
+                    }
+                })
+                .catch((error) => {
+                    this.handleTouchTap(`Error: ${error}`, false);
+                })
+        }
     }
 
     // Snack
@@ -438,7 +494,7 @@ class MerchantEmplyees extends Component{
     render() {
 
         const {
-            addEmpContainer,
+            topControlContainer,
             addEmpBtn,
             tableCellStyle,
             infoContainer,
@@ -454,11 +510,43 @@ class MerchantEmplyees extends Component{
 
         return (
             <MuiThemeProvider>
-                <div style={addEmpContainer}>
+                
+                <div style={topControlContainer}>
                     <RaisedButton label="Add" 
                                     primary={true} 
-                                    style={addEmpBtn}
-                                    onClick={() => this.handleOpen()} />  
+                                    style={Object.assign({}, addEmpBtn)}
+                                    onClick={() => this.handleOpen()} />
+                    <SearchBar
+                        className="ui-search-bar"
+                        onChange={(val) => this.handleSearchEmployee(val)}
+                        style={{
+                            float: 'right',
+                            width: 180,
+                            height: '36px',
+                            marginRight: 18,
+                        }}
+                        iconButtonStyle={{height:36, marginTop: -4}}
+                        searchIcon={<ActionSearch />}
+                    />
+
+                    <SelectField 
+                        className="ui-search-select"
+                        style={{
+                            float: 'right',
+                            width: 90,
+                            height: '36px',
+                            background: '#fff',
+                            boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
+                        }}
+                        underlineStyle={{display: 'none'}}
+                        value={this.state.searchType} 
+                        onChange={(event, index, value) => this.handleSearchTypeChange(event, index, value)}>
+                        <MenuItem value="FirstLastName" label="Name" primaryText="Name" />
+                        <MenuItem value="Email" label="Email" primaryText="Email" />
+                    </SelectField>
+
+                    
+
                 </div>
                 <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
 
@@ -669,8 +757,9 @@ class MerchantEmplyees extends Component{
 
 const styles = {
 
-    addEmpContainer: {
-        marginTop: 20,
+    topControlContainer: {
+        marginTop: 24,
+        marginBottom: 36,
         height: 30
     },
     addEmpBtn: {

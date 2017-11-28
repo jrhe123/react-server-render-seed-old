@@ -1163,3 +1163,34 @@ section.module.parallax-2 {
 table, th, td {
     border: none !important;
 }
+
+
+/* material search bar */
+.ui-search-bar{
+    height: 36px !important;
+}
+.ui-search-bar>div{
+    bottom: 6px !important;
+}
+
+.ui-search-select{
+    height: 36px !important;
+}
+.ui-search-select>div>div:first-child>div:nth-child(2){
+    padding-left: 12px !important;
+    padding-right: 0 !important;
+    height: 36px !important;
+    line-height: 38px !important;
+    top: 0 !important;
+}
+.ui-search-select>div>div:first-child{
+    height: 36px !important;
+    padding-right: 24px;
+}
+.ui-search-select button{
+    height: 36px !important;
+    width: 24px !important;
+    padding-left: 0 !important;
+    padding-right: 6px !important;
+    top: -5px !important;
+}
