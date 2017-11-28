@@ -12,6 +12,9 @@ import {Card} from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 import Pagination from 'material-ui-pagination';
 import moment from 'moment';
+import SearchBar from 'material-ui-search-bar'
+import ActionSearch from 'material-ui/svg-icons/action/search';
+
 
 
 // Redux
@@ -103,6 +106,9 @@ class MerchantTransactions extends Component{
 
         return (
             <MuiThemeProvider>
+
+                    
+
                     <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
 
                         {

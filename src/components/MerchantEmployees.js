@@ -49,8 +49,11 @@ class MerchantEmplyees extends Component{
         super(props);
         this.state = {
 
+            userType: 'ALL',
             searchType: 'FirstLastName',
+            searchField: '',
             isSearching: false,
+            
 
             credentialEmpModalOpen: false,
             assignEmpModalOpen: false,
@@ -84,6 +87,7 @@ class MerchantEmplyees extends Component{
         this.handleActionOpen = this.handleActionOpen.bind(this);
         this.handleManagerChange = this.handleManagerChange.bind(this);
         this.handleSearchTypeChange = this.handleSearchTypeChange.bind(this);
+        this.handleSearchUserTypeChange = this.handleSearchUserTypeChange.bind(this);
     }
 
     componentDidMount(){
@@ -128,8 +132,21 @@ class MerchantEmplyees extends Component{
         this.setState({searchType : value});
     }
 
-    handleSearchEmployee = (val) => {
+    handleSearchUserTypeChange = (event, index, value) => {
+        this.setState({
+            userType : value
+        });
+        this.searchMerchant(value, this.state.searchField);
+    }
 
+    handleSearchEmployee = (val) => {
+        this.setState({
+            searchField: val
+        });
+        this.searchMerchant(this.state.userType, val);
+    }
+
+    searchMerchant = (type, val) => {
         if(!this.state.isSearching){
 
             this.setState({
@@ -141,6 +158,8 @@ class MerchantEmplyees extends Component{
                     Limit: "-1",
                     Offset: "0",
                     Extra: {
+                        UserType: "UserType",
+                        UserTypeField: type,
                         SearchType: this.state.searchType,
                         SearchField: val
                     }
@@ -313,8 +332,8 @@ class MerchantEmplyees extends Component{
                 Limit: "-1",
                 Offset: "0",
                 Extra: {
-                    SearchType: "UserType",
-                    SearchField: "MANAGER"
+                    UserType: "UserType",
+                    UserTypeField: "MANAGER"
                 }
             }
         };
@@ -608,10 +627,25 @@ class MerchantEmplyees extends Component{
                         <MenuItem value="FirstLastName" label="Name" primaryText="Name" />
                         <MenuItem value="Email" label="Email" primaryText="Email" />
                     </SelectField>
-
-                    
+                    <SelectField 
+                        className="ui-search-select"
+                        style={{
+                            float: 'right',
+                            width: 120,
+                            height: '36px',
+                            background: '#fff',
+                            boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
+                        }}
+                        underlineStyle={{display: 'none'}}
+                        value={this.state.userType} 
+                        onChange={(event, index, value) => this.handleSearchUserTypeChange(event, index, value)}>
+                        <MenuItem value="ALL" label="All" primaryText="All" />
+                        <MenuItem value="MANAGER" label="Manager" primaryText="Manager" />
+                        <MenuItem value="EMPLOYEE" label="Employee" primaryText="Employee" />
+                    </SelectField>
 
                 </div>
+
                 <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
 
                     {
