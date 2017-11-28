@@ -36,6 +36,15 @@ export const create_merchant_employee = (newEmployee) => {
     }
 }
 
+export const delete_merchant_employee = (idx) => {
+
+    console.log('action called, now go to reducer');
+    return {
+        type: MERCHANT.DELETE_MERCHANT_EMPLOYEE,
+        idx: idx
+    }
+}
+
 export const open_edit_merchant_employee = (idx, anchorEl) => {
 
     console.log('action called, now go to reducer');

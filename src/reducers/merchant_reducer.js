@@ -55,6 +55,12 @@ export default function(state = INITIAL_STATE, action) {
             updated.employeeList.unshift(action.newEmployee);
             return updated;    
 
+        case MERCHANT.DELETE_MERCHANT_EMPLOYEE:
+
+            console.log('reducer received, call back to component');
+            updated.employeeList.splice(action.idx, 1);
+            return updated;      
+
         case MERCHANT.OPEN_EDIT_MERCHANT_EMPLOYEE:
 
             console.log('reducer received, call back to component');

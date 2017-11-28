@@ -26,6 +26,7 @@ import { connect } from 'react-redux';
 import { 
     fetch_employee_list,
     create_merchant_employee, 
+    delete_merchant_employee,
     open_edit_merchant_employee,
     close_edit_merchant_employee,
     assign_merchant_employee,
@@ -73,7 +74,11 @@ class MerchantEmplyees extends Component{
             managerList: [],
 
             empCredentialUserGUID: null,
-            empCredential: {}
+            empCredential: {},
+
+            deleteEmpModalOpen: false,
+            deleteEmp: {},
+            deleteEmpIdx: null,
         }
         this.onFieldChange = this.onFieldChange.bind(this);
         this.handleActionOpen = this.handleActionOpen.bind(this);
@@ -424,7 +429,7 @@ class MerchantEmplyees extends Component{
         this.setState({credentialEmpModalOpen: false});
     }
 
-    onFieldChange = (field, e, value) => {
+    onCredFieldChange = (field, e, value) => {
         let val = e.target.value;
         let updated = Object.assign({}, this.state);
         updated.empCredential[field] = val;
@@ -491,6 +496,52 @@ class MerchantEmplyees extends Component{
         }
     }
 
+    // 3. Delete
+    handleEmpDeleteOpen = (emp, idx) => {
+        this.setState({
+            deleteEmpModalOpen: true,
+            deleteEmp: emp,
+            deleteEmpIdx: idx,
+        })
+        this.props.close_edit_merchant_employee(idx);        
+    }
+
+    handleEmpDeleteClose = () => {
+        this.setState({
+            deleteEmpModalOpen: false
+        });
+    };
+
+    deleteEmp = () => {
+        
+        let idx = this.state.deleteEmpIdx;
+        let userGUID = this.state.deleteEmp.UserGUID;
+        if(!userGUID){
+            this.handleTouchTap(`User not found. Please login again.`, false);
+        }else if(idx == null){
+            this.handleTouchTap(`User not found. Please login again.`, false);
+        }else{
+            let params = {
+                Params: {
+                    UserGUID: userGUID
+                }
+            };
+            apiManager.opayApi(opay_url+'user_role/merchant_remove_child', params, true)
+                .then((response) => {
+                    if(response.data.Confirmation === 'Success'){   
+                        this.props.delete_merchant_employee(idx);
+                        this.handleEmpDeleteClose();
+                        this.handleTouchTap(`Employee has been deleted`, true);
+                    }else{
+                        this.handleTouchTap(`${response.data.Message}`, false);
+                    }
+                })
+                .catch((error) => {
+                    this.handleTouchTap(`Error: ${error}`, false);
+                }) 
+        }
+    }
+
     render() {
 
         const {
@@ -507,6 +558,19 @@ class MerchantEmplyees extends Component{
         if(!this.props.employeeList){
             return null;
         }
+
+        const deleteActions = [
+            <FlatButton
+                label="YES, DELETE IT"
+                primary={true}
+                onClick={() => this.deleteEmp()}
+            />,
+            <FlatButton
+                label="NO, KEEP IT"
+                primary={true}
+                onClick={() => this.handleEmpDeleteClose()}
+            />,
+        ];
 
         return (
             <MuiThemeProvider>
@@ -596,7 +660,7 @@ class MerchantEmplyees extends Component{
                                                             )
                                                         }
                                                         <MenuItem primaryText="Credential" onClick={() => this.handleCredentialOpen(emp, idx)}/>
-                                                        <MenuItem primaryText="Delete" onClick={() => {}}/>
+                                                        <MenuItem primaryText="Delete" onClick={() => this.handleEmpDeleteOpen(emp, idx)}/>
                                                     </Menu>
                                                 </Popover> 
                                             </div>
@@ -724,20 +788,29 @@ class MerchantEmplyees extends Component{
                                         type="password" 
                                         onBlur={this.onFieldBlur.bind(this, 'newPassword')}
                                         errorText={this.state.empCredential.newPasswordErrMsg} 
-                                        onChange={this.onFieldChange.bind(this, 'newPassword')} />
+                                        onChange={this.onCredFieldChange.bind(this, 'newPassword')} />
                             </div>   
                             <div style={formControl}>
                                 <TextField floatingLabelText="Confirm Password" 
                                         type="password" 
                                         onKeyUp={(e, value) => this.handleConfirmKeyup(e)}
                                         errorText={this.state.empCredential.confirmPasswordErrMsg} 
-                                        onChange={this.onFieldChange.bind(this, 'confirmPassword')} />
+                                        onChange={this.onCredFieldChange.bind(this, 'confirmPassword')} />
                             </div>               
                             <div style={btnControl}>       
                                 <RaisedButton label="Update" 
                                             primary={true}
                                             onClick={() => this.updateCredential()} />
                             </div> 
+                    </Dialog>
+
+                    <Dialog
+                        title="Delete Employee"
+                        actions={deleteActions}
+                        modal={true}
+                        open={this.state.deleteEmpModalOpen}
+                        >
+                        Are you sure you want to delete this employee?
                     </Dialog>
 
                     <Snackbar
@@ -817,6 +890,7 @@ const dispatchToProps = (dispatch) => {
 	return {
         fetch_employee_list: (employeeList) => dispatch(fetch_employee_list(employeeList)),
         create_merchant_employee: (newEmployee) => dispatch(create_merchant_employee(newEmployee)),
+        delete_merchant_employee: (idx) => dispatch(delete_merchant_employee(idx)),        
         open_edit_merchant_employee: (idx, anchorEl) => dispatch(open_edit_merchant_employee(idx, anchorEl)),
         close_edit_merchant_employee: (idx) => dispatch(close_edit_merchant_employee(idx)),
         assign_merchant_employee: (idx, updatedEmployee) => dispatch(assign_merchant_employee(idx, updatedEmployee)),

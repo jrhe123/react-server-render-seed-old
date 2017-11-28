@@ -86,11 +86,10 @@ class MerchantPOSMachines extends Component{
                             <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                                 <TableRow displayBorder={false}>
                                     <TableHeaderColumn style={tableCellStyle}>#</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>Serial</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>IP</TableHeaderColumn>
+                                    <TableHeaderColumn style={tableCellStyle}>Serial No.</TableHeaderColumn>
+                                    <TableHeaderColumn style={tableCellStyle}>IP Addr</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>Status</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>CreatedAt</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>UpdatedAt</TableHeaderColumn>
+                                    <TableHeaderColumn style={tableCellStyle}>Timestamp</TableHeaderColumn>
                                 </TableRow>
                             </TableHeader>
     
@@ -102,7 +101,6 @@ class MerchantPOSMachines extends Component{
                                         <TableRowColumn style={tableCellStyle}>{pos.IP}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{pos.Status}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{pos.CreatedAt}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{pos.UpdatedAt}</TableRowColumn>
                                     </TableRow>
                                 ))}
                             </TableBody>         
