@@ -16,10 +16,13 @@ const INITIAL_STATE = {
     },
     
     employeeList: [],
+    anchorEl: null,
 };
 
 export default function(state = INITIAL_STATE, action) {
 
+    let updated = Object.assign({}, state);
+    let idx = null;
     switch(action.type) {
 
         case MERCHANT.FETCH_MERCHANT_PROFILE:
@@ -49,9 +52,31 @@ export default function(state = INITIAL_STATE, action) {
         case MERCHANT.CREATE_MERCHANT_EMPLOYEE:
 
             console.log('reducer received, call back to component');
-            let updated = Object.assign({}, state);
             updated.employeeList.unshift(action.newEmployee);
             return updated;    
+
+        case MERCHANT.OPEN_EDIT_MERCHANT_EMPLOYEE:
+
+            console.log('reducer received, call back to component');
+            idx = action.idx;
+            updated.employeeList[idx].IsOpen = true;
+            updated.anchorEl = action.anchorEl;
+            return updated;  
+            
+        case MERCHANT.CLOSE_EDIT_MERCHANT_EMPLOYEE:
+
+            console.log('reducer received, call back to component');
+            idx = action.idx;
+            updated.employeeList[idx].IsOpen = false;
+            updated.anchorEl = null;
+            return updated;      
+
+        case MERCHANT.ASSIGN_MERCHANT_EMPLOYEE:
+
+            console.log('reducer received, call back to component');
+            idx = action.idx;
+            updated.employeeList[idx] = action.updatedEmployee;
+            return updated;     
 
         default :
             return false;
