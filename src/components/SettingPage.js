@@ -242,8 +242,8 @@ class SettingPage extends Component{
             this.handleTouchTap(`User name not found. Please login again`, false);
         }else if(!oldPassword){
             this.handleTouchTap(`Old password is required`, false);
-        }else if(!newPassword){
-            this.handleTouchTap(`New password is required`, false);
+        }else if(!newPassword || newPassword.length < 6){
+            this.handleTouchTap(`New password must be at least 6 characters`, false);
         }else if(newPassword !== confirmPassword){
             this.handleTouchTap(`Please confirm your new password`, false);
         }else{

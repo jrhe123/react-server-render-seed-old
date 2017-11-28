@@ -55,7 +55,8 @@ class MerchantEmplyees extends Component{
                 assignUserTypeGUID: '',
                 assignUserType: '',
                 firstName: '',
-                lastName: ''
+                lastName: '',
+                email: ''
             },
             isFetchUserType: false,
             userTypeList: [],
@@ -64,6 +65,7 @@ class MerchantEmplyees extends Component{
             assignEmpIdx: null,
             managerList: [],
 
+            empCredentialUserGUID: null,
             empCredential: {}
         }
         this.onFieldChange = this.onFieldChange.bind(this);
@@ -161,11 +163,7 @@ class MerchantEmplyees extends Component{
                 }
             })
             .catch((error) => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('userTypeID');
-                localStorage.removeItem('agentID');
-                localStorage.removeItem('loginKeyword');
-                browserHistory.push(`${root_page}`);
+                this.handleTouchTap(`Error: ${error}`, false);
             })
     }
 
@@ -198,6 +196,10 @@ class MerchantEmplyees extends Component{
             this.handleTouchTap('Please enter last name', false);
             return;
         }
+        if(!this.state.newEmp.email){
+            this.handleTouchTap('Please enter email', false);
+            return;
+        }
         if(!this.state.newEmp.assignUserTypeGUID){
             this.handleTouchTap('Please select a user type', false);
             return;
@@ -207,6 +209,7 @@ class MerchantEmplyees extends Component{
             Params: {
                 FirstName: this.state.newEmp.firstName,
                 LastName: this.state.newEmp.lastName,
+                Email: this.state.newEmp.email,
                 AssignUserTypeGUID: this.state.newEmp.assignUserTypeGUID
             }
         };
@@ -226,11 +229,7 @@ class MerchantEmplyees extends Component{
                 }
             })
             .catch((error) => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('userTypeID');
-                localStorage.removeItem('agentID');
-                localStorage.removeItem('loginKeyword');
-                browserHistory.push(`${root_page}`);
+                this.handleTouchTap(`Error: ${error}`, false);
             })
     }
 
@@ -276,11 +275,7 @@ class MerchantEmplyees extends Component{
                 }
             })
             .catch((error) => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('userTypeID');
-                localStorage.removeItem('agentID');
-                localStorage.removeItem('loginKeyword');
-                browserHistory.push(`${root_page}`);
+                this.handleTouchTap(`Error: ${error}`, false);
             })
     };
 
@@ -331,11 +326,7 @@ class MerchantEmplyees extends Component{
                 }
             })
             .catch((error) => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('userTypeID');
-                localStorage.removeItem('agentID');
-                localStorage.removeItem('loginKeyword');
-                browserHistory.push(`${root_page}`);
+                this.handleTouchTap(`Error: ${error}`, false);
             })
     }
 
@@ -359,6 +350,7 @@ class MerchantEmplyees extends Component{
                     let empCredential = response.data.Response;
                     this.setState({
                         credentialEmpModalOpen: true,
+                        empCredentialUserGUID: employee.UserGUID,
                         empCredential: empCredential
                     })
                     this.props.close_edit_merchant_employee(idx);
@@ -368,11 +360,7 @@ class MerchantEmplyees extends Component{
                 }
             })
             .catch((error) => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('userTypeID');
-                localStorage.removeItem('agentID');
-                localStorage.removeItem('loginKeyword');
-                browserHistory.push(`${root_page}`);
+                this.handleTouchTap(`Error: ${error}`, false);
             })        
     }
 
@@ -380,6 +368,72 @@ class MerchantEmplyees extends Component{
         this.setState({credentialEmpModalOpen: false});
     }
 
+    onFieldChange = (field, e, value) => {
+        let val = e.target.value;
+        let updated = Object.assign({}, this.state);
+        updated.empCredential[field] = val;
+        this.setState(updated);
+    }
+
+    onFieldBlur = (field, e) => {
+        let value = e.target.value;
+        if(field === 'newPassword'){
+            if(value.length < 6){
+                let updated = Object.assign({}, this.state);
+                updated.empCredential['newPasswordErrMsg'] = "Password must be at least 6 characters";
+                this.setState(updated);
+            }else{
+                let updated = Object.assign({}, this.state);
+                updated.empCredential['newPasswordErrMsg'] = '';
+                this.setState(updated);
+            }
+        }
+    }
+
+    handleConfirmKeyup = (e) => {
+        if(this.state.empCredential.newPassword !== e.target.value){
+            let updated = Object.assign({}, this.state);
+            updated.empCredential['confirmPasswordErrMsg'] = 'Must match the previous entry';
+            this.setState(updated);
+        }else{
+            let updated = Object.assign({}, this.state);
+            updated.empCredential['confirmPasswordErrMsg'] = '';
+            this.setState(updated);
+        }
+    }
+
+    updateCredential = () => {
+        let userGUID = this.state.empCredentialUserGUID;
+        let newPassword = this.state.empCredential.newPassword;
+        let confirmPassword = this.state.empCredential.confirmPassword;
+        if(!userGUID){
+            this.handleTouchTap(`User not found. Please login again.`, false);
+        }else if(!newPassword || newPassword.length < 6){
+            this.handleTouchTap(`New password must be at least 6 characters`, false);
+        }else if(newPassword !== confirmPassword){
+            this.handleTouchTap(`Please confirm your new password`, false);
+        }else{
+
+            let params = {
+                Params: {
+                    AssignUserGUID: userGUID,
+                    Password: newPassword
+                }
+            };
+            apiManager.opayApi(opay_url+'user_role/merchant_update_child_login', params, true)
+                .then((response) => {
+                    if(response.data.Confirmation === 'Success'){
+                        this.handleTouchTap(`Password has been updated`, true);
+                        this.handleCredentialClose();
+                    }else{
+                        this.handleTouchTap(`${response.data.Message}`, false);
+                    }
+                })
+                .catch((error) => {
+                    this.handleTouchTap(`Error: ${error}`, false);
+                }) 
+        }
+    }
 
     render() {
 
@@ -417,6 +471,7 @@ class MerchantEmplyees extends Component{
                                     <TableHeaderColumn style={tableCellStyle}>#</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>FirstName</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>LastName</TableHeaderColumn>
+                                    <TableHeaderColumn style={tableCellStyle}>Email</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>UserType</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>CreatedAt</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>UpdatedAt</TableHeaderColumn>
@@ -430,6 +485,7 @@ class MerchantEmplyees extends Component{
                                         <TableRowColumn style={tableCellStyle}>{idx + 1}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{emp.FirstName}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{emp.LastName}</TableRowColumn>
+                                        <TableRowColumn style={tableCellStyle}>{emp.Email}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{emp.UserTypeID === 5 ? 'Manager' : 'Employee'}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{emp.CreatedAt}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{emp.UpdatedAt}</TableRowColumn>
@@ -456,6 +512,7 @@ class MerchantEmplyees extends Component{
                                                             )
                                                         }
                                                         <MenuItem primaryText="Credential" onClick={() => this.handleCredentialOpen(emp, idx)}/>
+                                                        <MenuItem primaryText="Delete" onClick={() => {}}/>
                                                     </Menu>
                                                 </Popover> 
                                             </div>
@@ -500,7 +557,12 @@ class MerchantEmplyees extends Component{
                                 <TextField floatingLabelText="LastName" 
                                     onChange={(e, value) => this.onFieldChange(e,value,'lastName')}
                                     />
-                            </div>    
+                            </div> 
+                            <div style={formControl}>
+                                <TextField floatingLabelText="Email" 
+                                    onChange={(e, value) => this.onFieldChange(e,value,'email')}
+                                    />
+                            </div>   
                             <div style={btnControl}>       
                                 <RaisedButton label="Add" 
                                             primary={true}
@@ -548,7 +610,7 @@ class MerchantEmplyees extends Component{
 
 
                     <Dialog
-                            title="Credential"
+                            title="Login Credential"
                             modal={false}
                             open={this.state.credentialEmpModalOpen}
                             onRequestClose={this.handleCredentialClose.bind(this)}
@@ -557,24 +619,40 @@ class MerchantEmplyees extends Component{
                                 {
                                     (this.state.empCredential.IsCreated) ? 
                                     (
-                                        <p style={{fontSize: 15, color: '#000'}}>
-                                            <span style={{color: '#8C8C8C'}}>LoginKeyword: </span> 
-                                            {this.state.empCredential.LoginKeyword}
-                                        </p>
+                                        <div>
+                                            <p style={{fontSize: 15, color: '#000'}}>
+                                                <span style={{color: '#8C8C8C'}}>Login type: </span> 
+                                                {this.state.empCredential.LoginType}
+                                            </p>
+                                            <p style={{fontSize: 15, color: '#000'}}>
+                                                <span style={{color: '#8C8C8C'}}>Username: </span> 
+                                                {this.state.empCredential.UserLogin.LoginKeyword}
+                                            </p>
+                                        </div>
                                     )
                                     :
-                                    (
-                                        <p style={{fontSize: 15, color: '#000'}}>
-                                            <span style={{color: '#8C8C8C'}}>LoginKeyword: </span> 
-                                            Not created yet
-                                        </p>
-                                    )
+                                    (null)
                                 }
-                            </div>                            
+                            </div>     
+                            <Divider style={{marginTop:24, marginBottom: 24}}/>      
+                            <div style={formControl}>
+                                <TextField floatingLabelText="New Password" 
+                                        type="password" 
+                                        onBlur={this.onFieldBlur.bind(this, 'newPassword')}
+                                        errorText={this.state.empCredential.newPasswordErrMsg} 
+                                        onChange={this.onFieldChange.bind(this, 'newPassword')} />
+                            </div>   
+                            <div style={formControl}>
+                                <TextField floatingLabelText="Confirm Password" 
+                                        type="password" 
+                                        onKeyUp={(e, value) => this.handleConfirmKeyup(e)}
+                                        errorText={this.state.empCredential.confirmPasswordErrMsg} 
+                                        onChange={this.onFieldChange.bind(this, 'confirmPassword')} />
+                            </div>               
                             <div style={btnControl}>       
                                 <RaisedButton label="Update" 
                                             primary={true}
-                                            onClick={() => this.assignEmp()} />
+                                            onClick={() => this.updateCredential()} />
                             </div> 
                     </Dialog>
 
