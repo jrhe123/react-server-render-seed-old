@@ -21,7 +21,7 @@ import { showSnackbar }  from '../actions/layout_action';
 import { root_page } from '../utilities/urlPath'
 
 // API
-import { opay_url, merchant_category_list, merchant_signup } from '../utilities/apiUrl';
+import { opay_url, merchant_category_list, merchant_signup, merchant_upload_file } from '../utilities/apiUrl';
 import * as apiManager from '../helpers/apiManager';
 
 // Component
@@ -52,10 +52,10 @@ class MerchantRegisterPage extends Component{
             loginBtnStyle: { marginTop: '19px' },
             paperSize: { height: '85%', width: '55%' },
 
-            incorporation: '',
-            identification: '',
-            photographs: '',
-            check: '',
+            incorporation: { name:'' },
+            identification: { name:'' },
+            photographs: { name:'' },
+            check: { name:'' },
             incorporationErr: '',
             identificationErr: '',
             photographsErr: '',
@@ -167,16 +167,26 @@ class MerchantRegisterPage extends Component{
 
     uploadFile = (field, e) => {
 
-        let file = e.target.files[0].name;
+     //   console.log('e.target',e.target.files[0]);
+
+        let file = e.target.files[0];
+        let err = '';
+        let size = file.size / 1000 / 1000;
+
+        if(size > 2.5) {
+            err = 'File size must smaller than 2.5 Mb'
+        } else if((file.type.substr(0,5) !== 'image') && (file.type !== 'application/pdf')) {
+            err = 'only image and pdf filles are accepted'
+        }
 
         if (field === 'incorporation') {
-            this.setState({ incorporation: file, incorporationErr: ''});
+            this.setState({ incorporation: file, incorporationErr: err });
         } else if (field === 'identification') {
-            this.setState({ identification: file, identificationErr: '' });
+            this.setState({ identification: file, identificationErr: err });
         } else if (field === 'photographs') {
-            this.setState({ photographs: file, photographsErr: '' });
+            this.setState({ photographs: file, photographsErr: err });
         } else if (field === 'check') {
-            this.setState({ check: file, checkErr: '' });
+            this.setState({ check: file, checkErr: err });
         }
     }
 
@@ -277,8 +287,24 @@ class MerchantRegisterPage extends Component{
 
         if (stop === true) return;
 
-        this.setState({ openLastPage: true });
+        let formData = new FormData();
+        formData.append('File1', this.state.incorporation);
+        formData.append('File2', this.state.identification);
+        formData.append('File3', this.state.photographs);
+        formData.append('File4', this.state.check);
+        formData.append('UserGUID', this.state.UserGUID);
 
+        apiManager.opayFileApi(opay_url + merchant_upload_file, formData, false)
+            .then((response) => {
+                if(response.data.Confirmation === 'Success'){
+
+                    //console.log('upload',response)
+                    this.setState({ openLastPage: true });
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     }
 
     handlerSubmit = () => {
@@ -305,6 +331,7 @@ class MerchantRegisterPage extends Component{
                     PhoneNumber: this.state.phone,
                 }
             };
+
 
             apiManager.opayApi(opay_url + merchant_signup, params, false)
                 .then((response) => {
@@ -335,113 +362,119 @@ class MerchantRegisterPage extends Component{
             ? <p style={resendStyle}>Didn't receive email? Resend it.</p> : null;
 
         const basicInfo = (
-            <div>
-                <TextField floatingLabelText="Merchant name"
-                           inputStyle={this.state.inputStyle}
-                           floatingLabelStyle={this.state.floatLabelStyle}
-                           style={this.state.textFieldStyle}
-                           value={this.state.merchantName}
-                           onBlur={this.onFieldBlur.bind(this, 'merchantName')}
-                           errorText={this.state.merchantNameErrorText}
-                           onChange={this.onFieldChange.bind(this, 'merchantName')} /><br />
-                <TextField floatingLabelText="Website (optional)"
-                           inputStyle={this.state.inputStyle}
-                           floatingLabelStyle={this.state.floatLabelStyle}
-                           style={this.state.textFieldStyle}
-                           value={this.state.website}
-                           onChange={this.onFieldChange.bind(this, 'website')} /><br />
-                <TextField floatingLabelText="Legal Name"
-                           inputStyle={this.state.inputStyle}
-                           floatingLabelStyle={this.state.floatLabelStyle}
-                           style={this.state.textFieldStyle}
-                           value={this.state.legalName}
-                           onBlur={this.onFieldBlur.bind(this, 'legalName')}
-                           errorText={this.state.legalNameErrorText}
-                           onChange={this.onFieldChange.bind(this, 'legalName')} /><br />
-                <TextField floatingLabelText="Phone"
-                           inputStyle={this.state.inputStyle}
-                           floatingLabelStyle={this.state.floatLabelStyle}
-                           style={this.state.textFieldStyle}
-                           value={this.state.phone}
-                           onBlur={this.onFieldBlur.bind(this, 'phone')}
-                           errorText={this.state.phoneErrorText}>
-                    <InputMask mask="(999)999-9999"
-                               maskChar=" "
-                               defaultValue={this.state.phone}
-                               onChange={this.onFieldChange.bind(this, 'phone')} />
-                </TextField><br />
-                <TextField floatingLabelText="Email"
-                           inputStyle={this.state.inputStyle}
-                           floatingLabelStyle={this.state.floatLabelStyle}
-                           style={this.state.textFieldStyle}
-                           value={this.state.email}
-                           onBlur={this.onFieldBlur.bind(this, 'email')}
-                           errorText={this.state.emailErrorText}
-                           onChange={this.onFieldChange.bind(this, 'email')} /><br /><br />
-                <DropDownMenu maxHeight={300} value={this.state.categoryValue} onChange={this.handleCategoryChange.bind(this)}>
-                    {this.state.category.map((item,index) => (
-                        <MenuItem value={index} key={index} primaryText={item}  />
-                    ))}
-                </DropDownMenu><br />
-                <RaisedButton label={this.state.btnTxt}
-                              primary={true}
-                              style={this.state.loginBtnStyle}
-                              onClick={() => this.handlerSubmit()} /> <br />
-                { resendText }
-            </div> )
+            <MuiThemeProvider>
+                <div>
+                    <TextField floatingLabelText="Merchant name"
+                               inputStyle={this.state.inputStyle}
+                               floatingLabelStyle={this.state.floatLabelStyle}
+                               style={this.state.textFieldStyle}
+                               value={this.state.merchantName}
+                               onBlur={this.onFieldBlur.bind(this, 'merchantName')}
+                               errorText={this.state.merchantNameErrorText}
+                               onChange={this.onFieldChange.bind(this, 'merchantName')} /><br />
+                    <TextField floatingLabelText="Website (optional)"
+                               inputStyle={this.state.inputStyle}
+                               floatingLabelStyle={this.state.floatLabelStyle}
+                               style={this.state.textFieldStyle}
+                               value={this.state.website}
+                               onChange={this.onFieldChange.bind(this, 'website')} /><br />
+                    <TextField floatingLabelText="Legal Name"
+                               inputStyle={this.state.inputStyle}
+                               floatingLabelStyle={this.state.floatLabelStyle}
+                               style={this.state.textFieldStyle}
+                               value={this.state.legalName}
+                               onBlur={this.onFieldBlur.bind(this, 'legalName')}
+                               errorText={this.state.legalNameErrorText}
+                               onChange={this.onFieldChange.bind(this, 'legalName')} /><br />
+                    <TextField floatingLabelText="Phone"
+                               inputStyle={this.state.inputStyle}
+                               floatingLabelStyle={this.state.floatLabelStyle}
+                               style={this.state.textFieldStyle}
+                               value={this.state.phone}
+                               onBlur={this.onFieldBlur.bind(this, 'phone')}
+                               errorText={this.state.phoneErrorText}>
+                        <InputMask mask="(999)999-9999"
+                                   maskChar=" "
+                                   defaultValue={this.state.phone}
+                                   onChange={this.onFieldChange.bind(this, 'phone')} />
+                    </TextField><br />
+                    <TextField floatingLabelText="Email"
+                               inputStyle={this.state.inputStyle}
+                               floatingLabelStyle={this.state.floatLabelStyle}
+                               style={this.state.textFieldStyle}
+                               value={this.state.email}
+                               onBlur={this.onFieldBlur.bind(this, 'email')}
+                               errorText={this.state.emailErrorText}
+                               onChange={this.onFieldChange.bind(this, 'email')} /><br /><br />
+                    <DropDownMenu maxHeight={300} value={this.state.categoryValue} onChange={this.handleCategoryChange.bind(this)}>
+                        {this.state.category.map((item,index) => (
+                            <MenuItem value={index} key={index} primaryText={item}  />
+                        ))}
+                    </DropDownMenu><br />
+                    <RaisedButton label={this.state.btnTxt}
+                                  primary={true}
+                                  style={this.state.loginBtnStyle}
+                                  onClick={() => this.handlerSubmit()} /> <br />
+                    { resendText }
+                </div>
+            </MuiThemeProvider>
+        )
 
         const signUpForm = (
-            <div style={{ textAlign: 'center' }}>
-                <div style={uploadDescriptionContainer}>
-                    <p style={uploadDescriptionStyle}>A Copy of Certificate of incorporation</p>
-                    <RaisedButton primary={true} containerElement='label' label='Upload'>
-                        <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('incorporation',e)} /></div>
-                    </RaisedButton>
-                    <Subheader style={{ color: this.state.incorporationErr ? pinkA400 : green400 }}>{this.state.incorporationErr ? this.state.incorporationErr : this.state.incorporation}</Subheader>
+            <MuiThemeProvider>
+                <div style={{ textAlign: 'center' }}>
+                    <div style={uploadDescriptionContainer}>
+                        <p style={uploadDescriptionStyle}>1. A Copy of Certificate of incorporation</p>
+                        <RaisedButton primary={true} containerElement='label' label='Upload'>
+                            <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('incorporation',e)} /></div>
+                        </RaisedButton>
+                        <Subheader style={{ color: this.state.incorporationErr ? pinkA400 : green400 }}>{this.state.incorporationErr.length > 0 ? this.state.incorporationErr : this.state.incorporation.name}</Subheader>
+                    </div>
+
+                    <div style={uploadDescriptionContainer}>
+                        <p style={uploadDescriptionStyle}>2. A Copy of OWNER/OFFICER’s valid government-issued identification</p>
+                        <RaisedButton primary={true} containerElement='label' label='Upload'>
+                            <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('identification',e)} /></div>
+                        </RaisedButton>
+                        <Subheader style={{ color: this.state.identificationErr ? pinkA400 : green400 }}>{this.state.identificationErr.length > 0 ? this.state.identificationErr : this.state.identification.name}</Subheader>
+                    </div>
+
+                    <div style={uploadDescriptionContainer}>
+                        <p style={uploadDescriptionStyle}>3. Representative photographs of the interior and exterior of merchant’s retail
+                            location, including the merchant’s logo/branding</p>
+                        <RaisedButton primary={true} containerElement='label' label='Upload'>
+                            <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('photographs',e)} /></div>
+                        </RaisedButton>
+                        <Subheader style={{ color: this.state.photographsErr ? pinkA400 : green400 }}>{this.state.photographsErr.length > 0 ? this.state.photographsErr : this.state.photographs.name}</Subheader>
+                    </div>
+
+                    <div style={uploadDescriptionContainer}>
+                        <p style={uploadDescriptionStyle}>4. One of the following is required:
+                            1. A voided copy of a permanent check (not a starter or
+                            handwritten check). OR
+                            If the voided check is not yet available, a letter is required from your financial institution typed
+                            on the banks letterhead and signed by an officer of the bank. The letter must include: your
+                            merchant name, account number, transit number, institution number and the contact details
+                            (including phone number) of the bank representative who signs the letter.</p>
+                        <RaisedButton primary={true} containerElement='label' label='Upload'>
+                            <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('check',e)} /></div>
+                        </RaisedButton>
+                        <Subheader style={{ color: this.state.checkErr ? pinkA400 : green400 }}>{this.state.checkErr.length > 0 ? this.state.checkErr : this.state.check.name}</Subheader>
+                    </div>
+
+                    <RaisedButton primary={true} containerElement='label' label='Submit' style={submitFileBtn} onClick={() => this.handleSubmitFile()}/>
                 </div>
-
-                <div style={uploadDescriptionContainer}>
-                    <p style={uploadDescriptionStyle}>A Copy of OWNER/OFFICER’s valid government-issued identification</p>
-                    <RaisedButton primary={true} containerElement='label' label='Upload'>
-                        <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('identification',e)} /></div>
-                    </RaisedButton>
-                    <Subheader style={{ color: this.state.identificationErr ? pinkA400 : green400 }}>{this.state.identificationErr ? this.state.identificationErr : this.state.identification}</Subheader>
-                </div>
-
-                <div style={uploadDescriptionContainer}>
-                    <p style={uploadDescriptionStyle}>Representative photographs of the interior and exterior of merchant’s retail
-                        location, including the merchant’s logo/branding</p>
-                    <RaisedButton primary={true} containerElement='label' label='Upload'>
-                        <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('photographs',e)} /></div>
-                    </RaisedButton>
-                    <Subheader style={{ color: this.state.photographsErr ? pinkA400 : green400 }}>{this.state.photographsErr ? this.state.photographsErr : this.state.photographs}</Subheader>
-                </div>
-
-                <div style={uploadDescriptionContainer}>
-                    <p style={uploadDescriptionStyle}>One of the following is required:
-                        1. A voided copy of a permanent check (not a starter or
-                        handwritten check). OR
-                        If the voided check is not yet available, a letter is required from your financial institution typed
-                        on the banks letterhead and signed by an officer of the bank. The letter must include: your
-                        merchant name, account number, transit number, institution number and the contact details
-                        (including phone number) of the bank representative who signs the letter.</p>
-                    <RaisedButton primary={true} containerElement='label' label='Upload'>
-                        <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('check',e)} /></div>
-                    </RaisedButton>
-                    <Subheader style={{ color: this.state.checkErr ? pinkA400 : green400 }}>{this.state.checkErr ? this.state.checkErr : this.state.check}</Subheader>
-                </div>
-
-                <RaisedButton primary={true} containerElement='label' label='Submit' style={submitFileBtn} onClick={() => this.handleSubmitFile()}/>
-
-            </div>
+            </MuiThemeProvider>
         )
 
         const lastPage = (
-            <div>
-                <Subheader style={{ fontSize: '24px', fontWeight: 'bold', color:'#000000' }}>THANK YOU FOR APPLYING TO OPAY</Subheader>
-                <Subheader>We will be in touch within 2 business days to discuss your business needs.</Subheader>
-                <RaisedButton primary={true} containerElement='label' label='Back to Home' style={submitFileBtn} onClick={() => browserHistory.push(`${root_page}`)}/>
-            </div>
+            <MuiThemeProvider>
+                <div>
+                    <Subheader style={{ fontSize: '24px', fontWeight: 'bold', color:'#000000' }}>THANK YOU FOR APPLYING TO OPAY</Subheader>
+                    <Subheader>We will be in touch within 2 business days to discuss your business needs.</Subheader>
+                    <RaisedButton primary={true} containerElement='label' label='Back to Home' style={submitFileBtn} onClick={() => browserHistory.push(`${root_page}`)}/>
+                </div>
+            </MuiThemeProvider>
         )
 
         return (
@@ -450,16 +483,13 @@ class MerchantRegisterPage extends Component{
                     <Paper zDepth={3} style={Object.assign({}, this.state.paperSize, paperStyle )}>
                        
                         <div style={verticalCenter}>
-                            {this.state.openForm ? ( this.state.openLastPage ? lastPage : signUpForm ) : basicInfo }
+                            {this.state.openForm ? ( this.state.openLastPage ? <div>{lastPage}</div> : <div>{signUpForm}</div> ) : <div>{basicInfo}</div> }
                         </div>
 
                     </Paper>
                 </div>
-                <Snackbar
-                    open={this.state.open}
-                    message={this.state.message}
-                    autoHideDuration={3000}
-                    onRequestClose={this.handleRequestClose}
+                <Snackbar open={this.state.open} message={this.state.message}
+                    autoHideDuration={3000} onRequestClose={this.handleRequestClose}
                     bodyStyle={{backgroundColor: this.state.success ? green400 : pinkA400, textAlign: 'center' }}
                     />
             </MuiThemeProvider>
@@ -531,6 +561,5 @@ const category = [
     '其他服务行业 Other services industry',
     '其他货物贸易行业 Other goods trade'
 ]
-
 
 export default connect()(MerchantRegisterPage);

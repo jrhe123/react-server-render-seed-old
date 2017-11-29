@@ -1,5 +1,7 @@
 export const opay_url = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/': '';
 
+export const merchant_upload_file = 'upload/multiple'
+
 export const admin_login = 'admin/login';
 export const admin_merchantlist = 'admin/merchant_list';
 export const admin_logout = 'admin/logout';
