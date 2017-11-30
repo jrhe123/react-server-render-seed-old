@@ -221,7 +221,7 @@ class AdminPage extends Component{
                                 </TableHeader>
                                 <TableBody displayRowCheckbox={false}>
                                     {this.state.merList.slice(this.state.start,this.state.end).map((msg, idx)=>(
-                                        <TableRow selectable={false}>
+                                        <TableRow key={idx} selectable={false}>
                                             <TableRowColumn style={tableCellStyle}>{msg.AgentID}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{msg.FirstName}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{msg.Email}</TableRowColumn>
