@@ -544,23 +544,4 @@ const styles = {
 
 }
 
-const category = [
-    '综合商城 Integrated Store',
-    '鞋包服饰 Clothes & Fashion',
-    '食品 Food & Restaurants',
-    '化妆品 Beauty & Health care',
-    '酒店行业 Hospitality industry',
-    '母婴 Baby, maternal products & toys',
-    '办公用品 Office supplies',
-    '旅游行业 Tourism & Travel',
-    '机票行业 Airline tickets industry',
-    '娱乐行业 Entertainment, music & games',
-    '运动行业 Sports & Outdoors',
-    '珠宝行业 Jewelry',
-    '国际物流 International logistics',
-    '教育行业 Education & School',
-    '其他服务行业 Other services industry',
-    '其他货物贸易行业 Other goods trade'
-]
-
 export default connect()(MerchantRegisterPage);
