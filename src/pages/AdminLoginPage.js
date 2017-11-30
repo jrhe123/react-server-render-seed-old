@@ -107,7 +107,7 @@ class AdminLoginPage extends Component{
                         <div style={verticalCenter}>
                             <TextField floatingLabelText="Username" inputStyle={this.state.inputStyle} onChange={(e, newString) => this.usernameChange(e,newString)}
                                        floatingLabelStyle={this.state.floatLabelStyle} style={this.state.textFieldStyle} /><br />
-                            <TextField floatingLabelText="Password" inputStyle={this.state.inputStyle} onChange={(e, newString) => this.passwordChange(e,newString)}
+                            <TextField floatingLabelText="Password" type="password" inputStyle={this.state.inputStyle} onChange={(e, newString) => this.passwordChange(e,newString)}
                                        floatingLabelStyle={this.state.floatLabelStyle} style={this.state.textFieldStyle} /><br />
                             <RaisedButton label="Login" primary={true} style={this.state.loginBtnStyle} onClick={() => this.login()}/>
                         </div>

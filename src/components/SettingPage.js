@@ -24,7 +24,6 @@ import InputMask from 'react-input-mask';
 import validator from 'validator';
 
 
-
 // Redux
 import { connect } from 'react-redux';
 import { showSnackbar }  from '../actions/layout_action';

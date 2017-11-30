@@ -5,8 +5,14 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import { Link } from 'react-router';
 
-import { root_page, merchant_login } from '../utilities/urlPath'
+// Component
 import Header from '../components/Header';
+
+// Router
+import { root_page, merchant_login } from '../utilities/urlPath'
+
+// API
+import { facebook, twitter, instagram, youtube } from '../utilities/apiUrl'
 
 
 class NewMainPage extends Component{
@@ -45,16 +51,16 @@ class NewMainPage extends Component{
 
                     <div style={logoContainerStyle}>
                             <div style={logoItemStyle}>
-                                <img style={logoImgStyle} src="/img/twitter_icon.png" />
+                                <a href={twitter}><img style={logoImgStyle} src="/img/twitter_icon.png" /></a>
                             </div>
                             <div style={logoItemStyle}>
-                                <img style={logoImgStyle} src="/img/youtube_icon.png" />
+                                <a href={youtube}><img style={logoImgStyle} src="/img/youtube_icon.png" /></a>
                             </div>
                             <div style={logoItemStyle}>
-                                <img style={logoImgStyle} src="/img/instagram_icon.png" />
+                                <a href={instagram}><img style={logoImgStyle} src="/img/instagram_icon.png" /></a>
                             </div>
                             <div style={logoItemStyle}>
-                                <img style={logoImgStyle} src="/img/facebook_icon.png" />
+                                <a href={facebook}><img style={logoImgStyle} src="/img/facebook_icon.png" /></a>
                             </div>
                     </div>
                 </div>
