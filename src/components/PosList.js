@@ -98,7 +98,7 @@ class PosList extends Component {
 
                 if (res.data.Confirmation === 'Fail') {
                 } else if (res.data.Confirmation === 'Success') {
-                    this.setState({ currentPage: page, posList: res.data.Response.PosMachines, totalRecords: res.data.Response.totalRecords });
+                    this.setState({ currentPage: page, posList: res.data.Response.PosMachines, totalRecords: res.data.Response.TotalRecords });
                 }
             }
 
