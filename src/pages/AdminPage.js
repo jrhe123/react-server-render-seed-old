@@ -9,6 +9,7 @@ import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 import UltimatePagination from 'react-ultimate-pagination-material-ui';
+import { green400, pinkA400 } from 'material-ui/styles/colors';
 
 // Router
 import { root_page } from '../utilities/urlPath'
@@ -18,6 +19,7 @@ import { opay_url, admin_merchantlist, admin_logout, admin_active_merchant } fro
 import * as apiManager from  '../helpers/apiManager';
 
 // Component
+import Snackbar from 'material-ui/Snackbar';
 import PosList from '../components/PosList';
 import Loading from '../components/Loading';
 
@@ -27,12 +29,17 @@ class AdminPage extends Component{
     constructor(props) {
         super(props);
         this.state = {
+
+            open: false,
+            message: '',
+            success: false,
+
             showPagination: false, currentPage: 1, totalPages: 1, boundaryPagesRange: 1,
             siblingPagesRange: 1, hidePreviousAndNextPageLinks: false, start: 0, end: 9,
             hideFirstAndLastPageLinks: false, hideEllipsis: false,
             merListOpenPop: [false],
             merListAnEl: [null],
-            merListTitle: ['AgentID', 'Name', 'Email', 'Phone', 'CreatedAt', 'Status', 'Action'],
+            merListTitle: ['AgentID', 'Name', 'Email', 'Phone', 'TimeStamp', 'Status', 'Action'],
             merList: [],
             UserGUID: '',
             isLoading: true,
@@ -50,6 +57,22 @@ class AdminPage extends Component{
         this.adminMain = this.adminMain.bind(this);
     }
 
+    // Snack
+    handleTouchTap = (msg, isSuccess) => {
+        this.setState({
+            open: true,
+            message: msg,
+            success: isSuccess
+        });
+    };
+
+    handleTouchTapClose = () => {
+        this.setState({
+            open: false,
+        });
+    };
+
+
     adminMain = () => {
         this.setState({ tab: 0 })
     }
@@ -61,12 +84,10 @@ class AdminPage extends Component{
     getMerList = () => {
 
         let params = { Params: { Limit: "-1", Offset: "0" } };// Limit: -1 means return all results
-
         apiManager.opayApi(opay_url + admin_merchantlist, params,true).then((res) => {
 
             if (res.data) {
-                if (res.data.Confirmation === 'Fail') {
-                } else if (res.data.Confirmation === 'Success') {
+                if (res.data.Confirmation === 'Success') {
 
                     let total = res.data.Response.TotalRecords;
                     let numberOfPage = Math.floor(total / 10.0);
@@ -78,11 +99,11 @@ class AdminPage extends Component{
                     this.setState({ totalPages: numberOfPage, start: 0, end: end });
 
                     let list = res.data.Response.Merchants;
-
                     this.setState({ merList: list })
+                }else{
+                    this.handleTouchTap(`Error: ${res.data.Message}`, false);
                 }
             }
-
         }).catch((err) => {
             localStorage.removeItem('token');
             browserHistory.push(`${root_page}`);
@@ -116,7 +137,6 @@ class AdminPage extends Component{
             localStorage.removeItem('token');
             browserHistory.push(`${root_page}`);
         });
-
     }
 
     active = (idx) => {
@@ -126,19 +146,19 @@ class AdminPage extends Component{
         apiManager.opayApi(opay_url + admin_active_merchant, params, true).then((res) => {
 
             if (res.data) {
-                if (res.data.Confirmation === 'Fail') {
-                } else if (res.data.Confirmation === 'Success') {
-                    let list = [];
+                if (res.data.Confirmation === 'Success') {
+                    let updated = Object.assign({}, this.state);
                     for (let i = 0;i < this.state.merList.length;i++) {
-                        list.push(this.state.merList[i]);
+                        updated.merList[idx].Status = 'ACTIVE';
                     }
-                    this.setState({ merList: list });
+                    this.setState(updated);
+                    this.handleTouchTap(`Merchant has been updated`, true);
+                }else{
+                    this.handleTouchTap(`Error: ${res.data.Message}`, false);
                 }
             }
-
         }).catch((err) => {
-            localStorage.removeItem('token');
-            browserHistory.push(`${root_page}`);
+            this.handleTouchTap(`Error: ${err}`);
         });
 
     }
@@ -150,7 +170,6 @@ class AdminPage extends Component{
         for (let i = 0;i < this.state.merListOpenPop.length;i++) {
             merListOpenPop[i] = false;
         }
-
         merListOpenPop[idx] = false;
 
         this.setState({
@@ -301,6 +320,13 @@ class AdminPage extends Component{
                     </div>
 
                 </div>
+                <Snackbar 
+                    open={this.state.open} 
+                    message={this.state.message}
+                    autoHideDuration={3000} 
+                    onRequestClose={this.handleTouchTapClose}
+                    bodyStyle={{backgroundColor: this.state.success ? green400 : pinkA400, textAlign: 'center' }}
+                    />
             </MuiThemeProvider>
         )
     }
