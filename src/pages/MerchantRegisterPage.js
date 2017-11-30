@@ -37,11 +37,11 @@ class MerchantRegisterPage extends Component{
         this.state = {
 
             open: false,
-            openForm: true,
+            openForm: false,
             openLastPage: false,
             message: '',
             success: true,
-            category: category,
+            category: [],
             categoryValue: 0,
             UserGUID: '',
             merchantGUIDList: [],
@@ -91,7 +91,7 @@ class MerchantRegisterPage extends Component{
 
         }
 
-     /*   let params = {
+        let params = {
             Params: {
                 Limit: '-1',
                 Offset: '0',
@@ -102,16 +102,13 @@ class MerchantRegisterPage extends Component{
             .then((response) => {
                 if(response.data.Confirmation === 'Success'){
                     let list = response.data.Response.MerchantCategories;
-                    let cagy = this.state.category;
+                    let cagy = [];//this.state.category;
                     let MerchantGUIDList = [];
-                    for(let i = 0;i < this.state.category.length;i++) {
-                        for (let j = 0;j < list.length;j++) {
-                            if(cagy[i].includes(list[j].CategoryName)) {
-                                MerchantGUIDList[i] = list[j].MerchantCategoryGUID;
-                            }
-                        }
+                    for (let i = 0;i < list.length;i++) {
+                        cagy.push(list[i].CategoryName)
+                        MerchantGUIDList.push(list[i].MerchantCategoryGUID)
                     }
-                    this.setState({ merchantGUIDList: MerchantGUIDList });
+                    this.setState({ category: cagy, merchantGUIDList: MerchantGUIDList });
                    // console.log(MerchantGUIDList);
                    // console.log(this.state.merchantGUIDList);
                 }
@@ -128,7 +125,7 @@ class MerchantRegisterPage extends Component{
             }
         })
 
-        this.setState(updated);*/
+        this.setState(updated);
     }
 
     refactor = () => {
@@ -371,7 +368,7 @@ class MerchantRegisterPage extends Component{
             ? <p style={resendStyle}>Didn't receive email? Resend it.</p> : null;
 
         const basicInfo = (
-                <div style={{ textAlign: 'center' }}>
+                <div style={verticalCenter}>
                     <TextField floatingLabelText="Merchant name"
                                inputStyle={this.state.inputStyle}
                                floatingLabelStyle={this.state.floatLabelStyle}
@@ -536,7 +533,8 @@ const styles = {
     verticalCenter: {
         position: 'relative',
         top: '50%',
-        transform: 'translateY(-50%)'
+        transform: 'translateY(-50%)',
+        textAlign: 'center'
     },
 
     resendStyle: {
