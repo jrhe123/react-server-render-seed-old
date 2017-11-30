@@ -50,7 +50,7 @@ class MerchantRegisterPage extends Component{
             inputStyle: { fontSize: '19px'  },
             textFieldStyle: { width: '58%' },
             loginBtnStyle: { marginTop: '19px' },
-            paperSize: { height: '85%', width: '55%' },
+            paperSize: { height: '95%', width: '55%' },
 
             incorporation: { name:'' },
             identification: { name:'' },
@@ -138,19 +138,19 @@ class MerchantRegisterPage extends Component{
             this.setState({ inputStyle: { fontSize: '12px' } });
             this.setState({ textFieldStyle: { width: '66%' } });
             this.setState({ loginBtnStyle: {marginTop: '2px'}});
-            this.setState({ paperSize: { height: '80%', width: '68%' } });
+            this.setState({ paperSize: { height: '98%', width: '68%' } });
         } else if(width <= 768) {
             this.setState({ floatLabelStyle: { fontSize: '15px' } });
             this.setState({ inputStyle: { fontSize: '15px' } });
             this.setState({ textFieldStyle: { width: '78%' } });
             this.setState({ loginBtnStyle: {marginTop: '4px'}});
-            this.setState({ paperSize: { height: '85%', width: '55%' } });
+            this.setState({ paperSize: { height: '98%', width: '55%' } });
         } else {
             this.setState({floatLabelStyle: {fontSize: '19px'}});
             this.setState({inputStyle: {fontSize: '19px'}});
             this.setState({textFieldStyle: {width: '58%'}});
             this.setState({loginBtnStyle: {marginTop: '19px'}});
-            this.setState({ paperSize: { height: '85%', width: '55%' } });
+            this.setState({ paperSize: { height: '98%', width: '55%' } });
         }
     }
 
@@ -428,13 +428,13 @@ class MerchantRegisterPage extends Component{
         )
 
         const signUpForm = (
-                <div style={{ textAlign: 'center', overflowY: 'scroll' }}>
+                <div style={{ marginTop: 12, overflowY: 'auto' }}>
                     <div style={uploadDescriptionContainer}>
                         <p className="txt-5" style={uploadDescriptionStyle}>1. A Copy of Certificate of incorporation</p>
                         <RaisedButton primary={true} containerElement='label' label='Upload'>
                             <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('incorporation',e)} /></div>
                         </RaisedButton>
-                        <p style={{ color: this.state.incorporationErr ? pinkA400 : green400 }}>{this.state.incorporationErr.length > 0 ? this.state.incorporationErr : this.state.incorporation.name}</p>
+                        <p style={{ color: this.state.incorporationErr ? pinkA400 : green400, marginTop: 6 }}>{this.state.incorporationErr.length > 0 ? this.state.incorporationErr : this.state.incorporation.name}</p>
                     </div>
 
                     <div style={uploadDescriptionContainer}>
@@ -442,7 +442,7 @@ class MerchantRegisterPage extends Component{
                         <RaisedButton primary={true} containerElement='label' label='Upload'>
                             <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('identification',e)} /></div>
                         </RaisedButton>
-                        <p style={{ color: this.state.identificationErr ? pinkA400 : green400 }}>{this.state.identificationErr.length > 0 ? this.state.identificationErr : this.state.identification.name}</p>
+                        <p style={{ color: this.state.identificationErr ? pinkA400 : green400, marginTop: 6 }}>{this.state.identificationErr.length > 0 ? this.state.identificationErr : this.state.identification.name}</p>
                     </div>
 
                     <div style={uploadDescriptionContainer}>
@@ -451,7 +451,7 @@ class MerchantRegisterPage extends Component{
                         <RaisedButton primary={true} containerElement='label' label='Upload'>
                             <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('photographs',e)} /></div>
                         </RaisedButton>
-                        <p style={{ color: this.state.photographsErr ? pinkA400 : green400 }}>{this.state.photographsErr.length > 0 ? this.state.photographsErr : this.state.photographs.name}</p>
+                        <p style={{ color: this.state.photographsErr ? pinkA400 : green400, marginTop: 6 }}>{this.state.photographsErr.length > 0 ? this.state.photographsErr : this.state.photographs.name}</p>
                     </div>
 
                     <div style={uploadDescriptionContainer}>
@@ -465,7 +465,7 @@ class MerchantRegisterPage extends Component{
                         <RaisedButton primary={true} containerElement='label' label='Upload'>
                             <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('check',e)} /></div>
                         </RaisedButton>
-                        <p style={{ color: this.state.checkErr ? pinkA400 : green400 }}>{this.state.checkErr.length > 0 ? this.state.checkErr : this.state.check.name}</p>
+                        <p style={{ color: this.state.checkErr ? pinkA400 : green400, marginTop: 6 }}>{this.state.checkErr.length > 0 ? this.state.checkErr : this.state.check.name}</p>
                     </div>
 
                     <RaisedButton primary={true} label='Submit' style={submitFileBtn} onClick={() => this.handleSubmitFile()}/>
@@ -506,17 +506,18 @@ const styles = {
     uploadDescriptionContainer: {
         paddingLeft: '50px',
         paddingRight: '50px',
+        marginTop: 18,
+        marginBottom: 18
     },
 
     uploadDescriptionStyle: {
-       /* textAlign: 'justify',
-        textJustify: 'inter-word',
-        height: '30px',
-        overflowY: 'scroll',*/
+        textAlign: 'left',
+        marginBottom: 12
     },
 
     submitFileBtn: {
-        marginTop: '20px',
+        marginTop: 24,
+        marginBottom: 24
     },
 
     paperStyle: {
@@ -524,7 +525,8 @@ const styles = {
         top: '50%',
         left: '50%',
         transform: 'translateX(-50%) translateY(-50%)',
-        textAlign: 'center'
+        textAlign: 'center',
+        overflowY: 'auto',
     },
 
     signUpBtn: {
