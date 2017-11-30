@@ -37,7 +37,7 @@ class MerchantRegisterPage extends Component{
         this.state = {
 
             open: false,
-            openForm: false,
+            openForm: true,
             openLastPage: false,
             message: '',
             success: true,
@@ -82,7 +82,16 @@ class MerchantRegisterPage extends Component{
     componentDidMount() {
         window.addEventListener('resize', this.refactor);
 
-        let params = {
+        const width = window.innerWidth;
+        if (width <= 414) {
+
+        } else if (width <= 768) {
+
+        } else {
+
+        }
+
+     /*   let params = {
             Params: {
                 Limit: '-1',
                 Offset: '0',
@@ -119,7 +128,7 @@ class MerchantRegisterPage extends Component{
             }
         })
 
-        this.setState(updated);
+        this.setState(updated);*/
     }
 
     refactor = () => {
@@ -362,8 +371,7 @@ class MerchantRegisterPage extends Component{
             ? <p style={resendStyle}>Didn't receive email? Resend it.</p> : null;
 
         const basicInfo = (
-            <MuiThemeProvider>
-                <div>
+                <div style={{ textAlign: 'center' }}>
                     <TextField floatingLabelText="Merchant name"
                                inputStyle={this.state.inputStyle}
                                floatingLabelStyle={this.state.floatLabelStyle}
@@ -417,39 +425,37 @@ class MerchantRegisterPage extends Component{
                                   onClick={() => this.handlerSubmit()} /> <br />
                     { resendText }
                 </div>
-            </MuiThemeProvider>
         )
 
         const signUpForm = (
-            <MuiThemeProvider>
-                <div style={{ textAlign: 'center' }}>
+                <div style={{ textAlign: 'center', overflowY: 'scroll' }}>
                     <div style={uploadDescriptionContainer}>
-                        <p style={uploadDescriptionStyle}>1. A Copy of Certificate of incorporation</p>
+                        <p className="txt-5" style={uploadDescriptionStyle}>1. A Copy of Certificate of incorporation</p>
                         <RaisedButton primary={true} containerElement='label' label='Upload'>
                             <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('incorporation',e)} /></div>
                         </RaisedButton>
-                        <Subheader style={{ color: this.state.incorporationErr ? pinkA400 : green400 }}>{this.state.incorporationErr.length > 0 ? this.state.incorporationErr : this.state.incorporation.name}</Subheader>
+                        <p style={{ color: this.state.incorporationErr ? pinkA400 : green400 }}>{this.state.incorporationErr.length > 0 ? this.state.incorporationErr : this.state.incorporation.name}</p>
                     </div>
 
                     <div style={uploadDescriptionContainer}>
-                        <p style={uploadDescriptionStyle}>2. A Copy of OWNER/OFFICER’s valid government-issued identification</p>
+                        <p className="txt-5" style={uploadDescriptionStyle}>2. A Copy of OWNER/OFFICER’s valid government-issued identification</p>
                         <RaisedButton primary={true} containerElement='label' label='Upload'>
                             <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('identification',e)} /></div>
                         </RaisedButton>
-                        <Subheader style={{ color: this.state.identificationErr ? pinkA400 : green400 }}>{this.state.identificationErr.length > 0 ? this.state.identificationErr : this.state.identification.name}</Subheader>
+                        <p style={{ color: this.state.identificationErr ? pinkA400 : green400 }}>{this.state.identificationErr.length > 0 ? this.state.identificationErr : this.state.identification.name}</p>
                     </div>
 
                     <div style={uploadDescriptionContainer}>
-                        <p style={uploadDescriptionStyle}>3. Representative photographs of the interior and exterior of merchant’s retail
+                        <p className="txt-5" style={uploadDescriptionStyle}>3. Representative photographs of the interior and exterior of merchant’s retail
                             location, including the merchant’s logo/branding</p>
                         <RaisedButton primary={true} containerElement='label' label='Upload'>
                             <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('photographs',e)} /></div>
                         </RaisedButton>
-                        <Subheader style={{ color: this.state.photographsErr ? pinkA400 : green400 }}>{this.state.photographsErr.length > 0 ? this.state.photographsErr : this.state.photographs.name}</Subheader>
+                        <p style={{ color: this.state.photographsErr ? pinkA400 : green400 }}>{this.state.photographsErr.length > 0 ? this.state.photographsErr : this.state.photographs.name}</p>
                     </div>
 
                     <div style={uploadDescriptionContainer}>
-                        <p style={uploadDescriptionStyle}>4. One of the following is required:
+                        <p className="txt-5" style={uploadDescriptionStyle}>4. One of the following is required:
                             1. A voided copy of a permanent check (not a starter or
                             handwritten check). OR
                             If the voided check is not yet available, a letter is required from your financial institution typed
@@ -459,33 +465,26 @@ class MerchantRegisterPage extends Component{
                         <RaisedButton primary={true} containerElement='label' label='Upload'>
                             <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('check',e)} /></div>
                         </RaisedButton>
-                        <Subheader style={{ color: this.state.checkErr ? pinkA400 : green400 }}>{this.state.checkErr.length > 0 ? this.state.checkErr : this.state.check.name}</Subheader>
+                        <p style={{ color: this.state.checkErr ? pinkA400 : green400 }}>{this.state.checkErr.length > 0 ? this.state.checkErr : this.state.check.name}</p>
                     </div>
 
-                    <RaisedButton primary={true} containerElement='label' label='Submit' style={submitFileBtn} onClick={() => this.handleSubmitFile()}/>
+                    <RaisedButton primary={true} label='Submit' style={submitFileBtn} onClick={() => this.handleSubmitFile()}/>
                 </div>
-            </MuiThemeProvider>
         )
 
         const lastPage = (
-            <MuiThemeProvider>
                 <div>
                     <Subheader style={{ fontSize: '24px', fontWeight: 'bold', color:'#000000' }}>THANK YOU FOR APPLYING TO OPAY</Subheader>
                     <Subheader>We will be in touch within 2 business days to discuss your business needs.</Subheader>
-                    <RaisedButton primary={true} containerElement='label' label='Back to Home' style={submitFileBtn} onClick={() => browserHistory.push(`${root_page}`)}/>
+                    <RaisedButton primary={true} label='Back to Home' style={submitFileBtn} onClick={() => browserHistory.push(`${root_page}`)}/>
                 </div>
-            </MuiThemeProvider>
         )
 
         return (
             <MuiThemeProvider>
                 <div style={mainMerchantRegisterPageStyle}>
                     <Paper zDepth={3} style={Object.assign({}, this.state.paperSize, paperStyle )}>
-                       
-                        <div style={verticalCenter}>
-                            {this.state.openForm ? ( this.state.openLastPage ? <div>{lastPage}</div> : <div>{signUpForm}</div> ) : <div>{basicInfo}</div> }
-                        </div>
-
+                            {this.state.openForm ? ( this.state.openLastPage ? lastPage : signUpForm ) : basicInfo }
                     </Paper>
                 </div>
                 <Snackbar open={this.state.open} message={this.state.message}
@@ -506,12 +505,14 @@ const styles = {
 
     uploadDescriptionContainer: {
         paddingLeft: '50px',
-        paddingRight: '50px'
+        paddingRight: '50px',
     },
 
     uploadDescriptionStyle: {
-        textAlign: 'justify',
-        textJustify: 'inter-word'
+       /* textAlign: 'justify',
+        textJustify: 'inter-word',
+        height: '30px',
+        overflowY: 'scroll',*/
     },
 
     submitFileBtn: {
