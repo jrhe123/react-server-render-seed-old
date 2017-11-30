@@ -49,6 +49,8 @@ class MerchantEmplyees extends Component{
         super(props);
         this.state = {
 
+            userTypeID: null,
+
             userType: 'ALL',
             searchType: 'FirstLastName',
             searchField: '',
@@ -91,6 +93,10 @@ class MerchantEmplyees extends Component{
     }
 
     componentDidMount(){
+
+        this.setState({
+            userTypeID: localStorage.getItem('userTypeID')
+        })
         
         let params = {
             Params: {
@@ -640,7 +646,14 @@ class MerchantEmplyees extends Component{
                         value={this.state.userType} 
                         onChange={(event, index, value) => this.handleSearchUserTypeChange(event, index, value)}>
                         <MenuItem value="ALL" label="All" primaryText="All" />
-                        <MenuItem value="MANAGER" label="Manager" primaryText="Manager" />
+                        {
+                            (this.state.userTypeID == 2) ? 
+                            (
+                                <MenuItem value="MANAGER" label="Manager" primaryText="Manager" />
+                            )
+                            :
+                            (null)
+                        }
                         <MenuItem value="EMPLOYEE" label="Employee" primaryText="Employee" />
                     </SelectField>
 
@@ -686,12 +699,17 @@ class MerchantEmplyees extends Component{
                                                     animation={PopoverAnimationVertical}>
                                                     <Menu>
                                                         {
-                                                            (emp.UserTypeID === 5) ? 
-                                                            (null)
-                                                            :
+                                                            (this.state.userTypeID == 2) ? 
                                                             (
-                                                                <MenuItem primaryText="Assign" onClick={() => this.handleAssignOpen(emp, idx)}/>
+                                                                (emp.UserTypeID === 5) ? 
+                                                                (null)
+                                                                :
+                                                                (
+                                                                    <MenuItem primaryText="Assign" onClick={() => this.handleAssignOpen(emp, idx)}/>
+                                                                )
                                                             )
+                                                            :
+                                                            (null)
                                                         }
                                                         <MenuItem primaryText="Credential" onClick={() => this.handleCredentialOpen(emp, idx)}/>
                                                         <MenuItem primaryText="Delete" onClick={() => this.handleEmpDeleteOpen(emp, idx)}/>

@@ -47,6 +47,7 @@ class MerchantAdminPage extends Component{
             isLoading: true,
             tab: 'transactions',
             open: false,
+            userTypeID: null
         }
         this.refactor = this.refactor.bind(this);
     }
@@ -61,12 +62,16 @@ class MerchantAdminPage extends Component{
 
     componentDidMount() {
         let token = localStorage.getItem('token');
+        let userTypeID = localStorage.getItem('userTypeID');
+        this.setState({
+            userTypeID: userTypeID
+        })
         setTimeout(() => { 
             if(!token){
                 browserHistory.push(`${root_page}`);
             }else{
                 this.setState({
-                    isLoading: false,
+                    isLoading: false
                 })
             }
         }, 1000);
@@ -209,14 +214,24 @@ class MerchantAdminPage extends Component{
                                         primaryText="Employee" 
                                         leftIcon={<SocialPeople color="#fff" />}
                                         onClick={this.switchTab.bind(this, 'employees')} />
-                            <MenuItem style={{color: '#fff'}} 
-                                        primaryText="POS" 
-                                        leftIcon={<HardwareSmartphone color="#fff" />}
-                                        onClick={this.switchTab.bind(this, 'posMachines')} />              
-                            <MenuItem style={{color: '#fff'}} 
-                                        primaryText="Address" 
-                                        leftIcon={<CommunicationBusiness color="#fff" />}
-                                        onClick={this.switchTab.bind(this, 'address')} />            
+                            {
+                                (this.state.userTypeID == 2) ?
+                                (
+                                    <div>    
+                                        <MenuItem style={{color: '#fff'}} 
+                                            primaryText="POS" 
+                                            leftIcon={<HardwareSmartphone color="#fff" />}
+                                            onClick={this.switchTab.bind(this, 'posMachines')} />              
+                                        <MenuItem style={{color: '#fff'}} 
+                                                    primaryText="Address" 
+                                                    leftIcon={<CommunicationBusiness color="#fff" />}
+                                                    onClick={this.switchTab.bind(this, 'address')} />
+                                    </div>            
+                                )
+                                :
+                                (null)
+                            }            
+                                        
                         </Drawer>
                     </div>
                     <div style={contentContainer}>

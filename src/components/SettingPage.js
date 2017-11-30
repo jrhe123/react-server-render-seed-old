@@ -50,6 +50,9 @@ class SettingPage extends Component{
     constructor(props) {
         super(props);
         this.state = {
+
+            userTypeID: null,
+
             passwordModalOpen: false,
             profileModalOpen: false,
             open: false,
@@ -73,6 +76,10 @@ class SettingPage extends Component{
     }
 
     componentDidMount(){
+
+        this.setState({
+            userTypeID: localStorage.getItem('userTypeID')
+        })
        
         apiManager.opayApi(opay_url+'merchant/view_profile', null, true)
             .then((response) => {
@@ -159,12 +166,12 @@ class SettingPage extends Component{
         let tempProfile = Object.assign({}, this.state);
         let { agentID, email, phoneNumber, faxNumber } = tempProfile;
 
-        phoneNumber = formattor.removeFormatPhoneNumber(phoneNumber.toString());
-        faxNumber = formattor.removeFormatPhoneNumber(faxNumber.toString());
+        phoneNumber = phoneNumber ? formattor.removeFormatPhoneNumber(phoneNumber.toString()) : null;
+        faxNumber = faxNumber ? formattor.removeFormatPhoneNumber(faxNumber.toString()) : null;
         
         if(!validator.isEmail(email)){
             this.handleTouchTap(`Invalid email address`, false);
-        }else if(phoneNumber.toString().length != 10){
+        }else if(this.state.userTypeID == 2 && phoneNumber.toString().length != 10){
             this.handleTouchTap(`Invalid phone number`, false);
         }else{
 
@@ -299,8 +306,15 @@ class SettingPage extends Component{
                         <List style={{marginBottom: 24}}>
                             <ListItem primaryText={this.props.profile.agentID} leftIcon={<ActionAccountBox />} />
                             <ListItem primaryText={this.props.profile.email} leftIcon={<CommunicationEmail />} />
-                            <ListItem primaryText={this.props.profile.phoneNumber ? formattor.addFormatPhoneNumber(this.props.profile.phoneNumber) : ''} leftIcon={<CommunicationPhone />} />
-                            <ListItem primaryText={this.props.profile.faxNumber ? formattor.addFormatPhoneNumber(this.props.profile.faxNumber) : ''} leftIcon={<CommunicationBusiness />} />
+                            <ListItem primaryText={this.props.profile.phoneNumber ? formattor.addFormatPhoneNumber(this.props.profile.phoneNumber) : (<div style={{height: 16}}></div>)} leftIcon={<CommunicationPhone />} />
+                            {
+                                this.state.userTypeID == 2 ?
+                                (
+                                    <ListItem primaryText={this.props.profile.faxNumber ? formattor.addFormatPhoneNumber(this.props.profile.faxNumber) : (<div style={{height: 16}}></div>)} leftIcon={<CommunicationBusiness />} />
+                                )
+                                :
+                                (null)
+                            }        
                         </List>
                         <Divider />
                         <CardActions>
@@ -326,6 +340,7 @@ class SettingPage extends Component{
                         <div style={formControl}>
                             <TextField floatingLabelText="Email" 
                                         defaultValue={this.props.profile.email}
+                                        value={this.state.email}
                                         onChange={(e, value) => this.onFieldChange(e,value,'email')}
                                         />
                         </div>
@@ -334,17 +349,26 @@ class SettingPage extends Component{
                                 <InputMask mask="(999)999-9999" 
                                             maskChar=" "
                                             defaultValue={this.props.profile.phoneNumber} 
+                                            value={this.state.phoneNumber}
                                             onChange={(e) => this.onMaskFieldChange(e,'phoneNumber')} />        
                             </TextField>            
                         </div>    
-                        <div style={formControl}>
-                            <TextField floatingLabelText="FaxNumber">
-                                <InputMask mask="(999)999-9999" 
-                                            maskChar=" "
-                                            defaultValue={this.props.profile.faxNumber} 
-                                            onChange={(e, value) => this.onMaskFieldChange(e,'faxNumber')} />          
-                            </TextField>            
-                        </div>   
+                        {
+                            this.state.userTypeID == 2 ?
+                            (
+                                <div style={formControl}>
+                                    <TextField floatingLabelText="FaxNumber">
+                                        <InputMask mask="(999)999-9999" 
+                                                    maskChar=" "
+                                                    defaultValue={this.props.profile.faxNumber} 
+                                                    value={this.state.faxNumber}
+                                                    onChange={(e, value) => this.onMaskFieldChange(e,'faxNumber')} />          
+                                    </TextField>            
+                                </div>
+                            )
+                            :
+                            (null)
+                        }
                         <div style={btnControl}>       
                             <RaisedButton label="Update" 
                                         primary={true}
