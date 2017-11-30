@@ -12,6 +12,7 @@ import validator from 'validator';
 import InputMask from 'react-input-mask';
 import Subheader from 'material-ui/Subheader';
 import { green400, pinkA400 } from 'material-ui/styles/colors';
+import SelectField from 'material-ui/SelectField';
 
 // Redux
 import { connect } from 'react-redux';
@@ -26,6 +27,7 @@ import * as apiManager from '../helpers/apiManager';
 
 // Component
 import Snackbar from 'material-ui/Snackbar';
+import Loading from '../components/Loading';
 
 
 class MerchantRegisterPage extends Component{
@@ -36,13 +38,15 @@ class MerchantRegisterPage extends Component{
         this.refactor = this.refactor.bind(this);
         this.state = {
 
+            isLoading: true,
             open: false,
             openForm: false,
             openLastPage: false,
             message: '',
             success: true,
             category: [],
-            categoryValue: 0,
+            categoryValue: null,
+            categoryGUID: null,
             UserGUID: '',
             merchantGUIDList: [],
 
@@ -84,7 +88,9 @@ class MerchantRegisterPage extends Component{
 
         window.addEventListener('resize', this.refactor);
 
-        if (sessionStorage.getItem('user')) {
+        let existedUser = sessionStorage.getItem('user');
+        if(!existedUser){
+
             let params = {
                 Params: {
                     Limit: '-1',
@@ -95,35 +101,39 @@ class MerchantRegisterPage extends Component{
             apiManager.opayApi(opay_url + merchant_category_list, params, false)
                 .then((response) => {
                     if(response.data.Confirmation === 'Success'){
-                        let list = response.data.Response.MerchantCategories;
-                        let cagy = [];//this.state.category;
-                        let MerchantGUIDList = [];
-                        for (let i = 0;i < list.length;i++) {
-                            cagy.push(list[i].CategoryName)
-                            MerchantGUIDList.push(list[i].MerchantCategoryGUID)
-                        }
-                        this.setState({ category: cagy, merchantGUIDList: MerchantGUIDList });
-                       // console.log(MerchantGUIDList);
-                       // console.log(this.state.merchantGUIDList);
+                        let category = response.data.Response.MerchantCategories;
+                        this.setState({ 
+                            category: category
+                         });
+                         setTimeout(() => { 
+                            this.setState({ 
+                                isLoading: false 
+                            });
+                        }, 1000);
                     }
                 }).catch((err) => {
                     console.log(err)
                 })
     
             let updated = Object.assign({}, this.state);
-            ['phone', 'email', 'legalName','merchantName','website','categoryValue'].map((item) => {
+            ['phone', 'email', 'legalName','merchantName','website','categoryValue', 'categoryGUID'].map((item) => {
                 let value = sessionStorage.getItem('merchant_register_' + item);
                 if(value) {
-                    if(item === 'categoryValue') updated[item] = parseInt(value);
-                    else updated[item] = value;
+                    updated[item] = value;
                 }
             })
-    
             this.setState(updated);
-        } else {
-            this.setState({ openForm: true });
+            return;
         }
 
+        this.setState({ 
+            openForm: true 
+        });
+        setTimeout(() => { 
+            this.setState({ 
+                isLoading: false 
+            });
+        }, 1000);
     }
 
     refactor = () => {
@@ -149,9 +159,15 @@ class MerchantRegisterPage extends Component{
         }
     }
 
-    handleCategoryChange = (e, index, value) => {
-        this.setState({ categoryValue: value });
-        sessionStorage.setItem('merchant_register_categoryValue',value);
+    handleCategoryChange = (value) => {
+
+        let selectedCategory = this.state.category[value];
+        this.setState({ 
+            categoryValue: selectedCategory.CategoryName,
+            categoryGUID: selectedCategory.MerchantCategoryGUID
+        });
+        sessionStorage.setItem('merchant_register_categoryValue', selectedCategory.CategoryName);
+        sessionStorage.setItem('merchant_register_categoryGUID', selectedCategory.MerchantCategoryGUID);
     }
 
     // Snack
@@ -170,8 +186,6 @@ class MerchantRegisterPage extends Component{
     };
 
     uploadFile = (field, e) => {
-
-     //   console.log('e.target',e.target.files[0]);
 
         let file = e.target.files[0];
         let err = '';
@@ -270,21 +284,21 @@ class MerchantRegisterPage extends Component{
 
         let stop = false;
 
-        if (!this.state.incorporation) {
+        if (!this.state.incorporation.name) {
             stop = true;
             this.setState({ incorporationErr: 'Certificate of incorporation is required' });
         }
 
-        if (!this.state.identification) {
+        if (!this.state.identification.name) {
             stop = true;
             this.setState({ identificationErr: 'Identification is required' });
         }
 
-        if (!this.state.photographs) {
+        if (!this.state.photographs.name) {
             stop = true;
             this.setState({ photographsErr: 'Representative photograph is required' });
         }
-        if (!this.state.check) {
+        if (!this.state.check.name) {
             stop = true;
             this.setState({ checkErr: 'Check or letter is required' });
         }
@@ -296,60 +310,69 @@ class MerchantRegisterPage extends Component{
         formData.append('File2', this.state.identification);
         formData.append('File3', this.state.photographs);
         formData.append('File4', this.state.check);
-        formData.append('UserGUID', this.state.UserGUID);
+        formData.append('UserGUID', sessionStorage.getItem('user'));
 
         apiManager.opayFileApi(opay_url + merchant_upload_file, formData, false)
             .then((response) => {
                 if(response.data.Confirmation === 'Success'){
-
-                    //console.log('upload',response)
                     this.setState({ openLastPage: true });
+                    this.handleTouchTap(`Success`, true);
+
+                    sessionStorage.removeItem('user');
+                }else{
+                    this.handleTouchTap(`${response.data.Message}`, false);
                 }
             })
             .catch((err) => {
-                console.log(err)
+                this.handleTouchTap(`Error: ${error}`, false);
             })
     }
 
     handlerSubmit = () => {
         if (!this.state.merchantName) {
             this.handleTouchTap('Please enter your merchant name', false);
-        } else if(!this.state.email) {
-            this.handleTouchTap('Please enter your email', false);
-        } else if(!this.state.isValidEmail) {
-            this.handleTouchTap('Invalid email address', false);
         } else if(!this.state.legalName) {
             this.handleTouchTap('Please enter your legal name', false);
         } else if(!this.state.phone) {
             this.handleTouchTap('Please enter your phone number', false);
-        } else if(this.state.phone < 10) {
+        } else if(this.state.phone.length < 10) {
             this.handleTouchTap('Invalid phone number', false);
+        } else if(!this.state.email) {
+            this.handleTouchTap('Please enter your email', false);
+        } else if(!validateEmail(this.state.email)) {
+            this.handleTouchTap('Invalid email address', false);
+        } else if(!this.state.categoryGUID) {
+            this.handleTouchTap('Please select a merchant category', false);
         } else{
             let params = {
                 Params: {
                     MerchantName: this.state.merchantName,
                     LegalName: this.state.legalName,
-                    MerchantCategoryGUID: this.state.merchantGUIDList[this.state.categoryValue],
+                    MerchantCategoryGUID: this.state.categoryGUID,
                     MerchantWebsite: this.state.website,
                     Email: this.state.email,
                     PhoneNumber: this.state.phone,
                 }
             };
 
-
             apiManager.opayApi(opay_url + merchant_signup, params, false)
                 .then((response) => {
                     if(response.data.Confirmation === 'Success'){
-                        //console.log('success', response.data.Response)
-                        sessionStorage.setItem('user','exist');
-                        ['phone', 'email', 'legalName','merchantName','website','categoryValue'].map((item) => {
+                        sessionStorage.setItem('user', response.data.Response.UserGUID);
+                        ['phone', 'email', 'legalName','merchantName','website','categoryValue', 'categoryGUID'].map((item) => {
                             sessionStorage.removeItem('merchant_register_' + item);
                         })
-                        this.setState({ UserGUID: response.data.Response.UserGUID, openForm: true });
+                        this.setState({ 
+                            UserGUID: response.data.Response.UserGUID, 
+                            openForm: true 
+                        });
+                        this.handleTouchTap(`Success`, true);
+                    }else{
+                        this.handleTouchTap(`${response.data.Message}`, false);
                     }
                 })
                 .catch((err) => {
-                    console.log(err)
+                    this.handleTouchTap(`Error: ${error}`, false);
                 })
         }        
     }
@@ -363,7 +386,8 @@ class MerchantRegisterPage extends Component{
             verticalCenter,
             resendStyle,
             uploadDescriptionContainer,
-            submitFileBtn
+            submitFileBtn,
+            loadingContainer
         } = styles;
 
         const resendText = (this.state.isResend)
@@ -413,12 +437,19 @@ class MerchantRegisterPage extends Component{
                                value={this.state.email}
                                onBlur={this.onFieldBlur.bind(this, 'email')}
                                errorText={this.state.emailErrorText}
-                               onChange={this.onFieldChange.bind(this, 'email')} /><br /><br />
-                    <DropDownMenu maxHeight={300} value={this.state.categoryValue} onChange={this.handleCategoryChange.bind(this)}>
-                        {this.state.category.map((item,index) => (
-                            <MenuItem value={index} key={index} primaryText={item}  />
+                               onChange={this.onFieldChange.bind(this, 'email')} /><br />
+                    
+                    <SelectField
+                        style={{textAlign: 'left'}}
+                        floatingLabelText="Select a merchant type.."
+                        value={this.state.categoryValue}
+                        onChange={(e, value) => this.handleCategoryChange(value)}
+                    >
+                        {this.state.category.map((item, index) => (
+                            <MenuItem value={item.CategoryName} key={index} primaryText={item.CategoryName}  />
                         ))}
-                    </DropDownMenu><br />
+                    </SelectField><br/><br />
+
                     <RaisedButton label={this.state.btnTxt}
                                   primary={true}
                                   style={this.state.loginBtnStyle}
@@ -473,12 +504,20 @@ class MerchantRegisterPage extends Component{
         )
 
         const lastPage = (
-                <div>
-                    <Subheader style={{ fontSize: '24px', fontWeight: 'bold', color:'#000000' }}>THANK YOU FOR APPLYING TO OPAY</Subheader>
-                    <Subheader>We will be in touch within 2 business days to discuss your business needs.</Subheader>
+                <div style={{marginTop: 120}}>
+                    <Subheader style={{ fontSize: '24px', fontWeight: 'bold', color:'#000000', paddingLeft: 24, paddingRight: 24 }}>THANK YOU FOR APPLYING TO OPAY</Subheader>
+                    <Subheader style={{ paddingLeft: 24, paddingRight: 24}}>We will be in touch within 2 business days to discuss your business needs.</Subheader>
                     <RaisedButton primary={true} label='Back to Home' style={submitFileBtn} onClick={() => browserHistory.push(`${root_page}`)}/>
                 </div>
         )
+
+        if(this.state.isLoading){
+            return (
+                <div style={loadingContainer}>
+                    <Loading />
+                </div>
+            )
+        }
 
         return (
             <MuiThemeProvider>
@@ -497,6 +536,11 @@ class MerchantRegisterPage extends Component{
 }
 
 const styles = {
+
+    loadingContainer: {
+        width: '100vw',
+        height: '100vh',
+    },
 
     mainMerchantRegisterPageStyle: {
         width: '100vw',
@@ -545,6 +589,11 @@ const styles = {
         color: '#B2B2B2',
     }
 
+}
+
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
 }
 
 export default connect()(MerchantRegisterPage);
