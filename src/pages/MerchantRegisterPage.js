@@ -77,55 +77,53 @@ class MerchantRegisterPage extends Component{
 
         this.uploadFile = this.uploadFile.bind(this);
         this.handleSubmitFile = this.handleSubmitFile.bind(this);
+
     }
 
     componentDidMount() {
+
         window.addEventListener('resize', this.refactor);
 
-        const width = window.innerWidth;
-        if (width <= 414) {
-
-        } else if (width <= 768) {
-
+        if (sessionStorage.getItem('user')) {
+            let params = {
+                Params: {
+                    Limit: '-1',
+                    Offset: '0',
+                    Extra: { SearchType: '', SearchField: '' }
+                }
+            };
+            apiManager.opayApi(opay_url + merchant_category_list, params, false)
+                .then((response) => {
+                    if(response.data.Confirmation === 'Success'){
+                        let list = response.data.Response.MerchantCategories;
+                        let cagy = [];//this.state.category;
+                        let MerchantGUIDList = [];
+                        for (let i = 0;i < list.length;i++) {
+                            cagy.push(list[i].CategoryName)
+                            MerchantGUIDList.push(list[i].MerchantCategoryGUID)
+                        }
+                        this.setState({ category: cagy, merchantGUIDList: MerchantGUIDList });
+                       // console.log(MerchantGUIDList);
+                       // console.log(this.state.merchantGUIDList);
+                    }
+                }).catch((err) => {
+                    console.log(err)
+                })
+    
+            let updated = Object.assign({}, this.state);
+            ['phone', 'email', 'legalName','merchantName','website','categoryValue'].map((item) => {
+                let value = sessionStorage.getItem('merchant_register_' + item);
+                if(value) {
+                    if(item === 'categoryValue') updated[item] = parseInt(value);
+                    else updated[item] = value;
+                }
+            })
+    
+            this.setState(updated);
         } else {
-
+            this.setState({ openForm: true });
         }
 
-        let params = {
-            Params: {
-                Limit: '-1',
-                Offset: '0',
-                Extra: { SearchType: '', SearchField: '' }
-            }
-        };
-        apiManager.opayApi(opay_url + merchant_category_list, params, false)
-            .then((response) => {
-                if(response.data.Confirmation === 'Success'){
-                    let list = response.data.Response.MerchantCategories;
-                    let cagy = [];//this.state.category;
-                    let MerchantGUIDList = [];
-                    for (let i = 0;i < list.length;i++) {
-                        cagy.push(list[i].CategoryName)
-                        MerchantGUIDList.push(list[i].MerchantCategoryGUID)
-                    }
-                    this.setState({ category: cagy, merchantGUIDList: MerchantGUIDList });
-                   // console.log(MerchantGUIDList);
-                   // console.log(this.state.merchantGUIDList);
-                }
-            }).catch((err) => {
-                console.log(err)
-            })
-
-        let updated = Object.assign({}, this.state);
-        ['phone', 'email', 'legalName','merchantName','website','categoryValue'].map((item) => {
-            let value = sessionStorage.getItem('merchant_register_' + item);
-            if(value) {
-                if(item === 'categoryValue') updated[item] = parseInt(value);
-                else updated[item] = value;
-            }
-        })
-
-        this.setState(updated);
     }
 
     refactor = () => {
@@ -343,6 +341,10 @@ class MerchantRegisterPage extends Component{
                 .then((response) => {
                     if(response.data.Confirmation === 'Success'){
                         //console.log('success', response.data.Response)
+                        sessionStorage.setItem('user','exist');
+                        ['phone', 'email', 'legalName','merchantName','website','categoryValue'].map((item) => {
+                            sessionStorage.removeItem('merchant_register_' + item);
+                        })
                         this.setState({ UserGUID: response.data.Response.UserGUID, openForm: true });
                     }
                 })
@@ -401,6 +403,7 @@ class MerchantRegisterPage extends Component{
                         <InputMask mask="(999)999-9999"
                                    maskChar=" "
                                    defaultValue={this.state.phone}
+                                   value={this.state.phone}
                                    onChange={this.onFieldChange.bind(this, 'phone')} />
                     </TextField><br />
                     <TextField floatingLabelText="Email"
