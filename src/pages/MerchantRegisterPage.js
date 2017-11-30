@@ -430,7 +430,7 @@ class MerchantRegisterPage extends Component{
         const signUpForm = (
                 <div style={{ marginTop: 12, overflowY: 'auto' }}>
                     <div style={uploadDescriptionContainer}>
-                        <p className="txt-5" style={uploadDescriptionStyle}>1. A Copy of Certificate of incorporation</p>
+                        <p style={uploadDescriptionStyle}>1. A Copy of Certificate of incorporation</p>
                         <RaisedButton primary={true} containerElement='label' label='Upload'>
                             <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('incorporation',e)} /></div>
                         </RaisedButton>
@@ -438,7 +438,7 @@ class MerchantRegisterPage extends Component{
                     </div>
 
                     <div style={uploadDescriptionContainer}>
-                        <p className="txt-5" style={uploadDescriptionStyle}>2. A Copy of OWNER/OFFICER’s valid government-issued identification</p>
+                        <p style={uploadDescriptionStyle}>2. A Copy of OWNER/OFFICER’s valid government-issued identification</p>
                         <RaisedButton primary={true} containerElement='label' label='Upload'>
                             <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('identification',e)} /></div>
                         </RaisedButton>
@@ -446,7 +446,7 @@ class MerchantRegisterPage extends Component{
                     </div>
 
                     <div style={uploadDescriptionContainer}>
-                        <p className="txt-5" style={uploadDescriptionStyle}>3. Representative photographs of the interior and exterior of merchant’s retail
+                        <p style={uploadDescriptionStyle}>3. Representative photographs of the interior and exterior of merchant’s retail
                             location, including the merchant’s logo/branding</p>
                         <RaisedButton primary={true} containerElement='label' label='Upload'>
                             <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('photographs',e)} /></div>
@@ -455,7 +455,7 @@ class MerchantRegisterPage extends Component{
                     </div>
 
                     <div style={uploadDescriptionContainer}>
-                        <p className="txt-5" style={uploadDescriptionStyle}>4. One of the following is required:
+                        <p style={uploadDescriptionStyle}>4. One of the following is required:
                             1. A voided copy of a permanent check (not a starter or
                             handwritten check). OR
                             If the voided check is not yet available, a letter is required from your financial institution typed
