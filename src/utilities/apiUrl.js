@@ -1,5 +1,5 @@
-// export const opay_url = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/': '';
-export const opay_url = process.env.NODE_ENV === 'development' ? 'http://54.190.63.31:3000/': '';
+export const opay_url = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/': '';
+//export const opay_url = process.env.NODE_ENV === 'development' ? 'http://54.190.63.31:3000/': '';
 
 export const merchant_upload_file = 'upload/multiple'
 

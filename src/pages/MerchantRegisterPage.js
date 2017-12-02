@@ -65,7 +65,7 @@ class MerchantRegisterPage extends Component{
             photographsErr: '',
             checkErr: '',
 
-            btnTxt: 'Sign Up',
+            btnTxt: 'Continue',
             isResend: false,
             website: '',
             merchantName: '',
@@ -387,11 +387,9 @@ class MerchantRegisterPage extends Component{
             resendStyle,
             uploadDescriptionContainer,
             submitFileBtn,
-            loadingContainer
+            loadingContainer,
+            noteContainer
         } = styles;
-
-        const resendText = (this.state.isResend)
-            ? <p style={resendStyle}>Didn't receive email? Resend it.</p> : null;
 
         const basicInfo = (
                 <div style={verticalCenter}>
@@ -448,13 +446,21 @@ class MerchantRegisterPage extends Component{
                         {this.state.category.map((item, index) => (
                             <MenuItem value={item.CategoryName} key={index} primaryText={item.CategoryName}  />
                         ))}
-                    </SelectField><br/><br />
+                    </SelectField><br/>
 
                     <RaisedButton label={this.state.btnTxt}
                                   primary={true}
                                   style={this.state.loginBtnStyle}
-                                  onClick={() => this.handlerSubmit()} /> <br />
-                    { resendText }
+                                  onClick={() => this.handlerSubmit()} /> <br /><br /><br />
+                    <div style={noteContainer}>
+                        <p style={{paddingLeft: 24}}>Please note that you will need these documents to complete the registration.</p>
+                        <ul>
+                            <li>A copy of certificate of incorporation</li>
+                            <li>A copy of owner/officer's valid government-issued identification</li>
+                            <li>Representative photographs of the interior and exterior of merchant’s retail location</li>
+                            <li>A voided copy of a permanent check OR a letter is required from your financial institution typed on the banks letterhead and signed by an officer of the bank.</li>
+                        </ul> 
+                    </div>   
                 </div>
         )
 
@@ -587,6 +593,14 @@ const styles = {
     resendStyle: {
         marginTop: 12,
         color: '#B2B2B2',
+    },
+
+    noteContainer: {
+        textAlign: 'left',
+        fontSize: 11,
+        width: '80%',
+        margin: '0 auto',
+        marginTop: 12
     }
 
 }
