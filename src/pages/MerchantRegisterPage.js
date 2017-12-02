@@ -306,10 +306,10 @@ class MerchantRegisterPage extends Component{
         if (stop === true) return;
 
         let formData = new FormData();
-        formData.append('File1', this.state.incorporation);
-        formData.append('File2', this.state.identification);
-        formData.append('File3', this.state.photographs);
-        formData.append('File4', this.state.check);
+        formData.append('File_incorporation', this.state.incorporation);
+        formData.append('File_identification', this.state.identification);
+        formData.append('File_photographs', this.state.photographs);
+        formData.append('File_check', this.state.check);
         formData.append('UserGUID', sessionStorage.getItem('user'));
 
         apiManager.opayFileApi(opay_url + merchant_upload_file, formData, false)

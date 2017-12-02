@@ -4,12 +4,19 @@ import { browserHistory } from 'react-router';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Drawer from 'material-ui/Drawer';
+import TextField from 'material-ui/TextField';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
+import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 import UltimatePagination from 'react-ultimate-pagination-material-ui';
 import { green400, pinkA400 } from 'material-ui/styles/colors';
+import Divider from 'material-ui/Divider';
+import moment from 'moment';
+
+// helper
+import * as formattor from '../helpers/formattor';
 
 // Router
 import { root_page } from '../utilities/urlPath'
@@ -30,6 +37,14 @@ class AdminPage extends Component{
         super(props);
         this.state = {
 
+            docModalOpen: false,
+            viewMerchant: {},
+            docList: [],
+
+            emailModalOpen: false,
+            emailMerchant: {},
+            msgContent: '',
+
             open: false,
             message: '',
             success: false,
@@ -39,7 +54,7 @@ class AdminPage extends Component{
             hideFirstAndLastPageLinks: false, hideEllipsis: false,
             merListOpenPop: [false],
             merListAnEl: [null],
-            merListTitle: ['AgentID', 'Name', 'Email', 'Phone', 'TimeStamp', 'Status', 'Action'],
+            merListTitle: ['AgentID', 'Merchant', 'Email', 'Phone', 'TimeStamp', 'Status', 'Action'],
             merList: [],
             UserGUID: '',
             isLoading: true,
@@ -72,13 +87,17 @@ class AdminPage extends Component{
         });
     };
 
-
     adminMain = () => {
         this.setState({ tab: 0 })
     }
 
     addPos = (idx) => {
-        this.setState({ tab: 1, UserGUID: this.state.merList[idx].UserGUID });
+        this.setState({ 
+            tab: 1, 
+            UserGUID: this.state.merList[idx].UserGUID,
+            merListOpenPop: [false],
+            merListAnEl: [null],
+        });
     }
 
     getMerList = () => {
@@ -99,6 +118,11 @@ class AdminPage extends Component{
                     this.setState({ totalPages: numberOfPage, start: 0, end: end });
 
                     let list = res.data.Response.Merchants;
+                    for(let merchant of list){
+                        merchant.PhoneNumber = merchant.PhoneNumber ? formattor.addFormatPhoneNumber(merchant.PhoneNumber.toString()) : null;                        
+                        merchant.CreatedAt = merchant.CreatedAt ? moment(merchant.CreatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
+                        merchant.UpdatedAt = merchant.UpdatedAt ? moment(merchant.UpdatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
+                    }
                     this.setState({ merList: list })
                 }else{
                     this.handleTouchTap(`Error: ${res.data.Message}`, false);
@@ -141,10 +165,14 @@ class AdminPage extends Component{
 
     active = (idx) => {
 
+        let updatedPop = Object.assign([], this.state.merListOpenPop);
+        updatedPop[idx] = false;
+        this.setState({
+            merListOpenPop: updatedPop            
+        });
+
         let params = { Params: { UserGUID: this.state.merList[idx].UserGUID } };
-
         apiManager.opayApi(opay_url + admin_active_merchant, params, true).then((res) => {
-
             if (res.data) {
                 if (res.data.Confirmation === 'Success') {
                     let updated = Object.assign({}, this.state);
@@ -160,7 +188,6 @@ class AdminPage extends Component{
         }).catch((err) => {
             this.handleTouchTap(`Error: ${err}`);
         });
-
     }
 
     handleRequestClose = (idx) => {
@@ -178,7 +205,7 @@ class AdminPage extends Component{
     }
 
     handleAction = (event,idx) => {
-        // This prevents ghost click.
+
         event.preventDefault();
 
         let merListOpenPop = [];
@@ -215,16 +242,126 @@ class AdminPage extends Component{
         }, 1000);
     }
 
+    viewDocuments = (idx, merchant) => {
+
+        let params = { Params: { UserGUID: merchant.UserGUID } };
+        apiManager.opayApi(opay_url+'admin/view_document_list', params, true).then((res) => {
+
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+                    
+                    let updated = Object.assign({}, this.state);
+                    updated.merListOpenPop[idx] = false;
+                    updated.viewMerchant = merchant;
+                    updated.docModalOpen = true;
+                    updated.docList = res.data.Response;
+                    this.setState(updated);
+                }else{
+                    this.handleTouchTap(`Error: ${res.data.Message}`, false);
+                }
+            }
+        }).catch((err) => {
+            this.handleTouchTap(`Error: ${err}`);
+        });
+    }
+
+    handleDocClose = () => {
+        this.setState({
+            docModalOpen: false
+        });
+    }
+
+    viewFile = (doc) => {
+        let file = this.state.viewMerchant.UserGUID + '/' + doc;
+        window.open(`${opay_url}${file}`);
+    }
+
+    handleBackToList = () => {
+        this.setState({
+            tab: 0,
+        })
+    }
+
+    sendEmail = (idx, merchant) => {
+        
+        let updated = Object.assign({}, this.state);
+        updated.merListOpenPop[idx] = false;
+        updated.emailModalOpen = true;
+        updated.emailMerchant = merchant;
+        
+        let defaultMsg = `Hi ${merchant.FirstName},\n\n\n\n`
+                        + `Opay Inc.\n ${moment().format('YYYY-MM-DD')}`;
+        updated.msgContent = defaultMsg;
+        this.setState(updated);
+    }
+
+    handleEmailChange = (e) => {
+        let updated = Object.assign({}, this.state.emailMerchant);
+        updated.Email = e.target.value;
+        this.setState({
+            emailMerchant: updated
+        })
+    }
+
+    handleMsgChange = (e) => {
+        this.setState({
+            msgContent: e.target.value
+        });
+    }
+
+    handleEmailClose = () => {
+        this.setState({
+            emailModalOpen: false
+        });
+    }
+
+    sendMessage = () => {
+        let email = this.state.emailMerchant.Email;
+        let content = this.state.msgContent;
+        if(!validateEmail(email)){
+            this.handleTouchTap(`Email address is invalid`, false);
+            return;
+        }
+        if(!content){
+            this.handleTouchTap(`Content cannot be empty`, false);
+            return;
+        }
+
+        let params = { 
+            Params: { 
+                Email: email,
+                Content: content 
+            } 
+        };
+        apiManager.opayApi(opay_url+'admin/send_email', params, true)
+            .then((res) => {
+                if (res.data) {
+                    if (res.data.Confirmation === 'Success') {
+                        this.handleEmailClose();
+                        this.handleTouchTap(`Email has been sent`, true);
+                    }else{
+                        this.handleTouchTap(`Error: ${res.data.Message}`, false);
+                    }
+                }
+            })
+            .catch((err) => {
+                this.handleTouchTap(`Error: ${err}`);
+            });
+    }
+
     renderTab(tab) {
 
         const {
             tableCellStyle,
+            docLink,
+            msgContainer,
+            btnControl,
         } = styles;
 
         switch(tab) {
             case 1:
                 return (
-                    <PosList UserGUID={this.state.UserGUID}/>
+                    <PosList UserGUID={this.state.UserGUID} OnBack={() => this.handleBackToList()} />
                 );
             default:
                 return (
@@ -238,7 +375,7 @@ class AdminPage extends Component{
                                         ))}
                                     </TableRow>
                                 </TableHeader>
-                                <TableBody displayRowCheckbox={false}>
+                                <TableBody displayRowCheckbox={false} showRowHover={true}>
                                     {this.state.merList.slice(this.state.start,this.state.end).map((msg, idx)=>(
                                         <TableRow key={idx} selectable={false}>
                                             <TableRowColumn style={tableCellStyle}>{msg.AgentID}</TableRowColumn>
@@ -246,14 +383,14 @@ class AdminPage extends Component{
                                             <TableRowColumn style={tableCellStyle}>{msg.Email}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{msg.PhoneNumber}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{msg.CreatedAt}</TableRowColumn>
-                                            <TableRowColumn style={tableCellStyle}>{msg.Status}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{msg.Status === 'ACTIVE' ? 'ACTIVE' : 'PENDING'}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}><div style={{textAlign: 'center'}}>
                                                 <RaisedButton
-                                                    onClick={msg.Status === 'ACTIVE' ? (e) => this.handleAction(e, idx) : () => this.active(idx)}
+                                                    onClick={(e) => this.handleAction(e, idx)}
                                                     secondary={msg.Status !== 'ACTIVE'}
-                                                    label={msg.Status === 'ACTIVE' ? 'ACTION' : 'ACTIVE'}
+                                                    label='ACTION'
                                                 />
-                                                { msg.Status === 'INACTIVE' ? '' : <Popover
+                                                <Popover
                                                     onRequestClose={(e, idx) => this.handleRequestClose(idx)}
                                                     open={this.state.merListOpenPop[idx]}
                                                     anchorEl={this.state.merListAnEl[idx]}
@@ -261,16 +398,27 @@ class AdminPage extends Component{
                                                     targetOrigin={{horizontal: 'left', vertical: 'top'}}
                                                     animation={PopoverAnimationVertical}>
                                                     <Menu>
-                                                        <MenuItem primaryText="Add POS" onClick={() => this.addPos(idx)}/>
+                                                        {
+                                                            (msg.Status === 'ACTIVE') ?
+                                                            (
+                                                                <MenuItem primaryText="Add POS" onClick={() => this.addPos(idx)}/>
+                                                            )
+                                                            :
+                                                            (
+                                                                <MenuItem primaryText="Active" onClick={() => this.active(idx)}/>
+                                                            )
+                                                        }
+                                                        <MenuItem primaryText="Documents" onClick={() => this.viewDocuments(idx, msg)}/>
+                                                        <MenuItem primaryText="Email" onClick={() => this.sendEmail(idx, msg)}/>
                                                     </Menu>
-                                                </Popover> }
+                                                </Popover>
                                             </div></TableRowColumn>
                                         </TableRow>
                                     ))}
                                 </TableBody>
                             </Table>
 
-                            <div style={{ textAlign: 'center' }}><UltimatePagination
+                            <div style={{ float: 'right', marginTop: 12, textAlign: 'center' }}><UltimatePagination
                                 currentPage={this.state.currentPage}
                                 totalPages={this.state.totalPages}
                                 boundaryPagesRange={this.state.boundaryPagesRange}
@@ -280,6 +428,57 @@ class AdminPage extends Component{
                                 hideEllipsis={this.state.hideEllipsis}
                                 onChange={this.onPageChangeFromPagination}
                             /></div>
+
+                            <Dialog
+                                title="Documentation"
+                                modal={false}
+                                open={this.state.docModalOpen}
+                                onRequestClose={this.handleDocClose.bind(this)}
+                            >
+                                <div style={{marginBottom: 24}}>
+                                    {
+                                        this.state.docList.map((doc, idx) => (
+                                            <li>
+                                                <a style={docLink}
+                                                    onClick={() => this.viewFile(doc)}>{doc}</a>
+                                            </li>
+                                        ))
+                                    }
+                                </div>
+                            </Dialog>
+
+                            <Dialog
+                                title="Email"
+                                modal={false}
+                                open={this.state.emailModalOpen}
+                                onRequestClose={this.handleEmailClose.bind(this)}
+                            >
+                                <div style={{marginBottom: 36}}>
+                                    <p style={{fontSize: 17, fontWeight: 'bold', color: '#000'}}>Information:</p>
+                                    <p style={{fontSize: 15, color: '#000'}}>
+                                        <span style={{color: '#8C8C8C'}}>Merchant:&nbsp;</span> 
+                                        {this.state.emailMerchant.FirstName ? this.state.emailMerchant.FirstName : ''} 
+                                    </p>
+                                    <p style={{fontSize: 15, color: '#000'}}>
+                                        <span style={{color: '#8C8C8C'}}>Sending to:&nbsp;</span> 
+                                    </p>
+                                    <input style={{width: '100%', borderBottom: '1px solid #c9c9c9'}} 
+                                            type="text" 
+                                            onChange={(e) => this.handleEmailChange(e)}
+                                            value={this.state.emailMerchant.Email ? this.state.emailMerchant.Email : ''} />
+                                </div>
+                                <div style={{marginBottom: 24}}>
+                                    <textarea 
+                                        onChange={(e) => this.handleMsgChange(e)}
+                                        value={this.state.msgContent}
+                                        style={msgContainer} />
+                                </div>
+                                <div style={btnControl}>       
+                                    <RaisedButton label="Send" 
+                                                primary={true}
+                                                onClick={() => this.sendMessage()} />
+                                </div> 
+                            </Dialog>
 
                         </div>
                 );
@@ -293,7 +492,8 @@ class AdminPage extends Component{
             mainPageStyle,
             drawerContainer,
             contentContainer,
-            loadingContainer
+            loadingContainer,
+            drawerItem
         } = styles;
 
         if(this.state.isLoading){
@@ -310,8 +510,8 @@ class AdminPage extends Component{
 
                     <div style={drawerContainer}>
                         <Drawer open={true} width={150}>
-                            <MenuItem primaryText="Merchants" onClick={this.adminMain}/>
-                            <MenuItem primaryText="Log out" onClick={this.logout} />
+                            <MenuItem style={drawerItem} primaryText="Merchants" onClick={this.adminMain}/>
+                            <MenuItem style={drawerItem} primaryText="Log out" onClick={this.logout} />
                         </Drawer>
                     </div>
 
@@ -342,7 +542,8 @@ const styles = {
     tableCellStyle: {
         width: '12.8%',
         whiteSpace: 'normal',
-        wordWrap: 'break-word'
+        wordWrap: 'break-word',
+        textAlign: 'center'
     },
 
     drawerContainer: {
@@ -350,6 +551,12 @@ const styles = {
         float: 'left',
         width: '150px',
         height: '100vh',
+    },
+
+    drawerItem: {
+        paddingTop: 6,
+        paddingBottom: 6,
+        paddingLeft: 6
     },
 
     contentContainer: {
@@ -364,6 +571,28 @@ const styles = {
         height: '100vh',
     },
 
+    docLink: {
+        textDecoration: 'underline',
+        cursor: 'pointer'
+    },
+
+    msgContainer: {
+        width: '100%',
+        height: 200
+    },
+
+    btnControl: {
+        textAlign: 'center',
+        paddingHorizontal: 24,
+        marginTop: 36,
+        marginBottom: 12
+    },
+
+}
+
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
 }
 
 export default AdminPage;

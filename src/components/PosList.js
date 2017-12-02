@@ -8,9 +8,17 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Pagination from 'material-ui-pagination';
+import { green400, pinkA400 } from 'material-ui/styles/colors';
+import moment from 'moment';
 
 // Router
-import { root_page } from '../utilities/urlPath'
+import { 
+    root_page,
+    admin_page 
+} from '../utilities/urlPath'
+
+// Components
+import Snackbar from 'material-ui/Snackbar';
 
 // API
 import { opay_url, merchant_pos_machines, admin_create_pos } from "../utilities/apiUrl";
@@ -21,13 +29,18 @@ class PosList extends Component {
     constructor(props) {
         super(props);
         this.state = {
+
+            open: false,
+            message: '',
+            success: false,
+
             UserGUID: props.UserGUID,
             Limit: "10",
             Offset: "0",
             serial: '',
             totalRecords: 0,
             currentPage: 1,
-            tableField: ['PosGUID', 'Industry', 'Serial', 'Status', 'CreatedAt', 'UpdatedAt'],
+            tableField: ['#', 'Serial', 'Status', 'CreatedAt', 'UpdatedAt'],
             posList: [],
             display: 10,
             modalOpen: false,
@@ -37,6 +50,21 @@ class PosList extends Component {
         this.handleChangePage = this.handleChangePage.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.addPos = this.addPos.bind(this);
+    }
+
+    // Snack
+    handleTouchTap = (msg, isSuccess) => {
+        this.setState({
+            open: true,
+            message: msg,
+            success: isSuccess
+        });
+    }
+
+    handleTouchTapClose = () => {
+        this.setState({
+            open: false,
+        });
     }
 
     openDialog = () => {
@@ -61,10 +89,11 @@ class PosList extends Component {
         apiManager.opayApi(opay_url + admin_create_pos, params,true).then((res) => {
 
             if (res.data) {
-                console.log(res.data)
                 if (res.data.Confirmation === 'Fail') {
+                    this.handleTouchTap(`${res.data.Message}`, false);
                 } else if (res.data.Confirmation === 'Success') {
                     this.setState({ modalOpen: false });
+                    this.handleTouchTap(`Pos has been added`, true);
                     this.getPosList(this.state.page);// may have problem when the current page contains 10 item
                 }
             }
@@ -73,7 +102,6 @@ class PosList extends Component {
             localStorage.removeItem('token');
             browserHistory.push(`${root_page}`);
         });
-
     }
 
     getPosList = (page) => {
@@ -98,7 +126,12 @@ class PosList extends Component {
 
                 if (res.data.Confirmation === 'Fail') {
                 } else if (res.data.Confirmation === 'Success') {
-                    this.setState({ currentPage: page, posList: res.data.Response.PosMachines, totalRecords: res.data.Response.TotalRecords });
+                    let posList = res.data.Response.PosMachines;
+                    for(let pos of posList){
+                        pos.CreatedAt = pos.CreatedAt ? moment(pos.CreatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
+                        pos.UpdatedAt = pos.UpdatedAt ? moment(pos.UpdatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
+                    }
+                    this.setState({ currentPage: page, posList: posList, totalRecords: res.data.Response.TotalRecords });
                 }
             }
 
@@ -120,12 +153,17 @@ class PosList extends Component {
         this.getPosList();
     }
 
+    backToList = () => {
+        this.props.OnBack();
+    }
+
     render() {
 
         const {
             tableCellStyle,
             formControl,
-            btnControl
+            btnControl,
+            backBtn
         } = styles;
 
         return (
@@ -143,8 +181,7 @@ class PosList extends Component {
                             <TableBody displayRowCheckbox={false}>
                                 {this.state.posList.map((pos, idx)=>(
                                     <TableRow key={pos.PosGUID} selectable={false}>
-                                        <TableRowColumn style={tableCellStyle}>{pos.PosGUID}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{pos.MerchantIndustry}</TableRowColumn>
+                                        <TableRowColumn style={tableCellStyle}>{idx + 1}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{pos.Serial}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{pos.Status}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{pos.CreatedAt}</TableRowColumn>
@@ -165,7 +202,8 @@ class PosList extends Component {
                     </div>
 
                     <div style={{ textAlign: 'center' }}>
-                        <RaisedButton label="Add POS" primary={true} onClick={this.openDialog} />
+                        <RaisedButton label="Add POS" primary={true} onClick={this.openDialog} /><br/>
+                        <a style={backBtn} onClick={() => this.backToList()}>Back</a>
                     </div>
 
                     <Dialog title="Add POS" modal={false} open={this.state.modalOpen}
@@ -180,10 +218,16 @@ class PosList extends Component {
                                 <RaisedButton label="Add" primary={true} onClick={this.addPos} />
                             </div>
                         </div>
-
                     </Dialog>
 
                 </div>
+                <Snackbar 
+                    open={this.state.open} 
+                    message={this.state.message}
+                    autoHideDuration={3000} 
+                    onRequestClose={this.handleTouchTapClose}
+                    bodyStyle={{backgroundColor: this.state.success ? green400 : pinkA400, textAlign: 'center' }}
+                    />
             </MuiThemeProvider>
         )
 
@@ -196,7 +240,8 @@ const styles = {
     tableCellStyle: {
         width: '12.8%',
         whiteSpace: 'normal',
-        wordWrap: 'break-word'
+        wordWrap: 'break-word',
+        textAlign: 'center'
     },
 
     formControl: {
@@ -211,6 +256,14 @@ const styles = {
         paddingHorizontal: 24,
         marginTop: 36,
         marginBottom: 12
+    },
+
+    backBtn: {
+        display: 'block',
+        marginTop: 12,
+        fontSize: 14,
+        cursor: 'pointer',
+        textDecoration: 'underline'
     }
 }
 
