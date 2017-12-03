@@ -209,6 +209,40 @@ class MerchantAddresses extends Component{
         this.setState(updated);
     }
 
+    handleSetDefault = (addr, idx) => {
+
+        let { AddressGUID } = addr;
+        let params = {
+            Params: {
+                AddressGUID
+            }
+        };
+        apiManager.opayApi(opay_url+'merchant/set_default_address', params, true)
+            .then((response) => {
+                if(response.data.Confirmation === 'Success'){
+                    
+                    let updated = Object.assign({}, this.state);
+                    updated.anchorEl = null;
+                    updated.addresses[idx].IsOpen = false;
+            
+                    for(let address of updated.addresses){
+                        if(address.AddressGUID != addr.AddressGUID){
+                            address.IsDefault = 0;
+                        }else{
+                            address.IsDefault = 1;
+                        }
+                    }
+                    this.setState(updated);
+                    this.handleTouchTap(`Address has been set to default`, true);
+                }else{
+                    this.handleTouchTap(`${response.data.Message}`, false);
+                }
+            })
+            .catch((error) => {
+                this.handleTouchTap(`Error: ${error}`, false);
+            })        
+    }
+
     handleAddrUpdateOpen = (addr, idx) => {
         let updated = Object.assign({}, this.state);
         updated.anchorEl = null;
@@ -382,9 +416,9 @@ class MerchantAddresses extends Component{
                                 </TableRow>
                             </TableHeader>
     
-                            <TableBody displayRowCheckbox={false} showRowHover={true}>
+                            <TableBody displayRowCheckbox={false}>
                                 {this.state.addresses.map((addr, idx)=>(
-                                    <TableRow key={addr.AddressGUID} selectable={false}>
+                                    <TableRow key={addr.AddressGUID} selectable={false} style={(addr.IsDefault == 1 ? {backgroundColor: '#c9c9c9'} : null)}>
                                         <TableRowColumn style={tableCellStyle}>{idx + 1}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{addr.AddressLine1}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{addr.AddressLine2}</TableRowColumn>
@@ -405,6 +439,7 @@ class MerchantAddresses extends Component{
                                                     targetOrigin={{horizontal: 'left', vertical: 'top'}}
                                                     animation={PopoverAnimationVertical}>
                                                     <Menu>
+                                                        <MenuItem primaryText="Set Default" onClick={() => this.handleSetDefault(addr, idx)}/>
                                                         <MenuItem primaryText="Update" onClick={() => this.handleAddrUpdateOpen(addr, idx)}/>
                                                         <MenuItem primaryText="Delete" onClick={() => this.handleAddrDeleteOpen(addr, idx)}/>
                                                     </Menu>
