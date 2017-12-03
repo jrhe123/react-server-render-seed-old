@@ -48,5 +48,11 @@ module.exports = {
             beautify: false,
             dead_code: true
         })
-    ]
+    ],
+    node: {
+        console: true,
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
+    }
 };

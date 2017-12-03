@@ -30,6 +30,11 @@ import Snackbar from 'material-ui/Snackbar';
 import Loading from '../components/Loading';
 
 
+// const apiKey = 'AIzaSyBoenoG5jJaYtuqkyABF9DKFDj3o6q8d98';
+// var googleTranslate = require('google-translate')(apiKey);
+
+
+
 class MerchantRegisterPage extends Component{
 
     constructor(props) {
@@ -85,6 +90,14 @@ class MerchantRegisterPage extends Component{
     }
 
     componentDidMount() {
+
+        // googleTranslate.translate('My name is Brandon', 'es', function(err, translation) {
+        //     if(err){
+        //         console.log('err: ', err);
+        //         return;
+        //     }
+        //     console.log(translation.translatedText);
+        // });
 
         window.addEventListener('resize', this.refactor);
 
