@@ -31,6 +31,7 @@ import { opay_url } from '../utilities/apiUrl';
 import * as apiManager from '../helpers/apiManager';
 
 const colors = scaleOrdinal(schemeCategory10).range();
+const interval = 5;
 
 class MerchantMonitor extends Component{
 
@@ -57,7 +58,7 @@ class MerchantMonitor extends Component{
 
     cronTask = () => {
         return new cron.CronJob({
-            cronTime: '*/10 * * * * *',
+            cronTime: `*/${interval} * * * * *`,
             onTick: () => {
                 this.fetchLiveTransaction();
             },
@@ -68,7 +69,7 @@ class MerchantMonitor extends Component{
 
     fetchLiveTransaction = () => {
 
-        let from = moment().subtract(10, 'second').format('YYYY-MM-DD HH:mm:ss');
+        let from = moment().subtract(interval, 'second').format('YYYY-MM-DD HH:mm:ss');
         let to = moment().format('YYYY-MM-DD HH:mm:ss');
         let params = {
             Params: {
