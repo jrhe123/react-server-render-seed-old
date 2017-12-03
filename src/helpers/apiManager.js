@@ -97,3 +97,38 @@ export const opayFileApi = (endpoint, params, isAuth) => {
             })
     });
 }
+
+export const opayCsvApi = (endpoint, params, isAuth) => {
+    
+    return new Promise(function(resolve, reject){
+
+        let headers = null;
+        if(isAuth){
+            let token = localStorage.getItem("token");
+            if(!token){
+                reject('Error: token does not exist');
+                return;
+            }
+            headers = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                }
+            };
+        }else{
+            headers = {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+        }
+        
+        axios.post(endpoint, params, headers)
+            .then((response) => {
+                resolve(response);     
+            })
+            .catch((error) => {
+                reject(error); 
+            })   
+    });        
+}

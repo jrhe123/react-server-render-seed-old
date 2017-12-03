@@ -13,11 +13,15 @@ import moment from 'moment';
 import { PieChart, Pie, Legend, Tooltip, Cell } from 'Recharts';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { scaleOrdinal, schemeCategory10 } from 'd3-scale';
-import { greenA400, deepOrangeA400 } from 'material-ui/styles/colors';
+import { greenA400, deepOrangeA400, green400, pinkA400  } from 'material-ui/styles/colors';
+
 
 // Redux
 import { connect } from 'react-redux';
 import { showSnackbar }  from '../actions/layout_action';
+
+// Component
+import Snackbar from 'material-ui/Snackbar';
 
 // Router
 import { browserHistory } from 'react-router';
@@ -34,6 +38,11 @@ class MerchantCharts extends Component{
     constructor(props) {
         super(props);
         this.state = {
+
+            open: false,
+            message: '',
+            success: false,
+
             hasTodayData: false,
             todayData: [],
 
@@ -50,6 +59,21 @@ class MerchantCharts extends Component{
         this.fetch_monthly();
         this.fetch_annual();
     }
+
+    // Snack
+    handleTouchTap = (msg, isSuccess) => {
+        this.setState({
+            open: true,
+            message: msg,
+            success: isSuccess
+        });
+    };
+
+    handleRequestClose = () => {
+        this.setState({
+            open: false,
+        });
+    };
 
     fetch_today = () => {
         let today = moment().format('YYYY-MM-DD')
@@ -315,9 +339,63 @@ class MerchantCharts extends Component{
             })
     }
 
+    handleExport = (type) => {
+
+        let from, to;
+        if(type == 'TODAY'){
+            from = moment().format('YYYY-MM-DD')
+            to = moment().format('YYYY-MM-DD')
+        }else if(type == 'MONTH'){
+            from = moment().subtract(30, 'day').format('YYYY-MM-DD')
+            to = moment().format('YYYY-MM-DD')
+        }else if(type == 'ANNUAL'){
+            from = moment().subtract(12, 'month').format('YYYY-MM-DD')
+            to = moment().format('YYYY-MM-DD')
+        }
+        let params = {
+            Params: {
+                Limit: "-1",
+                Offset: "0",
+                Extra: {
+                    TransactionType: "TransactionType",
+                    TransactionField: "ALL",
+                    SearchType: "TIMERANGE",
+                    SearchField: `${from} 00:00:00|${to} 23:59:59`
+                }
+            }
+        };
+        apiManager.opayCsvApi(opay_url+'merchant/export_transaction_list', params, true)
+            .then((response) => {
+                
+                if(response.data){
+                    
+                    let csvString = response.data;
+                    var blob = new Blob([csvString]);
+                    if (window.navigator.msSaveOrOpenBlob)  
+                        window.navigator.msSaveBlob(blob, "report.csv");
+                    else
+                    {
+                        var a = window.document.createElement("a");
+                        a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
+                        a.download = "report.csv";
+                        document.body.appendChild(a);
+                        a.click(); 
+                        document.body.removeChild(a);
+                    }
+                }else{
+                    this.handleTouchTap(`${response.data.Message}`, false);
+                }
+            })
+            .catch((error) => {
+                this.handleTouchTap(`Error: ${error}`, false);
+            })
+
+    }
+
     render() {
 
         const {
+            exportBtn,
             tableCellStyle,
             infoContainer,
             infoWrapper,
@@ -340,7 +418,14 @@ class MerchantCharts extends Component{
                     <CardHeader
                         title="Today Transactions"
                         subtitle={moment().format('YYYY-MM-DD')}
-                    />   
+                    >
+                        <RaisedButton
+                            style={exportBtn}
+                            label="Export"
+                            primary={true}
+                            onClick={() => this.handleExport('TODAY')}
+                        />
+                    </CardHeader>   
                     <Divider />
                         {
                             this.state.hasTodayData ? 
@@ -369,7 +454,14 @@ class MerchantCharts extends Component{
                     <CardHeader
                         title="Daily Transactions of Last 30 Days"
                         subtitle={'From ' + moment().subtract(30, 'day').format('YYYY-MM-DD') + ' to ' + moment().format('YYYY-MM-DD')}
-                    />   
+                    >  
+                        <RaisedButton
+                                style={exportBtn}
+                                label="Export"
+                                primary={true}
+                                onClick={() => this.handleExport('MONTH')}
+                            /> 
+                    </CardHeader>        
                     <Divider style={{marginBottom: 48}} />
                         {
                             this.state.hasMonthData ? 
@@ -393,7 +485,14 @@ class MerchantCharts extends Component{
                     <CardHeader
                         title="Monthly Transactions of Last 12 Months"
                         subtitle={'From ' + moment().subtract(12, 'month').format('YYYY-MM') + ' to ' + moment().format('YYYY-MM')}
-                    />   
+                    >   
+                        <RaisedButton
+                                    style={exportBtn}
+                                    label="Export"
+                                    primary={true}
+                                    onClick={() => this.handleExport('ANNUAL')}
+                                /> 
+                    </CardHeader> 
                     <Divider style={{marginBottom: 48}} />
                         {
                             this.state.hasAnnualData ? 
@@ -412,14 +511,24 @@ class MerchantCharts extends Component{
                             :
                             (<div style={infoContainer}><div style={infoWrapper}><p style={infoStyle}>No transaction found</p></div></div>)
                         }
-                </Card>            
+                </Card>   
+
+                <Snackbar
+                        open={this.state.open}
+                        message={this.state.message}
+                        autoHideDuration={3000}
+                        onRequestClose={this.handleRequestClose}
+                        bodyStyle={{backgroundColor: this.state.success ? green400 : pinkA400, textAlign: 'center' }}
+                        />         
             </MuiThemeProvider>
         )
     }
 }
 
 const styles = {
-
+    exportBtn: {
+        float: 'right'
+    },
     tableCellStyle: {
         whiteSpace: 'normal',
         wordWrap: 'break-word',
