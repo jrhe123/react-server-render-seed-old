@@ -15,6 +15,7 @@ import SocialPeople from 'material-ui/svg-icons/social/people';
 import ActionSearch from 'material-ui/svg-icons/action/search';
 import HardwareSmartphone from 'material-ui/svg-icons/hardware/smartphone';
 import CommunicationBusiness from 'material-ui/svg-icons/communication/business';
+import EditorShowChart from 'material-ui/svg-icons/editor/show-chart';
 
 
 // Redux
@@ -32,6 +33,7 @@ import * as apiManager from '../helpers/apiManager';
 // Components
 import Loading from '../components/Loading';
 import MerchantTransactions from '../components/MerchantTransactions';
+import MerchantCharts from '../components/MerchantCharts';
 import MerchantEmployees from '../components/MerchantEmployees';
 import MerchantAddresses from '../components/MerchantAddresses';
 import MerchantPOSMachines from '../components/MerchantPOSMachines';
@@ -45,7 +47,7 @@ class MerchantAdminPage extends Component{
         super(props);
         this.state = {
             isLoading: true,
-            tab: 'transactions',
+            tab: 'charts',
             open: false,
             userTypeID: null
         }
@@ -125,6 +127,10 @@ class MerchantAdminPage extends Component{
             case 'setting':
                 return (
                     <SettingPage />
+                );    
+            case 'charts':
+                return (
+                    <MerchantCharts isLoading={this.state.isLoading}/>
                 );     
             case 'transactions':
                 return (
@@ -210,6 +216,10 @@ class MerchantAdminPage extends Component{
                                         primaryText="Transactions" 
                                         leftIcon={<ActionSearch color="#fff" />}
                                         onClick={this.switchTab.bind(this, 'transactions')} />
+                            <MenuItem style={{color: '#fff'}} 
+                                        primaryText="Summary" 
+                                        leftIcon={<EditorShowChart color="#fff" />}
+                                        onClick={this.switchTab.bind(this, 'charts')} />            
                             <MenuItem style={{color: '#fff'}} 
                                         primaryText="Employee" 
                                         leftIcon={<SocialPeople color="#fff" />}
