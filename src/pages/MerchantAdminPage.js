@@ -49,7 +49,7 @@ class MerchantAdminPage extends Component{
         super(props);
         this.state = {
             isLoading: true,
-            tab: 'transactions',
+            tab: 'charts',
             open: false,
             userTypeID: null
         }
