@@ -31,7 +31,7 @@ import { opay_url } from '../utilities/apiUrl';
 import * as apiManager from '../helpers/apiManager';
 
 const colors = scaleOrdinal(schemeCategory10).range();
-const interval = 5;
+const interval = 3;
 
 class MerchantMonitor extends Component{
 
@@ -69,8 +69,8 @@ class MerchantMonitor extends Component{
 
     fetchLiveTransaction = () => {
 
-        let from = moment().subtract(interval, 'second').format('YYYY-MM-DD HH:mm:ss');
-        let to = moment().format('YYYY-MM-DD HH:mm:ss');
+        let from = moment().add(5, 'hour').subtract(interval, 'second').format('YYYY-MM-DD HH:mm:ss');
+        let to = moment().add(5, 'hour').format('YYYY-MM-DD HH:mm:ss');
         let params = {
             Params: {
                 Limit: "-1",
