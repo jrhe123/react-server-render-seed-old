@@ -163,12 +163,16 @@ class SettingPage extends Component{
     handleUpdatePriofile = () => {
         
         let tempProfile = Object.assign({}, this.state);
-        let { agentID, email, phoneNumber, faxNumber } = tempProfile;
+        let { agentID, firstName, lastName, email, phoneNumber, faxNumber } = tempProfile;
 
         phoneNumber = phoneNumber ? formattor.removeFormatPhoneNumber(phoneNumber.toString()) : null;
         faxNumber = faxNumber ? formattor.removeFormatPhoneNumber(faxNumber.toString()) : null;
         
-        if(!validator.isEmail(email)){
+        if(!firstName){
+            this.handleTouchTap(`Merchant name is required`, false);
+        }else if(!lastName){
+            this.handleTouchTap(`Legal name is required`, false);
+        }else if(!validator.isEmail(email)){
             this.handleTouchTap(`Invalid email address`, false);
         }else if(this.state.userTypeID == 2 && phoneNumber.toString().length != 10){
             this.handleTouchTap(`Invalid phone number`, false);
@@ -176,6 +180,8 @@ class SettingPage extends Component{
 
             let params = {
                 Params: {
+                    FirstName: firstName,
+                    LastName: lastName,
                     Email: email,
                     PhoneNumber: phoneNumber,
                     FaxNumber: faxNumber
@@ -335,7 +341,21 @@ class SettingPage extends Component{
                         modal={false}
                         open={this.state.profileModalOpen}
                         onRequestClose={this.handleClose.bind(this)}
-                    >
+                    >   
+                        <div style={formControl}>
+                            <TextField floatingLabelText="Merchant Name" 
+                                        defaultValue={this.props.profile.firstName}
+                                        value={this.state.firstName}
+                                        onChange={(e, value) => this.onFieldChange(e,value,'firstName')}
+                                        />
+                        </div>
+                        <div style={formControl}>
+                            <TextField floatingLabelText="Legal Name" 
+                                        defaultValue={this.props.profile.lastName}
+                                        value={this.state.lastName}
+                                        onChange={(e, value) => this.onFieldChange(e,value,'lastName')}
+                                        />
+                        </div>
                         <div style={formControl}>
                             <TextField floatingLabelText="Email" 
                                         defaultValue={this.props.profile.email}

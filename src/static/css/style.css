@@ -1194,3 +1194,14 @@ table, th, td {
     padding-right: 6px !important;
     top: -5px !important;
 }
+
+
+/* app bar */
+.merchant-app-bar>div,
+.merchant-app-bar>div>div{
+    margin-top: 0 !important;
+}
+.merchant-app-bar-pop{
+    left: unset !important;
+    right: 0 !important;
+}

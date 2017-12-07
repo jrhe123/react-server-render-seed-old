@@ -683,6 +683,7 @@ const styles = {
         bottom: 0,
         right: 0,
         height: 24,
+        overflow: 'hidden'
     },
     exRateLabel: {
         color: '#c9c9c9',

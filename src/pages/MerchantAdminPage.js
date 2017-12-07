@@ -168,7 +168,9 @@ class MerchantAdminPage extends Component{
             drawerContainer,
             contentContainer,
             loadingContainer,
-            logoContainer
+            logoContainer,
+            profileImgContainer,
+            profileImg
         } = styles;
 
         if(this.state.isLoading){
@@ -183,27 +185,34 @@ class MerchantAdminPage extends Component{
             <MuiThemeProvider>
                 <div style={{width: "100%", height: 64}}>
                     <AppBar
+                        className="merchant-app-bar"
                         style={{backgroundColor:'#fff', padding: 0}}
                         iconElementLeft={
                             <div style={logoContainer}></div>
                         }
                         iconElementRight={
                             <div>
+                                <div style={profileImgContainer}>
+                                    <img style={profileImg} src="/img/ali_r.png" />
+                                </div>
                                 <FlatButton
-                                    style={{color: '#000', height: 64, marginTop: '-8px', paddingLeft: 12, paddingRight: 24, borderLeft: '1px solid #CCCCCC'}}
+                                    style={{color: '#000', height: 64, paddingRight: 24}}
                                     onClick={this.handleTouchTap}
                                     label="Account"
                                     labelPosition="before"
                                     primary={true}
+                                    hoverColor="#fff"
                                     icon={<HardwareKeyboardArrowDown />}
                                 />
                                 <Popover
+                                    className="merchant-app-bar-pop"
                                     open={this.state.open}
                                     anchorEl={this.state.anchorEl}
-                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                    anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                                    targetOrigin={{horizontal: 'right', vertical: 'top'}}
                                     onRequestClose={this.handleRequestClose}
                                     animation={PopoverAnimationVertical}
+                                    autoWidth={true}
                                 >
                                 <Menu>
                                     <MenuItem primaryText="My Settings" onClick={this.switchTab.bind(this, 'setting')} />
@@ -292,6 +301,19 @@ const styles = {
         width: 220,
         marginTop: -8,
         marginLeft: 16
+    },
+    profileImgContainer: {
+        float: 'left',
+        borderLeft: '1px solid #CCCCCC',
+        paddingLeft: 12,
+        height: 64,
+        cursor: 'pointer',
+    },
+    profileImg: {
+        display: 'block',
+        width: 40,
+        height: 40,
+        marginTop: 12
     }
 
 }
