@@ -43,8 +43,13 @@ class MerchantCharts extends Component{
             message: '',
             success: false,
 
+            alipayRate: 'loading',
+            wechatRate: 'loading',
+
             hasTodayData: false,
             todayData: [],
+            totalTodayAli: 0,
+            totalTodayWechat: 0,
 
             hasMonthData: false,
             monthData: [],
@@ -58,6 +63,8 @@ class MerchantCharts extends Component{
         this.fetch_today();
         this.fetch_monthly();
         this.fetch_annual();
+        this.fetch_alipay_reate();
+        this.fetch_wechat_rate();
     }
 
     // Snack
@@ -74,6 +81,42 @@ class MerchantCharts extends Component{
             open: false,
         });
     };
+
+    fetch_alipay_reate = () => {
+        let params = {
+            Params: {
+                Currency: "CAD"
+            }
+        };
+        apiManager.opayApi(opay_url+'alipay/exchange_rate', params, false)
+            .then((response) => {
+                if(response.data.Confirmation === 'Success'){
+                    this.setState({
+                        alipayRate: response.data.Response.rate
+                    })
+                }
+            })
+            .catch((error) => {
+            })
+    }
+
+    fetch_wechat_rate = () => {
+        let params = {
+            Params: {
+                Currency: "CAD"
+            }
+        };
+        apiManager.opayApi(opay_url+'wechat/exchange_rate', params, false)
+            .then((response) => {
+                if(response.data.Confirmation === 'Success'){
+                    this.setState({
+                        wechatRate: response.data.Response.rate
+                    })
+                }
+            })
+            .catch((error) => {
+            })
+    }
 
     fetch_today = () => {
         let today = moment().tz('America/Toronto').format('YYYY-MM-DD')
@@ -107,15 +150,25 @@ class MerchantCharts extends Component{
             value: 0
         };
         for(let tran of ali){
-            let currentAmount = tran.Amount;
-            let rate = tran.Rate;
-            let formattedAmount = tran.Currency == 'CNY' ? parseFloat((currentAmount / rate).toFixed(2)) : currentAmount;
-            let type = tran.Type;
-            if(type != 'REFUND'){
-                aliObj.value += formattedAmount;
-            }else{
-                aliObj.value -= formattedAmount;
+            let status = tran.Status;
+            if(status == 'SUCCESS'){
+
+                let currentAmount = tran.Amount;
+                let rate = tran.Rate;
+                let formattedAmount = tran.Currency == 'CNY' ? parseFloat((currentAmount / rate).toFixed(2)) : currentAmount;
+                let type = tran.Type;
+                if(type != 'REFUND'){
+                    aliObj.value += parseFloat(formattedAmount);
+                }else{
+                    aliObj.value -= parseFloat(formattedAmount);
+                }
             }
+        }
+        if(aliObj.value < 0){
+            aliObj.value = 0;
+        }else{
+            let temp = aliObj.value.toFixed(2);
+            aliObj.value = parseFloat(temp);
         }
         // Wechat
         let wechatObj = {
@@ -123,15 +176,25 @@ class MerchantCharts extends Component{
             value: 0
         };
         for(let tran of wechat){
-            let currentAmount = tran.Amount;
-            let rate = tran.Rate;
-            let formattedAmount = tran.Currency == 'CNY' ? parseFloat((currentAmount / rate).toFixed(2)) : currentAmount;
-            let type = tran.Type;
-            if(type != 'REFUND'){
-                wechatObj.value += formattedAmount;
-            }else{
-                wechatObj.value -= formattedAmount;
+            let status = tran.Status;
+            if(status == 'SUCCESS'){
+
+                let currentAmount = tran.Amount;
+                let rate = tran.Rate;
+                let formattedAmount = tran.Currency == 'CNY' ? parseFloat((currentAmount / rate).toFixed(2)) : currentAmount;
+                let type = tran.Type;
+                if(type != 'REFUND'){
+                    wechatObj.value += parseFloat(formattedAmount);
+                }else{
+                    wechatObj.value -= parseFloat(formattedAmount);
+                }
             }
+        }
+        if(wechatObj.value < 0){
+            wechatObj.value = 0;
+        }else{
+            let temp = wechatObj.value.toFixed(2);
+            wechatObj.value = parseFloat(temp);
         }
         let todayData = [
             aliObj,
@@ -139,6 +202,8 @@ class MerchantCharts extends Component{
         ];
         // Set data
         this.setState({
+            totalTodayAli: aliObj.value,
+            totalTodayWechat: wechatObj.value,
             hasTodayData: data.length > 0 ? true : false,
             todayData: todayData
         })
@@ -197,24 +262,41 @@ class MerchantCharts extends Component{
                 if (dateArr[i].hasOwnProperty(key)){
                     for(let j = 0; j < dateArr[i][key].length; j++){
 
-                        let currentAmount = dateArr[i][key][j].Amount;
-                        let rate = dateArr[i][key][j].Rate;
-                        let formattedAmount = dateArr[i][key][j].Currency == 'CNY' ? parseFloat((currentAmount / rate).toFixed(2)) : currentAmount;
-                        let type = dateArr[i][key][j].Type;
-                        if(type != 'REFUND'){
-                            if(dateArr[i][key][j].Platform === 'ALIPAY'){
-                                item.ali += formattedAmount;
-                            }else if(dateArr[i][key][j].Platform === 'WECHAT'){
-                                item.wechat += formattedAmount;
-                            }
-                        }else{
-                            if(dateArr[i][key][j].Platform === 'ALIPAY'){
-                                item.ali -= formattedAmount;
-                            }else if(dateArr[i][key][j].Platform === 'WECHAT'){
-                                item.wechat -= formattedAmount;
+                        let status = dateArr[i][key][j].Status;
+                        if(status == 'SUCCESS'){
+                            let currentAmount = dateArr[i][key][j].Amount;
+                            let rate = dateArr[i][key][j].Rate;
+                            let formattedAmount = dateArr[i][key][j].Currency == 'CNY' ? parseFloat((currentAmount / rate).toFixed(2)) : currentAmount;
+                            let type = dateArr[i][key][j].Type;
+                            if(type != 'REFUND'){
+                                if(dateArr[i][key][j].Platform === 'ALIPAY'){
+                                    item.ali += parseFloat(formattedAmount);
+                                }else if(dateArr[i][key][j].Platform === 'WECHAT'){
+                                    item.wechat += parseFloat(formattedAmount);
+                                }
+                            }else{
+                                if(dateArr[i][key][j].Platform === 'ALIPAY'){
+                                    item.ali -= parseFloat(formattedAmount);
+                                }else if(dateArr[i][key][j].Platform === 'WECHAT'){
+                                    item.wechat -= parseFloat(formattedAmount);
+                                }
                             }
                         }
                     }
+                }
+
+                if(item.ali < 0){
+                    item.ali = 0;
+                }else{
+                    let temp = item.ali.toFixed(2);
+                    item.ali = parseFloat(temp);
+                }
+
+                if(item.wechat < 0){
+                    item.wechat = 0;
+                }else{
+                    let temp = item.wechat.toFixed(2);
+                    item.wechat = parseFloat(temp);
                 }
             }
             outArr.push(item);
@@ -280,24 +362,41 @@ class MerchantCharts extends Component{
                 if (dateArr[i].hasOwnProperty(key)){
                     for(let j = 0; j < dateArr[i][key].length; j++){
 
-                        let currentAmount = dateArr[i][key][j].Amount;
-                        let rate = dateArr[i][key][j].Rate;
-                        let formattedAmount = dateArr[i][key][j].Currency == 'CNY' ? parseFloat((currentAmount / rate).toFixed(2)) : currentAmount;
-                        let type = dateArr[i][key][j].Type;
-                        if(type != 'REFUND'){
-                            if(dateArr[i][key][j].Platform === 'ALIPAY'){
-                                item.ali += formattedAmount;
-                            }else if(dateArr[i][key][j].Platform === 'WECHAT'){
-                                item.wechat += formattedAmount;
-                            }
-                        }else{
-                            if(dateArr[i][key][j].Platform === 'ALIPAY'){
-                                item.ali -= formattedAmount;
-                            }else if(dateArr[i][key][j].Platform === 'WECHAT'){
-                                item.wechat -= formattedAmount;
+                        let status = dateArr[i][key][j].Status;
+                        if(status == 'SUCCESS'){
+                            let currentAmount = dateArr[i][key][j].Amount;
+                            let rate = dateArr[i][key][j].Rate;
+                            let formattedAmount = dateArr[i][key][j].Currency == 'CNY' ? parseFloat((currentAmount / rate).toFixed(2)) : currentAmount;
+                            let type = dateArr[i][key][j].Type;
+                            if(type != 'REFUND'){
+                                if(dateArr[i][key][j].Platform === 'ALIPAY'){
+                                    item.ali += parseFloat(formattedAmount);
+                                }else if(dateArr[i][key][j].Platform === 'WECHAT'){
+                                    item.wechat += parseFloat(formattedAmount);
+                                }
+                            }else{
+                                if(dateArr[i][key][j].Platform === 'ALIPAY'){
+                                    item.ali -= parseFloat(formattedAmount);
+                                }else if(dateArr[i][key][j].Platform === 'WECHAT'){
+                                    item.wechat -= parseFloat(formattedAmount);
+                                }
                             }
                         }
                     }
+                }
+
+                if(item.ali < 0){
+                    item.ali = 0;
+                }else{
+                    let temp = item.ali.toFixed(2);
+                    item.ali = parseFloat(temp);
+                }
+
+                if(item.wechat < 0){
+                    item.wechat = 0;
+                }else{
+                    let temp = item.wechat.toFixed(2);
+                    item.wechat = parseFloat(temp);
                 }
             }
             outArr.push(item);
@@ -400,21 +499,16 @@ class MerchantCharts extends Component{
             infoContainer,
             infoWrapper,
             infoStyle,
+            exRateContainer,
+            exRateContent,
+            exRate,
+            exRateSpan,
+            exRateLabel,
         } = styles;
-
-        const data = [
-            {name: 'Page A', uv: 4000, pv: 2400, amt: 2400},
-            {name: 'Page B', uv: 3000, pv: 1398, amt: 2210},
-            {name: 'Page C', uv: 2000, pv: 9800, amt: 2290},
-            {name: 'Page D', uv: 2780, pv: 3908, amt: 2000},
-            {name: 'Page E', uv: 1890, pv: 4800, amt: 2181},
-            {name: 'Page F', uv: 2390, pv: 3800, amt: 2500},
-            {name: 'Page G', uv: 3490, pv: 4300, amt: 2100},
-        ];
 
         return (
             <MuiThemeProvider style={{overflowY: 'auto'}}>
-                <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
+                <Card style={{width: 'calc(100% - 48px)', margin: '24px auto', position: 'relative'}}>
                     <CardHeader
                         title="Today Transactions"
                         subtitle={moment().tz('America/Toronto').format('YYYY-MM-DD')}
@@ -432,7 +526,7 @@ class MerchantCharts extends Component{
                             (<PieChart width={800} height={300}>
                                 <Pie isAnimationActive={!this.props.isLoading}
                                     data={this.state.todayData} 
-                                    cx={200} 
+                                    cx={130} 
                                     cy={150} 
                                     innerRadius={40}
                                     outerRadius={80} 
@@ -449,6 +543,19 @@ class MerchantCharts extends Component{
                             :
                             (<div style={infoContainer}><div style={infoWrapper}><p style={infoStyle}>No transaction found</p></div></div>)
                         }
+                    <div style={exRateContainer}>
+                        <div style={exRateContent}>
+                            <div style={exRate}>
+                                <h4 style={{fontWeight: 'bold', marginBottom: 12}}>Transaction Amount:</h4>
+                                <p>Alipay: <span style={{fontWeight: 'bold'}}>$ {this.state.hasTodayData ? this.state.totalTodayAli : 0.00}</span></p>
+                                <p>Wechat: <span style={{fontWeight: 'bold'}}>$ {this.state.hasTodayData ? this.state.totalTodayWechat : 0.00}</span></p>
+                            </div>
+                            <div style={exRateSpan}>
+                                <span style={exRateLabel}>Alipay: {this.state.alipayRate}</span>
+                                <span style={exRateLabel}>Wechat: {this.state.wechatRate}</span>
+                            </div>
+                        </div>
+                    </div>    
                 </Card> 
                 <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
                     <CardHeader
@@ -552,9 +659,37 @@ const styles = {
         fontSize: 19,
         fontWeight: 'bold',
         wordWrap: 'break-word'
+    },
+    exRateContainer: {
+        position: 'absolute',
+        right: 0,
+        top: 75,
+        height: 300,
+        width: 'calc(100% - 300px)',
+        display: 'table'
+    },
+    exRateContent:{
+        position: 'relative',
+        display: 'table-cell',
+        verticalAlign: 'middle',
+        height: 300,
+        width: 'calc(100% - 300px)',
+    },
+    exRate: {
+        margin: '0 auto'
+    },
+    exRateSpan: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        height: 24,
+    },
+    exRateLabel: {
+        color: '#c9c9c9',
+        fontSize: 12,
+        height: 24,
+        paddingRight: 12
     }
-
-
 }
 
 export default connect()(MerchantCharts);
