@@ -546,7 +546,7 @@ class MerchantCharts extends Component{
                     <div style={exRateContainer}>
                         <div style={exRateContent}>
                             <div style={exRate}>
-                                <h4 style={{fontWeight: 'bold', marginBottom: 12}}>Transaction Amount:</h4>
+                                <h4 style={{fontWeight: 'bold', marginBottom: 12}}>Transaction Amount</h4>
                                 <p>Alipay: <span style={{fontWeight: 'bold'}}>$ {this.state.hasTodayData ? this.state.totalTodayAli : 0.00}</span></p>
                                 <p>Wechat: <span style={{fontWeight: 'bold'}}>$ {this.state.hasTodayData ? this.state.totalTodayWechat : 0.00}</span></p>
                             </div>
