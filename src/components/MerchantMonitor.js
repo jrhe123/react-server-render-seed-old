@@ -9,7 +9,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import { Card, CardHeader } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'Recharts';
 import { scaleOrdinal, schemeCategory10 } from 'd3-scale';
 import { greenA400, deepOrangeA400, green400, pinkA400  } from 'material-ui/styles/colors';
@@ -69,8 +69,8 @@ class MerchantMonitor extends Component{
 
     fetchLiveTransaction = () => {
 
-        let from = moment().add(5, 'hour').subtract(interval, 'second').format('YYYY-MM-DD HH:mm:ss');
-        let to = moment().add(5, 'hour').format('YYYY-MM-DD HH:mm:ss');
+        let from = moment().tz('America/Toronto').subtract(interval, 'second').format('YYYY-MM-DD HH:mm:ss');
+        let to = moment().tz('America/Toronto').format('YYYY-MM-DD HH:mm:ss');
         let params = {
             Params: {
                 Limit: "-1",
@@ -90,7 +90,7 @@ class MerchantMonitor extends Component{
                 if(response.data.Confirmation === 'Success'){
                     let updated = Object.assign([], this.state.timeLine);
                     updated.push(
-                        {name: moment().format('HH:mm:ss'), number: response.data.Response.TotalRecords}
+                        {name: moment().tz('America/Toronto').format('HH:mm:ss'), number: response.data.Response.TotalRecords}
                     );
                     if(updated.length > 20){
                         updated.shift();
@@ -137,7 +137,7 @@ class MerchantMonitor extends Component{
                 <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
                     <CardHeader
                         title="Live Transactions"
-                        subtitle={moment().format('YYYY-MM-DD')}
+                        subtitle={moment().tz('America/Toronto').format('YYYY-MM-DD')}
                     >
                     </CardHeader>   
                     <Divider style={{marginBottom: 48}}/>
