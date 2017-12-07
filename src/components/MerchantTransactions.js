@@ -12,7 +12,7 @@ import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 import {Card} from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 import Pagination from 'material-ui-pagination';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import SearchBar from 'material-ui-search-bar'
 import ActionSearch from 'material-ui/svg-icons/action/search';
 import ContentClear from 'material-ui/svg-icons/content/clear';
@@ -31,6 +31,10 @@ import { root_page } from '../utilities/urlPath'
 // API
 import { opay_url } from '../utilities/apiUrl';
 import * as apiManager from '../helpers/apiManager';
+
+// Helpers
+import * as formattor from '../helpers/formattor';
+
 
 class MerchantTransactions extends Component{
 
@@ -85,7 +89,7 @@ class MerchantTransactions extends Component{
 
         let timerange = null;
         if(field == 'FROM'){
-            let formatted = moment(date).format('YYYY-MM-DD HH:mm:ss');
+            let formatted = moment(date).tz('America/Toronto').format('YYYY-MM-DD HH:mm:ss');
             this.setState({
                 fromDate: formatted
             })
@@ -94,7 +98,7 @@ class MerchantTransactions extends Component{
             }
             this.fetchTransaction(1, this.state.transactionType, timerange);
         }else{
-            let formatted = moment(date).hour(23).minute(59).second(59).format('YYYY-MM-DD HH:mm:ss');
+            let formatted = moment(date).tz('America/Toronto').hour(23).minute(59).second(59).format('YYYY-MM-DD HH:mm:ss');
             this.setState({
                 endDate: formatted
             })
@@ -135,9 +139,20 @@ class MerchantTransactions extends Component{
                 let { TotalRecords, Transactions } = res;
 
                 for(let tran of Transactions){
-                    tran.Amount = tran.Amount.toFixed(2);
-                    tran.CreatedAt = tran.CreatedAt ? moment(tran.CreatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
-                    tran.UpdatedAt = tran.UpdatedAt ? moment(tran.UpdatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
+                    tran.OperatorName = (tran.FirstName ? formattor.capitalStr(tran.FirstName): '')+" "+(tran.LastName ? formattor.capitalStr(tran.LastName): '');
+                    tran.DisplayAmount = tran.Currency == 'CNY' ? (parseFloat(tran.Amount) / parseFloat(tran.Rate)).toFixed(2) : (tran.Amount).toFixed(2);
+                    
+                    let displayType = '';
+                    if(tran.Type == 'COMPLETE_QRCODE'){
+                        displayType = 'QR code';
+                    }else if(tran.Type == 'SCAN_QRCODE' || tran.Type == 'SCAN_QRCODE_COMPLETE'){
+                        displayType = 'Scan';
+                    }else if(tran.Type == 'REFUND'){
+                        displayType = 'Refund';
+                    }
+                    tran.DisplayType = displayType;
+                    tran.Status = formattor.capitalStr(tran.Status);
+                    tran.CreatedAt = tran.CreatedAt ? formattor.formatDatetime(tran.CreatedAt) : '';
                 }
 
                 let updated = Object.assign({}, this.state);
@@ -147,11 +162,11 @@ class MerchantTransactions extends Component{
                 this.setState(updated);
             })
             .catch((error) => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('userTypeID');
-                localStorage.removeItem('agentID');
-                localStorage.removeItem('loginKeyword');
-                browserHistory.push(`${root_page}`);
+                // localStorage.removeItem('token');
+                // localStorage.removeItem('userTypeID');
+                // localStorage.removeItem('agentID');
+                // localStorage.removeItem('loginKeyword');
+                // browserHistory.push(`${root_page}`);
             })
     }
 
@@ -164,6 +179,7 @@ class MerchantTransactions extends Component{
             infoStyle,
             searchContainer,
             datepicker,
+            platformImgStyle,
         } = styles;
 
         return (
@@ -239,10 +255,9 @@ class MerchantTransactions extends Component{
                                 <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                                     <TableRow displayBorder={false}>
                                         <TableHeaderColumn style={tableCellStyle}>Platform</TableHeaderColumn>
+                                        <TableHeaderColumn style={tableCellStyle}>Operator</TableHeaderColumn>
                                         <TableHeaderColumn style={tableCellStyle}>Amount</TableHeaderColumn>
                                         <TableHeaderColumn style={tableCellStyle}>Type</TableHeaderColumn>
-                                        <TableHeaderColumn style={tableCellStyle}>Currency</TableHeaderColumn>
-                                        <TableHeaderColumn style={tableCellStyle}>TransCurrency</TableHeaderColumn>
                                         <TableHeaderColumn style={tableCellStyle}>Rate</TableHeaderColumn>
                                         <TableHeaderColumn style={tableCellStyle}>Status</TableHeaderColumn>
                                         <TableHeaderColumn style={tableCellStyle}>Timestamp</TableHeaderColumn>
@@ -252,11 +267,17 @@ class MerchantTransactions extends Component{
                                 <TableBody displayRowCheckbox={false} showRowHover={true}>
                                         {this.state.transactionList.map((tran, idx)=>(
                                             <TableRow key={tran.GUID} selectable={false}>
-                                                <TableRowColumn style={tableCellStyle}>{tran.Platform}</TableRowColumn>
-                                                <TableRowColumn style={tableCellStyle}>{tran.Currency === 'CAD' ? '$' : '¥'} {tran.Amount}</TableRowColumn>
-                                                <TableRowColumn style={tableCellStyle}>{tran.Type}</TableRowColumn>
-                                                <TableRowColumn style={tableCellStyle}>{tran.Currency}</TableRowColumn>
-                                                <TableRowColumn style={tableCellStyle}>{tran.TransCurrency}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>
+                                                    {
+                                                        tran.Platform === 'ALIPAY' ?
+                                                        (<img style={platformImgStyle} src="/img/ali_r.png" />)
+                                                        :
+                                                        (<img style={platformImgStyle} src="/img/wechat_r.png" />)
+                                                    }
+                                                </TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{tran.OperatorName}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>${tran.DisplayAmount}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{tran.DisplayType}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{tran.Rate}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{tran.Status}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{tran.CreatedAt}</TableRowColumn>
@@ -322,6 +343,12 @@ const styles = {
     datepicker:{
         position: 'relative',
         float: 'right',
+    },
+    platformImgStyle:{
+        display: 'block',
+        width: 36,
+        height: 36,
+        margin: '0 auto'
     }
 
 }

@@ -21,3 +21,27 @@ export const removeFormatPhoneNumber = (phone) => {
     }
     return phone;
 }
+
+export const formatDatetime = (d) => {
+    let dateArr = d.split('T');
+    if(dateArr.length == 2){
+        let date = dateArr[0];
+        let time = dateArr[1].substring(0,8);    
+        return date+' '+time;
+    }else{
+        return d;
+    }
+}
+
+export const capitalStr = (temp) => {
+    let str = temp;
+    if(!str){
+        return '';
+    }else if(str.length == 0){
+        return '';
+    }else if(str.length == 1){
+        return str.toUpperCase();
+    }else{
+        return str.substr(0,1).toUpperCase() + str.substr(1).toLowerCase();
+    }
+}
