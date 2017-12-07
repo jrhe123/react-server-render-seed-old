@@ -9,7 +9,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import { Card, CardHeader } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { PieChart, Pie, Legend, Tooltip, Cell } from 'Recharts';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { scaleOrdinal, schemeCategory10 } from 'd3-scale';
@@ -76,7 +76,7 @@ class MerchantCharts extends Component{
     };
 
     fetch_today = () => {
-        let today = moment().format('YYYY-MM-DD')
+        let today = moment().tz('America/Toronto').format('YYYY-MM-DD')
         let params = {
             Params: {
                 Limit: "-1",
@@ -145,8 +145,8 @@ class MerchantCharts extends Component{
     }
 
     fetch_monthly = () => {
-        let from = moment().subtract(30, 'day').format('YYYY-MM-DD')
-        let to = moment().format('YYYY-MM-DD')
+        let from = moment().tz('America/Toronto').subtract(30, 'day').format('YYYY-MM-DD')
+        let to = moment().tz('America/Toronto').format('YYYY-MM-DD')
         let params = {
             Params: {
                 Limit: "-1",
@@ -166,7 +166,7 @@ class MerchantCharts extends Component{
 
         let dateArr = [];
         for(let i = 0; i < 30; i++){
-            let key = moment().subtract(i, 'day').format('YYYY-MM-DD');
+            let key = moment().tz('America/Toronto').subtract(i, 'day').format('YYYY-MM-DD');
             let item = {};
             item[key] = [];
             dateArr.push(item);
@@ -228,8 +228,8 @@ class MerchantCharts extends Component{
     }
 
     fetch_annual = () => {
-        let from = moment().subtract(12, 'month').format('YYYY-MM-DD')
-        let to = moment().format('YYYY-MM-DD')
+        let from = moment().tz('America/Toronto').subtract(12, 'month').format('YYYY-MM-DD')
+        let to = moment().tz('America/Toronto').format('YYYY-MM-DD')
         let params = {
             Params: {
                 Limit: "-1",
@@ -249,7 +249,7 @@ class MerchantCharts extends Component{
 
         let dateArr = [];
         for(let i = 0; i < 12; i++){
-            let key = moment().subtract(i, 'month').format('YYYY-MM');
+            let key = moment().tz('America/Toronto').subtract(i, 'month').format('YYYY-MM');
             let item = {};
             item[key] = [];
             dateArr.push(item);
@@ -343,14 +343,14 @@ class MerchantCharts extends Component{
 
         let from, to;
         if(type == 'TODAY'){
-            from = moment().format('YYYY-MM-DD')
-            to = moment().format('YYYY-MM-DD')
+            from = moment().tz('America/Toronto').format('YYYY-MM-DD')
+            to = moment().tz('America/Toronto').format('YYYY-MM-DD')
         }else if(type == 'MONTH'){
-            from = moment().subtract(30, 'day').format('YYYY-MM-DD')
-            to = moment().format('YYYY-MM-DD')
+            from = moment().tz('America/Toronto').subtract(30, 'day').format('YYYY-MM-DD')
+            to = moment().tz('America/Toronto').format('YYYY-MM-DD')
         }else if(type == 'ANNUAL'){
-            from = moment().subtract(12, 'month').format('YYYY-MM-DD')
-            to = moment().format('YYYY-MM-DD')
+            from = moment().tz('America/Toronto').subtract(12, 'month').format('YYYY-MM-DD')
+            to = moment().tz('America/Toronto').format('YYYY-MM-DD')
         }
         let params = {
             Params: {
@@ -417,7 +417,7 @@ class MerchantCharts extends Component{
                 <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
                     <CardHeader
                         title="Today Transactions"
-                        subtitle={moment().format('YYYY-MM-DD')}
+                        subtitle={moment().tz('America/Toronto').format('YYYY-MM-DD')}
                     >
                         <RaisedButton
                             style={exportBtn}
@@ -453,7 +453,7 @@ class MerchantCharts extends Component{
                 <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
                     <CardHeader
                         title="Daily Transactions of Last 30 Days"
-                        subtitle={'From ' + moment().subtract(30, 'day').format('YYYY-MM-DD') + ' to ' + moment().format('YYYY-MM-DD')}
+                        subtitle={'From ' + moment().tz('America/Toronto').subtract(30, 'day').format('YYYY-MM-DD') + ' to ' + moment().tz('America/Toronto').format('YYYY-MM-DD')}
                     >  
                         <RaisedButton
                                 style={exportBtn}
@@ -484,7 +484,7 @@ class MerchantCharts extends Component{
                 <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
                     <CardHeader
                         title="Monthly Transactions of Last 12 Months"
-                        subtitle={'From ' + moment().subtract(12, 'month').format('YYYY-MM') + ' to ' + moment().format('YYYY-MM')}
+                        subtitle={'From ' + moment().tz('America/Toronto').subtract(12, 'month').format('YYYY-MM') + ' to ' + moment().tz('America/Toronto').format('YYYY-MM')}
                     >   
                         <RaisedButton
                                     style={exportBtn}

@@ -19,7 +19,6 @@ import ContentClear from 'material-ui/svg-icons/content/clear';
 import DatePicker from 'material-ui/DatePicker';
 import SelectField from 'material-ui/SelectField';
 
-
 // Redux
 import { connect } from 'react-redux';
 import { showSnackbar }  from '../actions/layout_action';
@@ -162,11 +161,11 @@ class MerchantTransactions extends Component{
                 this.setState(updated);
             })
             .catch((error) => {
-                // localStorage.removeItem('token');
-                // localStorage.removeItem('userTypeID');
-                // localStorage.removeItem('agentID');
-                // localStorage.removeItem('loginKeyword');
-                // browserHistory.push(`${root_page}`);
+                localStorage.removeItem('token');
+                localStorage.removeItem('userTypeID');
+                localStorage.removeItem('agentID');
+                localStorage.removeItem('loginKeyword');
+                browserHistory.push(`${root_page}`);
             })
     }
 
