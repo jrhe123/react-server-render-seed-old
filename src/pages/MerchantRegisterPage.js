@@ -91,16 +91,8 @@ class MerchantRegisterPage extends Component{
 
     componentDidMount() {
 
-        // googleTranslate.translate('My name is Brandon', 'es', function(err, translation) {
-        //     if(err){
-        //         console.log('err: ', err);
-        //         return;
-        //     }
-        //     console.log(translation.translatedText);
-        // });
 
         window.addEventListener('resize', this.refactor);
-
         let existedUser = sessionStorage.getItem('user');
         if(!existedUser){
 
@@ -142,11 +134,12 @@ class MerchantRegisterPage extends Component{
         this.setState({ 
             openForm: true 
         });
-        setTimeout(() => { 
-            this.setState({ 
+        setTimeout(() => {
+            this.setState({
                 isLoading: false 
             });
         }, 1000);
+
     }
 
     refactor = () => {
@@ -541,6 +534,7 @@ class MerchantRegisterPage extends Component{
         return (
             <MuiThemeProvider>
                 <div style={mainMerchantRegisterPageStyle}>
+                    <div id="google_translate_element"></div>
                     <Paper zDepth={3} style={Object.assign({}, this.state.paperSize, paperStyle )}>
                             {this.state.openForm ? ( this.state.openLastPage ? lastPage : signUpForm ) : basicInfo }
                     </Paper>

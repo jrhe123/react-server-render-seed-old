@@ -53,17 +53,30 @@ class MerchantLoginPage extends Component{
     }
 
     componentDidMount() {
+
+
         let token = localStorage.getItem('token');
         setTimeout(() => { 
             if(!token){
                 this.setState({
                     isLoading: false,
                 })
+                const googleTransFun = document.createElement('script');
+                const googleTransSrc = document.createElement('script');
+                googleTransFun.type="text/javascript";
+                googleTransFun.innerHTML="function googleTranslateElementInit() {\n" +
+                    "new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');\n" +
+                    "}";
+                googleTransSrc.type="text/javascript";
+                googleTransSrc.setAttribute('src','//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit');
+                document.body.appendChild(googleTransFun);
+                document.body.appendChild(googleTransSrc);
                 window.addEventListener('resize', this.refactor);
             }else{
                 browserHistory.push(`${root_page}${merchant_admin}`);
             }
         }, 1000);
+
     }
 
     refactor = () => {
@@ -169,8 +182,12 @@ class MerchantLoginPage extends Component{
             <MuiThemeProvider>
                 <div className="merchant_login" style={mainMerchantRegisterPageStyle}>
 
+                    <div id="google_translate_element" style={{float:'right'}}></div>
+
                     <Paper zDepth={3} style={Object.assign({}, this.state.paperSize, paperStyle )}>
+
                         <div style={verticalCenter}>
+
                             <TextField floatingLabelText="Agent ID" 
                                         inputStyle={this.state.inputStyle}
                                         floatingLabelStyle={this.state.floatLabelStyle} 
