@@ -73,3 +73,12 @@ export const assign_merchant_employee = (idx, updatedEmployee) => {
         updatedEmployee: updatedEmployee
     }
 }
+
+export const fetch_profile_image = (img) => {
+
+    console.log('action called, now go to reducer');
+    return {
+        type: MERCHANT.FETCH_PROFILE_IMAGE,
+        img: img,
+    }
+}

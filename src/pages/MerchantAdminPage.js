@@ -22,6 +22,9 @@ import HardwareDesktopWindows from 'material-ui/svg-icons/hardware/desktop-windo
 // Redux
 import { connect } from 'react-redux';
 import { showSnackbar }  from '../actions/layout_action';
+import { 
+    fetch_profile_image
+} from '../actions/merchant_action';
 
 // Router
 import { browserHistory } from 'react-router';
@@ -70,6 +73,11 @@ class MerchantAdminPage extends Component{
         this.setState({
             userTypeID: userTypeID
         })
+
+        if(localStorage.getItem('profileImage') != ''){
+            this.props.fetch_profile_image(localStorage.getItem('profileImage'));
+        }
+
         setTimeout(() => { 
             if(!token){
                 browserHistory.push(`${root_page}`);
@@ -106,6 +114,7 @@ class MerchantAdminPage extends Component{
                 localStorage.removeItem('userTypeID');
                 localStorage.removeItem('agentID');
                 localStorage.removeItem('loginKeyword');
+                localStorage.removeItem('profileImage');
                 browserHistory.push(`${root_page}`);
             })
             .catch((error) => {
@@ -113,6 +122,7 @@ class MerchantAdminPage extends Component{
                 localStorage.removeItem('userTypeID');
                 localStorage.removeItem('agentID');
                 localStorage.removeItem('loginKeyword');
+                localStorage.removeItem('profileImage');
                 browserHistory.push(`${root_page}`);
             })
     }
@@ -193,7 +203,16 @@ class MerchantAdminPage extends Component{
                         iconElementRight={
                             <div>
                                 <div style={profileImgContainer}>
-                                    <img style={profileImg} src="/img/ali_r.png" />
+                                    {
+                                        this.props.img != "" ? 
+                                        (
+                                            <img style={profileImg} src={`${opay_url}picture?ImageGUID=${this.props.img}&ThumbSize=250X250`} />
+                                        )
+                                        :
+                                        (
+                                            <img style={profileImg} src="/img/avatar.png" />
+                                        )
+                                    }
                                 </div>
                                 <FlatButton
                                     style={{color: '#000', height: 64, paddingRight: 24}}
@@ -313,9 +332,22 @@ const styles = {
         display: 'block',
         width: 40,
         height: 40,
-        marginTop: 12
+        marginTop: 12,
+        borderRadius: '50%'
     }
 
 }
 
-export default connect()(MerchantAdminPage);
+const stateToProps = (state) => {
+	return {
+        img: state.merchant_reducer.img
+	}
+}
+
+const dispatchToProps = (dispatch) => {
+	return {
+        fetch_profile_image: (img) => dispatch(fetch_profile_image(img)),
+    }
+}
+
+export default connect(stateToProps, dispatchToProps)(MerchantAdminPage);

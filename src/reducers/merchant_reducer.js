@@ -17,6 +17,8 @@ const INITIAL_STATE = {
     
     employeeList: [],
     anchorEl: null,
+
+    img: ''
 };
 
 export default function(state = INITIAL_STATE, action) {
@@ -82,6 +84,12 @@ export default function(state = INITIAL_STATE, action) {
             console.log('reducer received, call back to component');
             idx = action.idx;
             updated.employeeList[idx] = action.updatedEmployee;
+            return updated;     
+
+        case MERCHANT.FETCH_PROFILE_IMAGE:
+
+            console.log('reducer received, call back to component');
+            updated.img = action.img;
             return updated;     
 
         default :

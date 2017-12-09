@@ -132,3 +132,18 @@ export const opayCsvApi = (endpoint, params, isAuth) => {
             })   
     });        
 }
+
+export const opayPicApi = (endpoint, params) => {
+    
+    return new Promise(function(resolve, reject){
+
+        let headers = null;        
+        axios.get(endpoint, params, headers)
+            .then((response) => {
+                resolve(response);     
+            })
+            .catch((error) => {
+                reject(error); 
+            })   
+    });        
+}

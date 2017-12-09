@@ -137,6 +137,7 @@ class MerchantLoginPage extends Component{
                         localStorage.setItem('userTypeID', response.data.Response.UserTypeID);
                         localStorage.setItem('agentID', this.state.agentID);
                         localStorage.setItem('loginKeyword', this.state.userName);
+                        localStorage.setItem('profileImage', response.data.Response.ProfileImage);
                         browserHistory.push(`${root_page}${merchant_admin}`);
                     }else{
                         this.handleTouchTap(`${response.data.Message}`, false);

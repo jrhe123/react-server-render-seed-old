@@ -434,6 +434,7 @@ class MerchantCharts extends Component{
                 localStorage.removeItem('userTypeID');
                 localStorage.removeItem('agentID');
                 localStorage.removeItem('loginKeyword');
+                localStorage.removeItem('profileImage');
                 browserHistory.push(`${root_page}`);
             })
     }
@@ -543,19 +544,26 @@ class MerchantCharts extends Component{
                             :
                             (<div style={infoContainer}><div style={infoWrapper}><p style={infoStyle}>No transaction found</p></div></div>)
                         }
-                    <div style={exRateContainer}>
-                        <div style={exRateContent}>
-                            <div style={exRate}>
-                                <h4 style={{fontWeight: 'bold', marginBottom: 12}}>Transaction Amount</h4>
-                                <p>Alipay: <span style={{fontWeight: 'bold'}}>$ {this.state.hasTodayData ? this.state.totalTodayAli : 0.00}</span></p>
-                                <p>Wechat: <span style={{fontWeight: 'bold'}}>$ {this.state.hasTodayData ? this.state.totalTodayWechat : 0.00}</span></p>
-                            </div>
-                            <div style={exRateSpan}>
-                                <span style={exRateLabel}>Alipay: {this.state.alipayRate}</span>
-                                <span style={exRateLabel}>Wechat: {this.state.wechatRate}</span>
-                            </div>
-                        </div>
-                    </div>    
+                        {
+                            this.state.hasTodayData ? 
+                            (
+                                <div style={exRateContainer}>
+                                    <div style={exRateContent}>
+                                        <div style={exRate}>
+                                            <h4 style={{fontWeight: 'bold', marginBottom: 12}}>Transaction Amount</h4>
+                                            <p>Alipay: <span style={{fontWeight: 'bold'}}>$ {this.state.hasTodayData ? this.state.totalTodayAli : 0.00}</span></p>
+                                            <p>Wechat: <span style={{fontWeight: 'bold'}}>$ {this.state.hasTodayData ? this.state.totalTodayWechat : 0.00}</span></p>
+                                        </div>
+                                        <div style={exRateSpan}>
+                                            <span style={exRateLabel}>Alipay: {this.state.alipayRate}</span>
+                                            <span style={exRateLabel}>Wechat: {this.state.wechatRate}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                            :
+                            (null)
+                        }
                 </Card> 
                 <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
                     <CardHeader

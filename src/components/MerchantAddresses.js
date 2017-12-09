@@ -102,6 +102,7 @@ class MerchantAddresses extends Component{
                 localStorage.removeItem('userTypeID');
                 localStorage.removeItem('agentID');
                 localStorage.removeItem('loginKeyword');
+                localStorage.removeItem('profileImage');
                 browserHistory.push(`${root_page}`);
             })
     }

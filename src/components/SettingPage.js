@@ -27,7 +27,10 @@ import validator from 'validator';
 // Redux
 import { connect } from 'react-redux';
 import { showSnackbar }  from '../actions/layout_action';
-import { fetch_merchant_profile }  from '../actions/merchant_action';
+import { 
+    fetch_merchant_profile,
+    fetch_profile_image, 
+} from '../actions/merchant_action';
 
 // Router
 import { browserHistory } from 'react-router';
@@ -99,6 +102,7 @@ class SettingPage extends Component{
                 localStorage.removeItem('userTypeID');
                 localStorage.removeItem('agentID');
                 localStorage.removeItem('loginKeyword');
+                localStorage.removeItem('profileImage');
                 browserHistory.push(`${root_page}`);
             }) 
     }
@@ -282,6 +286,38 @@ class SettingPage extends Component{
                 })
         }
     }
+
+    handleImageChange = (e) => {
+        e.preventDefault();
+        let reader = new FileReader();
+        let file = e.target.files[0];
+        if(file){
+
+            if(file.type != "image/jpeg"
+                && file.type != "image/jpg"
+                && file.type != "image/gif"
+                && file.type != "image/png"
+            ){
+                this.handleTouchTap(`Please select one of these image type: [jpg, jpeg, png, gif]`, false);
+            }else{
+
+                let formData = new FormData();
+                formData.append('File', file);
+                apiManager.opayFileApi(opay_url + 'upload/image', formData, true)
+                    .then((response) => {
+                        if(response.data.Confirmation === 'Success'){
+                            let img = response.data.Response.Image.ImageGUID;
+                            this.props.fetch_profile_image(img);
+                        }else{
+                            this.handleTouchTap(`${response.data.Message}`, false);
+                        }
+                    })
+                    .catch((error) => {
+                        this.handleTouchTap(`Error: Upload image failed`, false);
+                    })
+            }            
+        }
+    }
     
 
     render() {
@@ -290,6 +326,9 @@ class SettingPage extends Component{
             mainContainer,
             formControl,
             btnControl,
+            profileImgContainer,
+            profileImg,
+            avatarBtn,
         } = styles;
 
         if(!this.props.profile){
@@ -302,10 +341,66 @@ class SettingPage extends Component{
                 <div style={mainContainer}>
 
                     <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
-                        <CardHeader
-                            title={this.props.profile ? this.props.profile.firstName : ''}
-                            subtitle={this.props.profile ? this.props.profile.lastName : ''}
-                            avatar="/img/avatar.png"
+                        {
+                            this.props.img != "" ? 
+                            (
+                                <CardHeader
+                                    style={{height: 220}}
+                                    titleStyle={{fontSize: 20}}
+                                    title={this.props.profile ? this.props.profile.firstName : ''}
+                                    subtitle={
+                                        this.props.profile ? 
+                                        (
+                                            <div>
+                                                <p style={{fontSize: 14}}>{this.props.profile.lastName}</p>
+                                            </div>
+                                        )
+                                        : 
+                                        (null)
+                                    }
+                                    avatar={
+                                        <div style={profileImgContainer}>
+                                            <img style={profileImg} src={`${opay_url}picture?ImageGUID=${this.props.img}&ThumbSize=250X250`} />
+                                            <a style={avatarBtn} 
+                                                onClick={(e) => this.myInput.click() }
+                                            >CHANGE AVATAR</a>
+                                        </div>
+                                    }
+                                />
+                            )
+                            :
+                            (
+                                <CardHeader
+                                    style={{height: 220}}
+                                    titleStyle={{fontSize: 20}}
+                                    title={this.props.profile ? this.props.profile.firstName : ''}
+                                    subtitle={
+                                        this.props.profile ? 
+                                        (
+                                            <div>
+                                                <p style={{fontSize: 14}}>{this.props.profile.lastName}</p>
+                                            </div>
+                                        )
+                                        : 
+                                        (null)
+                                    }
+                                    avatar={
+                                        <div style={profileImgContainer}>
+                                            <img style={profileImg} src="/img/avatar.png" />
+                                            <a style={avatarBtn} 
+                                                onClick={(e) => this.myInput.click() }
+                                            >CHANGE AVATAR</a>
+                                        </div>
+                                    }
+                                />
+                            )
+                        }
+                        <input 
+                            id="myInput" 
+                            type="file" 
+                            ref={(ref) => this.myInput = ref}
+                            style={{ display: 'none' }} 
+                            onChange={(e) => this.handleImageChange(e)}
                         />
                         <Divider />
                         <List style={{marginBottom: 24}}>
@@ -462,20 +557,43 @@ const styles = {
         marginTop: 36,
         marginBottom: 12
     },
-
+    profileImgContainer: {
+        width: 180,
+        height: 180,
+        float: 'left'
+    },
+    profileImg: {
+        display: 'block',
+        margin: '0 auto',
+        width: 160,
+        height: 160,
+        borderRadius: '6px',
+        backgroundColor: '#c9c9c9'
+    },
+    avatarBtn: {
+        display: 'block',
+        margin: '0 auto',  
+        marginTop: 12,
+        textAlign: 'center',      
+        cursor: 'pointer',
+        fontSize: 12,
+        color: '#728b9a'
+    }
 }
 
 const stateToProps = (state) => {
 
 	return {
-		profile: state.merchant_reducer.profile,
+        profile: state.merchant_reducer.profile,
+        img: state.merchant_reducer.img
 	}
 }
 
 const dispatchToProps = (dispatch) => {
 
 	return {
-		fetch_merchant_profile: (profile) => dispatch(fetch_merchant_profile(profile))
+        fetch_merchant_profile: (profile) => dispatch(fetch_merchant_profile(profile)),
+        fetch_profile_image: (img) => dispatch(fetch_profile_image(img))
 	}
 }
 
