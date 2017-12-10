@@ -18,6 +18,9 @@ import ActionSearch from 'material-ui/svg-icons/action/search';
 import ContentClear from 'material-ui/svg-icons/content/clear';
 import DatePicker from 'material-ui/DatePicker';
 import SelectField from 'material-ui/SelectField';
+import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
+import ActionSettings from 'material-ui/svg-icons/action/settings';
 
 // Redux
 import { connect } from 'react-redux';
@@ -41,6 +44,14 @@ class MerchantTransactions extends Component{
         super(props);
         this.handleChangePage = this.handleChangePage.bind(this);
         this.fetchTransaction = this.fetchTransaction.bind(this);
+        this.handleActionOpen = this.handleActionOpen.bind(this);
+        this.handleActionClose = this.handleActionClose.bind(this);
+        this.handleRefund = this.handleRefund.bind(this);
+        this.handleConfirmRefund = this.handleConfirmRefund.bind(this);
+        this.handleRefundClose = this.handleRefundClose.bind(this);
+        this.onRefundChange = this.onRefundChange.bind(this);
+        this.handleReasonChange = this.handleReasonChange.bind(this);
+        this.handleDetail = this.handleDetail.bind(this);
         this.state = {
             Limit: "10",
             Offset: "0",
@@ -48,6 +59,12 @@ class MerchantTransactions extends Component{
             currentPage: 1,
             transactionList: [],
             display: 10,
+
+            anchorEl: null,
+            refundModalOpen: false,
+            refundTran: {},
+            refundAmount: 0,
+            refundReason: '',
 
             transactionType: 'ALL',
             fromDate: null,
@@ -140,7 +157,8 @@ class MerchantTransactions extends Component{
                 for(let tran of Transactions){
                     tran.OperatorName = (tran.FirstName ? formattor.capitalStr(tran.FirstName): '')+" "+(tran.LastName ? formattor.capitalStr(tran.LastName): '');
                     tran.DisplayAmount = tran.Currency == 'CNY' ? (parseFloat(tran.Amount) / parseFloat(tran.Rate)).toFixed(2) : (tran.Amount).toFixed(2);
-                    
+                    tran.IsOpen = false;
+
                     let displayType = '';
                     if(tran.Type == 'COMPLETE_QRCODE'){
                         displayType = 'QR code';
@@ -170,6 +188,62 @@ class MerchantTransactions extends Component{
             })
     }
 
+    // Action
+    handleActionOpen = (e, tran, idx) => {
+        e.preventDefault();
+        let anchorEl = e.currentTarget;
+
+        let updated =  Object.assign([], this.state.transactionList);
+        updated[idx].IsOpen = true;
+        this.setState({
+            anchorEl: anchorEl,
+            transactionList: updated
+        })
+    }
+
+    handleActionClose = (idx) => {
+        let updated =  Object.assign([], this.state.transactionList);
+        updated[idx].IsOpen = false;
+        this.setState({
+            anchorEl: null,
+            transactionList: updated
+        })
+    }
+
+    handleRefund = (tran, idx) => {
+        let updated =  Object.assign([], this.state);
+        updated.transactionList[idx].IsOpen = false;
+        updated.refundModalOpen = true;
+        updated.refundTran = tran;
+        this.setState(updated);
+    }
+
+    onRefundChange = (e,value) => {
+        e.preventDefault();
+        this.setState({
+            refundAmount: value
+        });
+    }
+
+    handleReasonChange = (e) => {
+        this.setState({
+            refundReason: e.target.value
+        });
+    }
+
+    handleConfirmRefund = () => {
+
+
+    }
+    
+    handleRefundClose = () => {
+        this.setState({refundModalOpen: false});
+    };
+
+    handleDetail = (tran, idx) => {
+        console.log(tran);
+    }
+
     render() {
 
         const {
@@ -180,6 +254,10 @@ class MerchantTransactions extends Component{
             searchContainer,
             datepicker,
             platformImgStyle,
+            formControl,
+            btnControl,
+            detailPlatform,
+            msgContainer,
         } = styles;
 
         return (
@@ -261,6 +339,7 @@ class MerchantTransactions extends Component{
                                         <TableHeaderColumn style={tableCellStyle}>Rate</TableHeaderColumn>
                                         <TableHeaderColumn style={tableCellStyle}>Status</TableHeaderColumn>
                                         <TableHeaderColumn style={tableCellStyle}>Timestamp</TableHeaderColumn>
+                                        <TableHeaderColumn style={tableCellStyle}>Action</TableHeaderColumn>
                                     </TableRow>
                                 </TableHeader>
                                 
@@ -281,6 +360,33 @@ class MerchantTransactions extends Component{
                                                 <TableRowColumn style={tableCellStyle}>{tran.Rate}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{tran.Status}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{tran.CreatedAt}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>
+                                                    <FlatButton
+                                                        onClick={(e) => this.handleActionOpen(e, tran, idx)}
+                                                        icon={<ActionSettings />}
+                                                    />
+                                                    <div style={{textAlign: 'center'}}>
+                                                        <Popover
+                                                            onRequestClose={(e) => this.handleActionClose(idx)}
+                                                            open={tran.IsOpen}
+                                                            anchorEl={this.state.anchorEl}
+                                                            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                                                            targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                                            animation={PopoverAnimationVertical}>
+                                                            <Menu>
+                                                                {
+                                                                    (tran.Type !== 'REFUND' && tran.Status === 'Success') ? 
+                                                                    (
+                                                                        <MenuItem primaryText="Refund" onClick={() => this.handleRefund(tran, idx)}/>
+                                                                    )
+                                                                    :
+                                                                    (null)
+                                                                }
+                                                                <MenuItem primaryText="Detail" onClick={() => this.handleDetail(tran, idx)}/>
+                                                            </Menu>
+                                                        </Popover> 
+                                                    </div>
+                                                </TableRowColumn>
                                             </TableRow>
                                         ))}
                                 </TableBody>                            
@@ -304,6 +410,51 @@ class MerchantTransactions extends Component{
                             />
                         </div>
                     </Card>
+
+
+                        <Dialog
+                            title="Refund Transaction"
+                            modal={false}
+                            open={this.state.refundModalOpen}
+                            onRequestClose={this.handleRefundClose.bind(this)}
+                        >
+                            <div style={{marginBottom: 36}}>
+                                <p style={{fontSize: 15, color: '#000'}}>
+                                    <span style={{color: '#8C8C8C'}}>Platform: </span> 
+                                    {
+                                        this.state.refundTran.Platform === 'ALIPAY' ?
+                                        (<img style={detailPlatform} src="/img/ali_r.png" />)
+                                        :
+                                        (<img style={detailPlatform} src="/img/wechat_r.png" />)
+                                    }
+                                </p>
+                                <p style={{fontSize: 15, color: '#000'}}>
+                                    <span style={{color: '#8C8C8C', marginRight: 6}}>Maximum amount: </span> 
+                                    ${ this.state.refundTran.DisplayAmount }
+                                </p>
+                            </div>
+                            <Divider style={{marginBottom: 12}} />
+                            <div style={{marginBottom: 24}}>
+                                <TextField floatingLabelText="Refund Amount" 
+                                    type="number"
+                                    onChange={(e, value) => this.onRefundChange(e,value)}
+                                    />
+                            </div>
+                            <div style={{marginBottom: 24}}>
+                                <p>Refund Reason:</p>
+                                 <textarea 
+                                    onChange={(e) => this.handleReasonChange(e)}
+                                    value={this.state.refundReason}
+                                    style={msgContainer} />
+                            </div>
+                            <div style={btnControl}>       
+                                <RaisedButton label="Refund" 
+                                            primary={true}
+                                            onClick={() => this.handleConfirmRefund()} />
+                            </div> 
+                    </Dialog>
+
+
             </MuiThemeProvider>
         )
     }
@@ -349,8 +500,30 @@ const styles = {
         width: 36,
         height: 36,
         margin: '0 auto'
-    }
-
+    },
+    formControl: {
+        textAlign: 'center',
+        paddingHorizontal: 24,
+        marginTop: 12,
+        marginBottom: 12
+    },
+    btnControl: {
+        textAlign: 'center',
+        paddingHorizontal: 24,
+        marginTop: 36,
+        marginBottom: 12
+    },
+    detailPlatform: {
+        display: 'inline-block',
+        marginLeft: 12,
+        width: 48,
+        height: 48,
+    },
+    msgContainer: {
+        width: '100%',
+        height: 200
+    },
 }
+
 
 export default connect()(MerchantTransactions);

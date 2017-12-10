@@ -247,13 +247,13 @@ class MerchantAdminPage extends Component{
                     <div style={drawerContainer}>
                         <Drawer open={true} width={220} containerStyle={{zIndex: 0, backgroundColor: '#123659'}}>
                             <MenuItem style={{marginTop: 72, color: '#fff'}} 
+                                        primaryText="Summary" 
+                                        leftIcon={<EditorShowChart color="#fff" />}
+                                        onClick={this.switchTab.bind(this, 'charts')} /> 
+                            <MenuItem style={{color: '#fff'}} 
                                         primaryText="Transactions" 
                                         leftIcon={<ActionSearch color="#fff" />}
                                         onClick={this.switchTab.bind(this, 'transactions')} />
-                            <MenuItem style={{color: '#fff'}} 
-                                        primaryText="Summary" 
-                                        leftIcon={<EditorShowChart color="#fff" />}
-                                        onClick={this.switchTab.bind(this, 'charts')} />   
                             <MenuItem style={{color: '#fff'}} 
                                         primaryText="Monitor" 
                                         leftIcon={<HardwareDesktopWindows color="#fff" />}
