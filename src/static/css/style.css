@@ -1205,3 +1205,8 @@ table, th, td {
     left: unset !important;
     right: 0 !important;
 }
+
+/* refund modal */
+.refund-modal>div>div>div>div{
+    overflow-y: auto !important;
+}

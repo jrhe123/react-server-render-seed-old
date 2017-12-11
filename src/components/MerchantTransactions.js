@@ -21,6 +21,7 @@ import SelectField from 'material-ui/SelectField';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import ActionSettings from 'material-ui/svg-icons/action/settings';
+import EditorAttachMoney from 'material-ui/svg-icons/editor/attach-money';
 
 // Redux
 import { connect } from 'react-redux';
@@ -63,8 +64,9 @@ class MerchantTransactions extends Component{
             anchorEl: null,
             refundModalOpen: false,
             refundTran: {},
-            refundAmount: 0,
+            refundAmount: '',
             refundReason: '',
+            refundErrMsg: '',
 
             transactionType: 'ALL',
             fromDate: null,
@@ -211,9 +213,19 @@ class MerchantTransactions extends Component{
     }
 
     handleRefund = (tran, idx) => {
+
+        console.log('check: ', tran);
+
         let updated =  Object.assign([], this.state);
         updated.transactionList[idx].IsOpen = false;
         updated.refundModalOpen = true;
+
+        if(tran.type == 'CNY'){
+            tran.DisplayRefundedAmount = (parseFloat(tran.AccountRefundedAmount) / parseFloat(tran.Rate)).toFixed(2)
+        }else{
+            tran.DisplayRefundedAmount = (parseFloat(tran.AccountRefundedAmount) / 100).toFixed(2);
+        }
+
         updated.refundTran = tran;
         this.setState(updated);
     }
@@ -229,6 +241,36 @@ class MerchantTransactions extends Component{
         this.setState({
             refundReason: e.target.value
         });
+    }
+
+    onFieldBlur = (field, e) => {
+
+        let value = e.target.value;
+        let formatted = parseFloat((' ' + value).slice(1)).toFixed(2);
+        if(field === 'refundAmount'){
+            if(!value){
+                let updated = Object.assign({}, this.state);
+                updated.refundErrMsg = "invalid refund amount";
+                this.setState(updated);
+            }else if(!isNumeric(formatted)){
+                let updated = Object.assign({}, this.state);
+                updated.refundErrMsg = "invalid refund amount";
+                this.setState(updated);
+            }else if(formatted > parseFloat(this.state.refundTran.DisplayAmount)){
+                let updated = Object.assign({}, this.state);
+                updated.refundErrMsg = "refund amount cannot exceed the maximum amount";
+                this.setState(updated);
+            }else if(formatted == 0){
+                let updated = Object.assign({}, this.state);
+                updated.refundErrMsg = "refund amount must be greater than 0";
+                this.setState(updated);
+            }else{
+                let updated = Object.assign({}, this.state);
+                updated.refundErrMsg = "";
+                updated.refundAmount = formatted;
+                this.setState(updated);
+            }
+        }
     }
 
     handleConfirmRefund = () => {
@@ -413,6 +455,7 @@ class MerchantTransactions extends Component{
 
 
                         <Dialog
+                            className="refund-modal"
                             title="Refund Transaction"
                             modal={false}
                             open={this.state.refundModalOpen}
@@ -429,19 +472,31 @@ class MerchantTransactions extends Component{
                                     }
                                 </p>
                                 <p style={{fontSize: 15, color: '#000'}}>
-                                    <span style={{color: '#8C8C8C', marginRight: 6}}>Maximum amount: </span> 
+                                    <span style={{color: '#8C8C8C', marginRight: 6}}>Transaction amount: </span> 
                                     ${ this.state.refundTran.DisplayAmount }
                                 </p>
+                                <p style={{fontSize: 15, color: '#000'}}>
+                                    <span style={{color: '#8C8C8C', marginRight: 6}}>Refunded amount: </span> 
+                                    ${ this.state.refundTran.DisplayRefundedAmount }
+                                </p>
                             </div>
-                            <Divider style={{marginBottom: 12}} />
+                            <Divider style={{marginBottom: 36}} />
                             <div style={{marginBottom: 24}}>
-                                <TextField floatingLabelText="Refund Amount" 
-                                    type="number"
-                                    onChange={(e, value) => this.onRefundChange(e,value)}
-                                    />
+                                <p style={{marginBottom: 0}}>Refund Amount:</p> 
+                                <div style={{position: 'relative', display: 'inline-block'}}>
+                                    <EditorAttachMoney style={{position: 'absolute', left: 0, top: 15, width: 20, height: 20}}/>   
+                                    <TextField floatingLabelText="" 
+                                        style={{paddingLeft: 18}}
+                                        value={this.state.refundAmount}
+                                        type="number"
+                                        onBlur={this.onFieldBlur.bind(this, 'refundAmount')}
+                                        errorText={this.state.refundErrMsg}
+                                        onChange={(e, value) => this.onRefundChange(e,value)}
+                                        />
+                                </div>    
                             </div>
                             <div style={{marginBottom: 24}}>
-                                <p>Refund Reason:</p>
+                                <p style={{marginBottom: 6}}>Refund Reason:</p>
                                  <textarea 
                                     onChange={(e) => this.handleReasonChange(e)}
                                     value={this.state.refundReason}
@@ -521,9 +576,12 @@ const styles = {
     },
     msgContainer: {
         width: '100%',
-        height: 200
+        height: 100
     },
 }
 
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
 
 export default connect()(MerchantTransactions);

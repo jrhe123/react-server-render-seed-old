@@ -109,8 +109,9 @@ class MerchantCharts extends Component{
         apiManager.opayApi(opay_url+'wechat/exchange_rate', params, false)
             .then((response) => {
                 if(response.data.Confirmation === 'Success'){
+                    let rate = response.data.Response.rate;
                     this.setState({
-                        wechatRate: response.data.Response.rate
+                        wechatRate: rate.substring(0,1)+'.'+rate.substring(1)
                     })
                 }
             })
