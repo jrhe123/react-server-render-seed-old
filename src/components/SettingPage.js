@@ -307,6 +307,7 @@ class SettingPage extends Component{
                     .then((response) => {
                         if(response.data.Confirmation === 'Success'){
                             let img = response.data.Response.Image.ImageGUID;
+                            localStorage.setItem('profileImage', img);
                             this.props.fetch_profile_image(img);
                         }else{
                             this.handleTouchTap(`${response.data.Message}`, false);
