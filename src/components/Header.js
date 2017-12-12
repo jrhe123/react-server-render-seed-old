@@ -80,6 +80,17 @@ class Header extends Component {
             rightIconMarginTop: window.innerWidth >= 414 ? 5 : -8,
             largeScreen: window.innerWidth >= 414
         });
+
+        const googleTransFun = document.createElement('script');
+        const googleTransSrc = document.createElement('script');
+        googleTransFun.type="text/javascript";
+        googleTransFun.innerHTML="function googleTranslateElementInit() {\n" +
+            "new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');\n" +
+            "}";
+        googleTransSrc.type="text/javascript";
+        googleTransSrc.setAttribute('src','//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit');
+        document.body.appendChild(googleTransFun);
+        document.body.appendChild(googleTransSrc);
     }
 
     componentWillUnmount() {
@@ -89,16 +100,20 @@ class Header extends Component {
 
     render() {
 
-        //console.log('in here: ', this.props.pathname);
-
         const labelStyle = {
             color: this.state.fontColor,
             fontWeight: 'bold',
-            fontSize: '18px'
+            fontSize: '18px',
+            float: 'right',
+            display: 'inline-block',
         };
 
+        const btnStyle = {
+            marginTop: '7px'
+        }
+
         const smallScreenLabelMargin = {
-            marginLeft: '20px'
+            marginLeft: '20px',
         };
 
         const barWrapper = {
@@ -110,7 +125,13 @@ class Header extends Component {
             position: "absolute",
             top: -24,
             right: 10
-        }
+        };
+
+        const googleTranslateStyle = {
+            display:'inline-block',
+            float: 'right',
+            marginBottom: '10px'
+        };
 
         let iconStyleRight = {
             position: 'relative',
@@ -127,17 +148,18 @@ class Header extends Component {
                             this.props.pathname === '/' ? 
                             <div><img style={{  margin: '5px', marginTop: '10px', width: '38px', height: '50px' }} src={this.state.colorLogoPath} /></div>
                             :
-                            <div><img style={{  margin: '5px', marginTop: '10px', width: '38px', height: '50px' }} src={this.state.logoPath} /></div>
+                            <div style={{margin: '5px', marginTop: '14px'}}><img style={{  width: '38px', height: '50px' }} src={this.state.logoPath} /></div>
                         }
-                        titleStyle={ {marginLeft: '30px'} }
+                        titleStyle={{marginLeft: '30px', marginBottom: '20px' }}
                         zDepth={this.state.zdepth}
                         showMenuIconButton={false}
                         onTitleTouchTap={(e) => browserHistory.push(`${root_page}`)}
                         iconElementRight={
                             this.state.largeScreen ? <div>
-                                <Link to={`${root_page}`}><FlatButton key={1} label="Home" labelStyle={labelStyle} /></Link>
-                                <Link to={`${root_page}feature`}><FlatButton key={2} label="Service" labelStyle={labelStyle} /></Link>
-                                <Link to={`${root_page}about`}><FlatButton key={3} label="About Us" labelStyle={labelStyle} /></Link>
+                                <div id="google_translate_element" style={googleTranslateStyle}></div>
+                                <Link to={`${root_page}`}><FlatButton key={1} label="Home" style={btnStyle} labelStyle={labelStyle} /></Link>
+                                <Link to={`${root_page}feature`}><FlatButton key={2} label="Service" style={btnStyle} labelStyle={labelStyle} /></Link>
+                                <Link to={`${root_page}about`}><FlatButton key={3} label="About Us" style={btnStyle} labelStyle={labelStyle} /></Link>
                             </div> : <div id="outer-container">
                                 <Menu style={{}} right pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } isOpen={ this.state.openMenu }>
                                     <div style={barWrapper}>

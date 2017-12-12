@@ -120,43 +120,6 @@ class NewAboutUs extends Component{
                         </div>
                     </div>
 
-                    <div style={numberContainerStyle}>
-                        <div style={contentContainerStyle}>
-                            <div className="p-l-md p-r-md number-wrapper">
-                                <div className="m-b-lg">
-                                    <p className="txt-2 m-b text-center">OPAY <span className="bold">IN NUMBERS</span></p>
-                                    <div style={Object.assign({}, centerDivStyle, delimit )}></div>
-                                </div>
-                                <div className="number-flex-container">
-                                    <div className="number-flex-item">
-                                        <p className="txt-4">MERCHANDISES</p>
-                                        <p className="txt-0 counter-txt">2</p>
-                                    </div>
-                                    <div className="number-flex-item">
-                                        <p className="txt-4">CITIES IN SERVICES</p>
-                                        <p className="txt-0 counter-txt">1</p>
-                                    </div>
-                                    <div className="number-flex-item">
-                                        <p className="txt-4">PROJECT IN 2017</p>
-                                        <p className="txt-0 counter-txt">16</p>
-                                    </div>
-                                    <div className="number-flex-item">
-                                        <p className="txt-4">TRANSACTIONS</p>
-                                        <p className="txt-0 counter-txt">86</p>
-                                    </div>
-                                    <div className="number-flex-item">
-                                        <p className="txt-4">YEARS IN BUSINESS</p>
-                                        <p className="txt-0 counter-txt">1</p>
-                                    </div>
-                                    <div className="number-flex-item">
-                                        <p className="txt-4">TEAM MEMBERS</p>
-                                        <p className="txt-0 counter-txt">12</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div style={teamContainerStyle}>
                         <div style={contentContainerStyle}>
                             <p className="txt-2" style={Object.assign({}, centerTitleTxtStyle, titleStyle )}>OUR TEAM</p>
@@ -186,36 +149,6 @@ class NewAboutUs extends Component{
                                     <img style={teamImgStyle} src="/img/nick.png" />
                                     <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Nick Ning</p>
                                     <p className="txt-4" style={teamDescStyle}>Sales Director</p>
-                                </div>
-                                <div className="team-flex-item">
-                                    <img style={teamImgStyle} src="/img/tyler.png" />
-                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Tyler Liu</p>
-                                    <p className="txt-4" style={teamDescStyle}>Account Manager</p>
-                                </div>
-                                <div className="team-flex-item">
-                                    <img style={teamImgStyle} src="/img/jason.png" />
-                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Jason Yeh</p>
-                                    <p className="txt-4" style={teamDescStyle}>Account Manager</p>
-                                </div>
-                                <div className="team-flex-item">
-                                    <img style={teamImgStyle} src="/img/yina.png" />
-                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Yina Gong</p>
-                                    <p className="txt-4" style={teamDescStyle}>Executive Assistant</p>
-                                </div>
-                                <div className="team-flex-item">
-                                    <img style={teamImgStyle} src="/img/jiamin.png" />
-                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Jiamin Ning</p>
-                                    <p className="txt-4" style={teamDescStyle}>Software Engineer</p>
-                                </div>
-                                <div className="team-flex-item">
-                                    <img style={teamImgStyle} src="/img/roy.png" />
-                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Roy He</p>
-                                    <p className="txt-4" style={teamDescStyle}>Software Engineer</p>
-                                </div>
-                                <div className="team-flex-item">
-                                    <img style={teamImgStyle} src="/img/yifu.png" />
-                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Yifu Ye</p>
-                                    <p className="txt-4" style={teamDescStyle}>System Engineer</p>
                                 </div>
                             </div>
                         </div>
@@ -465,3 +398,73 @@ const styles = {
 }
 
 export default NewAboutUs;
+
+/*    <div style={numberContainerStyle}>
+    <div style={contentContainerStyle}>
+        <div className="p-l-md p-r-md number-wrapper">
+            <div className="m-b-lg">
+                <p className="txt-2 m-b text-center">OPAY <span className="bold">IN NUMBERS</span></p>
+                <div style={Object.assign({}, centerDivStyle, delimit )}></div>
+            </div>
+            <div className="number-flex-container">
+                <div className="number-flex-item">
+                    <p className="txt-4">MERCHANDISES</p>
+                    <p className="txt-0 counter-txt">2</p>
+                </div>
+                <div className="number-flex-item">
+                    <p className="txt-4">CITIES IN SERVICES</p>
+                    <p className="txt-0 counter-txt">1</p>
+                </div>
+                <div className="number-flex-item">
+                    <p className="txt-4">PROJECT IN 2017</p>
+                    <p className="txt-0 counter-txt">16</p>
+                </div>
+                <div className="number-flex-item">
+                    <p className="txt-4">TRANSACTIONS</p>
+                    <p className="txt-0 counter-txt">86</p>
+                </div>
+                <div className="number-flex-item">
+                    <p className="txt-4">YEARS IN BUSINESS</p>
+                    <p className="txt-0 counter-txt">1</p>
+                </div>
+                <div className="number-flex-item">
+                    <p className="txt-4">TEAM MEMBERS</p>
+                    <p className="txt-0 counter-txt">12</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> */
+
+/*
+<div className="team-flex-item">
+                                    <img style={teamImgStyle} src="/img/tyler.png" />
+                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Tyler Liu</p>
+                                    <p className="txt-4" style={teamDescStyle}>Account Manager</p>
+                                </div>
+                                <div className="team-flex-item">
+                                    <img style={teamImgStyle} src="/img/jason.png" />
+                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Jason Yeh</p>
+                                    <p className="txt-4" style={teamDescStyle}>Account Manager</p>
+                                </div>
+                                <div className="team-flex-item">
+                                    <img style={teamImgStyle} src="/img/yina.png" />
+                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Yina Gong</p>
+                                    <p className="txt-4" style={teamDescStyle}>Executive Assistant</p>
+                                </div>
+                                <div className="team-flex-item">
+                                    <img style={teamImgStyle} src="/img/jiamin.png" />
+                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Jiamin Ning</p>
+                                    <p className="txt-4" style={teamDescStyle}>Software Engineer</p>
+                                </div>
+                                <div className="team-flex-item">
+                                    <img style={teamImgStyle} src="/img/roy.png" />
+                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Roy He</p>
+                                    <p className="txt-4" style={teamDescStyle}>Software Engineer</p>
+                                </div>
+                                <div className="team-flex-item">
+                                    <img style={teamImgStyle} src="/img/yifu.png" />
+                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Yifu Ye</p>
+                                    <p className="txt-4" style={teamDescStyle}>System Engineer</p>
+                                </div>
+* */

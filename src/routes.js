@@ -29,12 +29,15 @@ const routes = (
         <Route path="merchantlogin" component={MerchantLoginPage} />
         <Route path="merchantadmin" component={MerchantAdminPage} />
         <Route path="websiteterm" component={WebSiteTerm} />
-        <Route path="privacypolicy" component={PrivacyPolicy} />
         <Route path="3b8ff9b" component={AdminLoginPage} />
         <Route path="042481b" component={AdminPage} />
+        <Route path="privacypolicy" component={PrivacyPolicy} />
         <Route path="*" component={NotFoundPage}/>
     </Route>
 );
 
+/*
+* */
 
 export default routes;
+

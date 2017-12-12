@@ -17,6 +17,7 @@ import { facebook, twitter, instagram, youtube } from '../utilities/apiUrl'
 
 class NewMainPage extends Component{
 
+
     render(){
 
         const {
