@@ -7,6 +7,7 @@ import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
+import { green400, pinkA400 } from 'material-ui/styles/colors';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 import {Card} from 'material-ui/Card';
@@ -31,6 +32,9 @@ import { showSnackbar }  from '../actions/layout_action';
 import { browserHistory } from 'react-router';
 import { root_page } from '../utilities/urlPath'
 
+// Component
+import Snackbar from 'material-ui/Snackbar';
+
 // API
 import { opay_url } from '../utilities/apiUrl';
 import * as apiManager from '../helpers/apiManager';
@@ -54,6 +58,11 @@ class MerchantTransactions extends Component{
         this.handleReasonChange = this.handleReasonChange.bind(this);
         this.handleDetail = this.handleDetail.bind(this);
         this.state = {
+
+            open: false,
+            message: '',
+            success: false,
+
             Limit: "10",
             Offset: "0",
             totalRecords: 0,
@@ -77,6 +86,21 @@ class MerchantTransactions extends Component{
     componentDidMount() {
         this.fetchTransaction(1, 'ALL', null);
     }
+
+    // Snack
+    handleTouchTap = (msg, isSuccess) => {
+        this.setState({
+            open: true,
+            message: msg,
+            success: isSuccess
+        });
+    };
+
+    handleRequestClose = () => {
+        this.setState({
+            open: false,
+        });
+    };
 
     handleChangePage = (page) => {
         this.setState({
@@ -213,14 +237,11 @@ class MerchantTransactions extends Component{
     }
 
     handleRefund = (tran, idx) => {
-
-        console.log('check: ', tran);
-
         let updated =  Object.assign([], this.state);
         updated.transactionList[idx].IsOpen = false;
         updated.refundModalOpen = true;
 
-        if(tran.type == 'CNY'){
+        if(tran.Currency == 'CNY'){
             tran.DisplayRefundedAmount = (parseFloat(tran.AccountRefundedAmount) / parseFloat(tran.Rate)).toFixed(2)
         }else{
             tran.DisplayRefundedAmount = (parseFloat(tran.AccountRefundedAmount) / 100).toFixed(2);
@@ -275,7 +296,33 @@ class MerchantTransactions extends Component{
 
     handleConfirmRefund = () => {
 
+        let { refundAmount, refundReason } = this.state;
+        let { Platform, Status } = this.state.refundTran;
+        if(!refundAmount){
+            this.handleTouchTap('Please enter refund amount', false);
+            return;
+        }else if(!isNumeric(refundAmount)){
+            this.handleTouchTap('Refund amount is invalid', false);
+            return;
+        }else if(refundAmount > this.state.refundTran.DisplayAmount){
+            this.handleTouchTap('Refund amount cannot be greater than transaction amount', false);
+            return;
+        }else if(refundAmount == 0){
+            this.handleTouchTap('Refund amount must be greater than 0', false);
+            return;
+        }else if(!refundReason){
+            this.handleTouchTap('Please enter refund reason', false);
+            return;
+        }else if(Platform != 'ALIPAY' && Platform != 'WECHAT'){
+            this.handleTouchTap('Invalid transaction type', false);
+            return;
+        }
 
+        
+
+        console.log('check: ', this.state.refundTran);
+        console.log('check: ', refundAmount);
+        console.log('check: ', refundReason);
     }
     
     handleRefundClose = () => {
@@ -500,6 +547,7 @@ class MerchantTransactions extends Component{
                                  <textarea 
                                     onChange={(e) => this.handleReasonChange(e)}
                                     value={this.state.refundReason}
+                                    placeholder="Please enter refund reason.."
                                     style={msgContainer} />
                             </div>
                             <div style={btnControl}>       
@@ -509,6 +557,13 @@ class MerchantTransactions extends Component{
                             </div> 
                     </Dialog>
 
+                    <Snackbar
+                        open={this.state.open}
+                        message={this.state.message}
+                        autoHideDuration={3000}
+                        onRequestClose={this.handleRequestClose}
+                        bodyStyle={{backgroundColor: this.state.success ? green400 : pinkA400, textAlign: 'center' }}
+                        />
 
             </MuiThemeProvider>
         )
@@ -576,7 +631,8 @@ const styles = {
     },
     msgContainer: {
         width: '100%',
-        height: 100
+        height: 100,
+        padding: 12
     },
 }
 
