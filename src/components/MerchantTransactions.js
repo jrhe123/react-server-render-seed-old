@@ -77,6 +77,10 @@ class MerchantTransactions extends Component{
             refundReason: '',
             refundErrMsg: '',
 
+            viewModalOpen: false,
+            viewTran: {},
+            viewParentTran: {},
+
             transactionType: 'ALL',
             fromDate: null,
             endDate: null
@@ -248,8 +252,6 @@ class MerchantTransactions extends Component{
         }
         updated.refundTran = tran;
         this.setState(updated);
-
-        console.log('check: ', tran);
     }
 
     onRefundChange = (e,value) => {
@@ -390,10 +392,63 @@ class MerchantTransactions extends Component{
     
     handleRefundClose = () => {
         this.setState({refundModalOpen: false});
-    };
+    }
 
     handleDetail = (tran, idx) => {
-        console.log(tran);
+        
+        let params = {
+            Params: {
+                Platform: tran.Platform,
+                GUID: tran.GUID
+            }
+        };
+        apiManager.opayApi(opay_url+'merchant/view_transaction', params, true)
+            .then((response) => {
+
+                let res = response.data;
+                if(res.Confirmation === 'Success'){
+                    let data = res.Response.Transaction;
+                    let parent = res.Response.ParentTransaction;
+
+                    data.OperatorName = (data.OperatorFirstName ? formattor.capitalStr(data.OperatorFirstName): '')+", "+(data.OperatorLastName ? formattor.capitalStr(data.OperatorLastName): '');
+                    data.RefundUserName = (data.RefundUserFirstName ? formattor.capitalStr(data.RefundUserFirstName): '')+", "+(data.RefundUserLastName ? formattor.capitalStr(data.RefundUserLastName): '');
+                    data.DisplayAmount = data.Currency == 'CNY' ? (parseFloat(data.Amount) / parseFloat(data.Rate)).toFixed(2) : (data.Amount).toFixed(2);
+                    if(data.Platform == 'ALIPAY'){
+                        data.DisplayRefundedAmount = (parseFloat(data.AccountRefundedAmount) / parseFloat(data.Rate)).toFixed(2);
+                    }else{
+                        data.DisplayRefundedAmount = (parseFloat(data.AccountRefundedAmount) / 100).toFixed(2);
+                    }
+                    let displayType = '';
+                    if(data.Type == 'COMPLETE_QRCODE'){
+                        displayType = 'QR code';
+                    }else if(data.Type == 'SCAN_QRCODE' || data.Type == 'SCAN_QRCODE_COMPLETE'){
+                        displayType = 'Scan';
+                    }else if(data.Type == 'REFUND'){
+                        displayType = 'Refund';
+                    }
+                    data.DisplayType = displayType;
+                    data.CreatedAt = data.CreatedAt ? formattor.formatDatetime(data.CreatedAt) : '';
+
+                    let updated =  Object.assign([], this.state);
+                    updated.transactionList[idx].IsOpen = false;
+                    updated.viewModalOpen = true;
+                    updated.viewTran = data;
+                    updated.viewParentTran = parent;
+
+                    console.log('check: ', data);
+
+                    this.setState(updated);
+                }else{
+                    this.handleTouchTap(`${res.Message}`, false);
+                }
+            })
+            .catch((error) => {
+                this.handleTouchTap(`Error: ${error}`, false);
+            })
+    }
+
+    handleViewClose =  () => {
+        this.setState({viewModalOpen: false});
     }
 
     render() {
@@ -617,6 +672,105 @@ class MerchantTransactions extends Component{
                                 <RaisedButton label="Refund" 
                                             primary={true}
                                             onClick={() => this.handleConfirmRefund()} />
+                            </div> 
+                    </Dialog>
+
+
+                    <Dialog
+                            className="refund-modal"
+                            title="Transaction Detail"
+                            modal={false}
+                            open={this.state.viewModalOpen}
+                            onRequestClose={this.handleViewClose.bind(this)}
+                        >
+                            <div style={{marginBottom: 36}}>
+                                <p style={{fontSize: 15, color: '#000'}}>
+                                    <span style={{color: '#8C8C8C'}}>Platform: </span> 
+                                    {
+                                        this.state.viewTran.Platform === 'ALIPAY' ?
+                                        (<img style={detailPlatform} src="/img/ali_r.png" />)
+                                        :
+                                        (<img style={detailPlatform} src="/img/wechat_r.png" />)
+                                    }
+                                </p>
+
+                                {
+                                    this.state.viewTran.Type == 'REFUND' ?
+                                    (
+                                        <p style={{fontSize: 15, color: '#000'}}>
+                                            <span style={{color: '#8C8C8C', marginRight: 6}}>Refund Transaction #: </span> 
+                                            { this.state.viewParentTran.AliTransactionGUID ? this.state.viewParentTran.AliTransactionGUID : this.state.viewParentTran.WechatTransactionGUID }
+                                        </p>
+                                    )
+                                    :
+                                    (
+                                        <p style={{fontSize: 15, color: '#000'}}>
+                                            <span style={{color: '#8C8C8C', marginRight: 6}}>Transaction #: </span> 
+                                            { this.state.viewTran.GUID }
+                                        </p>
+                                    )
+                                }
+
+                                <p style={{fontSize: 15, color: '#000'}}>
+                                    <span style={{color: '#8C8C8C', marginRight: 6}}>Type: </span> 
+                                    { this.state.viewTran.DisplayType }
+                                </p>
+                                
+                                {
+                                    this.state.viewTran.Type == 'REFUND' ? 
+                                    (
+                                        <div>
+                                            <p style={{fontSize: 15, color: '#000'}}>
+                                                <span style={{color: '#8C8C8C', marginRight: 6}}>Transaction Operator: </span> 
+                                                { this.state.viewTran.OperatorName }
+                                            </p>
+                                            <p style={{fontSize: 15, color: '#000'}}>
+                                                <span style={{color: '#8C8C8C', marginRight: 6}}>Refund Operator: </span> 
+                                                { this.state.viewTran.RefundUserName }
+                                            </p>
+                                            <p style={{fontSize: 15, color: '#000'}}>
+                                                <span style={{color: '#8C8C8C', marginRight: 6}}>Amount: </span> 
+                                                ${ this.state.viewTran.DisplayAmount }
+                                            </p>
+                                        </div>
+                                    )
+                                    :
+                                    (
+                                        <div>
+                                            <p style={{fontSize: 15, color: '#000'}}>
+                                                <span style={{color: '#8C8C8C', marginRight: 6}}>Transaction Operator: </span> 
+                                                { this.state.viewTran.OperatorName }
+                                            </p>
+                                            <p style={{fontSize: 15, color: '#000'}}>
+                                                <span style={{color: '#8C8C8C', marginRight: 6}}>Amount: </span> 
+                                                ${ this.state.viewTran.DisplayAmount }
+                                            </p>
+                                            <p style={{fontSize: 15, color: '#000'}}>
+                                                <span style={{color: '#8C8C8C', marginRight: 6}}>Refunded amount: </span> 
+                                                ${ this.state.viewTran.DisplayRefundedAmount }
+                                            </p>
+                                        </div>
+                                    )
+                                }
+                                
+                                <p style={{fontSize: 15, color: '#000'}}>
+                                    <span style={{color: '#8C8C8C', marginRight: 6}}>Rate: </span> 
+                                    { this.state.viewTran.Rate }
+                                </p>
+                                <p style={{fontSize: 15, color: '#000'}}>
+                                    <span style={{color: '#8C8C8C', marginRight: 6}}>Status: </span> 
+                                    { this.state.viewTran.Status }
+                                </p>
+                                <p style={{fontSize: 15, color: '#000'}}>
+                                    <span style={{color: '#8C8C8C', marginRight: 6}}>Timestamp: </span> 
+                                    { this.state.viewTran.CreatedAt }
+                                </p>
+                                
+                            </div>                            
+                            <div style={btnControl}>       
+                                <RaisedButton label="Confirm" 
+                                            primary={true}
+                                            onClick={() => console.log('hit')} />
                             </div> 
                     </Dialog>
 
