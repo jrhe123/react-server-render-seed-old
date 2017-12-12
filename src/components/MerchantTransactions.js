@@ -248,6 +248,8 @@ class MerchantTransactions extends Component{
         }
         updated.refundTran = tran;
         this.setState(updated);
+
+        console.log('check: ', tran);
     }
 
     onRefundChange = (e,value) => {
