@@ -241,12 +241,11 @@ class MerchantTransactions extends Component{
         updated.transactionList[idx].IsOpen = false;
         updated.refundModalOpen = true;
 
-        if(tran.Currency == 'CNY'){
-            tran.DisplayRefundedAmount = (parseFloat(tran.AccountRefundedAmount) / parseFloat(tran.Rate)).toFixed(2)
+        if(tran.Platform == 'ALIPAY'){
+            tran.DisplayRefundedAmount = (parseFloat(tran.AccountRefundedAmount) / parseFloat(tran.Rate)).toFixed(2);
         }else{
             tran.DisplayRefundedAmount = (parseFloat(tran.AccountRefundedAmount) / 100).toFixed(2);
         }
-
         updated.refundTran = tran;
         this.setState(updated);
     }
@@ -297,7 +296,7 @@ class MerchantTransactions extends Component{
     handleConfirmRefund = () => {
 
         let { refundAmount, refundReason } = this.state;
-        let { Platform, Status } = this.state.refundTran;
+        let { AccountAmount, GUID, Platform, Currency, Rate, Status } = this.state.refundTran;
         if(!refundAmount){
             this.handleTouchTap('Please enter refund amount', false);
             return;
@@ -313,16 +312,78 @@ class MerchantTransactions extends Component{
         }else if(!refundReason){
             this.handleTouchTap('Please enter refund reason', false);
             return;
+        }else if(!GUID){
+            this.handleTouchTap('Invalid transaction', false);
+            return;
         }else if(Platform != 'ALIPAY' && Platform != 'WECHAT'){
             this.handleTouchTap('Invalid transaction type', false);
             return;
+        }else if(!Rate){
+            this.handleTouchTap('Invalid transaction rate', false);
+            return;
+        }else if(Status != 'Success'){
+            this.handleTouchTap('Invalid transaction status', false);
+            return;
         }
 
-        
+        let params = null;
+        if(Platform === 'ALIPAY'){
+            let formattedRefundAmount = (parseFloat(refundAmount) * parseFloat(Rate)).toFixed(2);
+            
+            if(Math.abs(AccountAmount - formattedRefundAmount) < 0.1){
+                formattedRefundAmount = AccountAmount;
+            }
+            if(formattedRefundAmount < 0.1){
+                formattedRefundAmount = 0.1;
+            }
+            params = {
+                Params: {
+                    AliTransactionGUID: GUID,
+                    Currency: "CNY",
+                    TransCurrency: "CAD",
+                    RefundAmount: formattedRefundAmount,
+                    Reason: refundReason
+                }
+            };
+        }else{
+            params = {
+                Params: {
+                    WechatTransactionGUID: GUID,
+                    Currency: "CAD",
+                    TransCurrency: "CNY",
+                    RefundAmount: refundAmount,
+                    Reason: refundReason
+                }
+            };
+        }
 
-        console.log('check: ', this.state.refundTran);
-        console.log('check: ', refundAmount);
-        console.log('check: ', refundReason);
+        let refundUrl = Platform === 'ALIPAY' ? 'alipay/merchant_refund' : 'wechat/merchant_refund';
+        apiManager.opayApi(opay_url+refundUrl, params, true)
+            .then((response) => {
+
+                let res = response.data;
+                if(res.Confirmation === 'Success'){
+
+                    let updated = Object.assign({}, this.state);
+                    updated.refundModalOpen = false;
+                    updated.refundTran = {};
+                    updated.refundAmount = '';
+                    updated.refundReason = '';
+                    this.setState(updated);
+                    this.handleTouchTap(`Transaction has been refund`, true);
+
+                    let timerange = null;
+                    if(this.state.fromDate && this.state.endDate){
+                        timerange = this.state.fromDate+'|'+this.state.endDate;
+                    }
+                    this.fetchTransaction(this.state.currentPage, this.state.transactionType, timerange);
+                }else{
+                    this.handleTouchTap(`${res.Message}`, false);
+                }
+            })
+            .catch((error) => {
+                this.handleTouchTap(`Error: ${error}`, false);
+            })
     }
     
     handleRefundClose = () => {
