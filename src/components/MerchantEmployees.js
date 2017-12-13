@@ -823,7 +823,7 @@ class MerchantEmplyees extends Component{
                                         <div>
                                             <p style={{fontSize: 15, color: '#000'}}>
                                                 <span style={{color: '#8C8C8C'}}>Login type: </span> 
-                                                {this.state.empCredential.LoginType}
+                                                {this.state.empCredential.LoginType == 'POS' ? 'POS' : 'WEB & POS'}
                                             </p>
                                             <p style={{fontSize: 15, color: '#000'}}>
                                                 <span style={{color: '#8C8C8C'}}>Username: </span> 
