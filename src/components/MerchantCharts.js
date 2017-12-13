@@ -43,8 +43,12 @@ class MerchantCharts extends Component{
             message: '',
             success: false,
 
+            userTypeID: null,
+
             alipayRate: 'loading',
             wechatRate: 'loading',
+
+            merchantRate: 0,
 
             hasTodayData: false,
             todayData: [],
@@ -65,6 +69,11 @@ class MerchantCharts extends Component{
         this.fetch_annual();
         this.fetch_alipay_reate();
         this.fetch_wechat_rate();
+        this.fetch_merchant_rate();
+
+        this.setState({
+            userTypeID: localStorage.getItem('userTypeID')
+        }) 
     }
 
     // Snack
@@ -81,6 +90,19 @@ class MerchantCharts extends Component{
             open: false,
         });
     };
+
+    fetch_merchant_rate = () => {
+        apiManager.opayApi(opay_url+'merchant/view_merchant_rate', null, true)
+            .then((response) => {
+                if(response.data.Confirmation === 'Success'){
+                    this.setState({
+                        merchantRate: response.data.Response.MerchantRate
+                    })
+                }
+            })
+            .catch((error) => {
+            })
+    }
 
     fetch_alipay_reate = () => {
         let params = {
@@ -506,10 +528,82 @@ class MerchantCharts extends Component{
             exRate,
             exRateSpan,
             exRateLabel,
+            opayFeeContainer,
+            feeLabelContainer,
+            feeLabel,
+            titleLabel,
+            contentLabel,
+            divider,
+            descText
         } = styles;
 
         return (
             <MuiThemeProvider style={{overflowY: 'auto'}}>
+                {
+                    this.state.userTypeID == 2 ? 
+                    (
+                        <Card style={{width: 'calc(100% - 48px)', margin: '24px auto', position: 'relative'}}>
+                            <CardHeader
+                                title="Today's Opay service fee"
+                                subtitle={moment().tz('America/Toronto').format('YYYY-MM-DD')}
+                            >
+                            </CardHeader>   
+                            <Divider />
+                                {
+                                    this.state.hasTodayData ? 
+                                    (
+                                        <div>
+                                            <div style={opayFeeContainer}>
+                                                <div style={feeLabelContainer}>
+                                                    <div style={feeLabel}>
+                                                        <p style={titleLabel}>Alipay:</p>
+                                                        <span style={contentLabel}>$ {this.state.hasTodayData ? this.state.totalTodayAli : 0.00}</span>
+                                                    </div>
+                                                </div>
+                                                <div style={feeLabelContainer}>
+                                                    <div style={feeLabel}>
+                                                        <p style={titleLabel}>Wechat:</p>
+                                                        <span style={contentLabel}>$ {this.state.hasTodayData ? this.state.totalTodayWechat : 0.00}</span>
+                                                    </div>
+                                                </div>
+                                                <div style={feeLabelContainer}>
+                                                    <div style={feeLabel}>
+                                                        <p style={titleLabel}>Service fee:</p>
+                                                        <span style={contentLabel}>-$ 
+                                                            {
+                                                                this.state.hasTodayData ? 
+                                                                    (parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli)) * this.state.merchantRate
+                                                                    : 
+                                                                    0.00
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div style={divider} />
+                                                <div style={Object.assign({}, feeLabelContainer, {marginTop: 24})}>
+                                                    <div style={feeLabel}>
+                                                        <p style={titleLabel}>Total:</p>
+                                                        <span style={contentLabel}>$ {this.state.hasTodayData ? 
+                                                            parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli) - (parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli)) * this.state.merchantRate
+                                                            : 
+                                                            0.00}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p style={descText}>We will deposit the amount ${this.state.hasTodayData ? 
+                                                            parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli) - (parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli)) * this.state.merchantRate
+                                                            : 
+                                                            0.00} to your bank account.</p>
+                                        </div>
+                                    )
+                                    :
+                                    (<div style={infoContainer}><div style={infoWrapper}><p style={infoStyle}>No service fee</p></div></div>)
+                                }
+                        </Card>
+                    )
+                    :
+                    (null)
+                }
                 <Card style={{width: 'calc(100% - 48px)', margin: '24px auto', position: 'relative'}}>
                     <CardHeader
                         title="Today Transactions"
@@ -699,7 +793,48 @@ const styles = {
         fontSize: 12,
         height: 24,
         paddingRight: 12
-    }
+    },
+    opayFeeContainer: {
+        marginTop: 24,
+        height: 180,
+        padding: 24,
+        paddingRight: 36,
+        paddingBottom: 0,
+    },
+    feeLabelContainer: {
+        height: 24,
+    },
+    feeLabel: {
+        float: 'right',
+        margin: 0,
+        width: 150,
+    },
+    titleLabel: {
+        float: 'left',
+        margin: 0
+    },
+    contentLabel: {
+        width: 80,
+        fontWeight: 'bold',
+        float: 'right',
+        textAlign: 'right'
+    },
+    divider: {
+        marginTop: 6,
+        marginBottom: 6,
+        height: 1,
+        width: 190,
+        float: 'right',
+        borderBottom: '1px solid #c9c9c9',
+    },
+    descText: {
+        textAlign: 'center',
+        marginTop: 24,
+        color: '#c9c9c9',
+        fontSize: 12,
+        paddingBottom: 6
+    },
+    
 }
 
 export default connect()(MerchantCharts);
