@@ -1,5 +1,6 @@
 // Libraries
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
@@ -15,6 +16,7 @@ import { green400, pinkA400 } from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';
 import moment from 'moment';
 
+
 // helper
 import * as formattor from '../helpers/formattor';
 
@@ -22,7 +24,7 @@ import * as formattor from '../helpers/formattor';
 import { root_page } from '../utilities/urlPath'
 
 // API
-import { opay_url, admin_merchantlist, admin_logout, admin_active_merchant } from "../utilities/apiUrl";
+import { opay_url, admin_merchantlist, admin_logout, admin_active_merchant, merchant_transaction_list, admin_create_sales } from "../utilities/apiUrl";
 import * as apiManager from  '../helpers/apiManager';
 
 // Component
@@ -54,7 +56,8 @@ class AdminPage extends Component{
             hideFirstAndLastPageLinks: false, hideEllipsis: false,
             merListOpenPop: [false],
             merListAnEl: [null],
-            merListTitle: ['AgentID', 'Merchant', 'Email', 'Phone', 'TimeStamp', 'Status', 'Action'],
+            merListTitle: ['AgentID', 'Merchant', 'Email', 'Phone', 'Status', 'Sales', 'Rate', 'Action'],
+            salesListTitle: ['Name', 'Phone','Email','Status','Action'],
             merList: [],
             UserGUID: '',
             isLoading: true,
@@ -70,6 +73,11 @@ class AdminPage extends Component{
         this.addPos = this.addPos.bind(this);
         this.renderTab = this.renderTab.bind(this);
         this.adminMain = this.adminMain.bind(this);
+        this.salesMain = this.salesMain.bind(this);
+        this.assignToSales = this.assignToSales.bind(this);
+        this.updateRate = this.updateRate.bind(this);
+        this.dailyReport = this.dailyReport.bind(this);
+        this.addSales = this.addSales.bind(this);
     }
 
     // Snack
@@ -91,12 +99,50 @@ class AdminPage extends Component{
         this.setState({ tab: 0 })
     }
 
+    salesMain = () => {
+        this.setState({ tab: 2 })
+        console.log('salesMain')
+    }
+
     addPos = (idx) => {
         this.setState({ 
             tab: 1, 
             UserGUID: this.state.merList[idx].UserGUID,
             merListOpenPop: [false],
             merListAnEl: [null],
+        });
+    }
+
+    addSales = () => {
+        let params = { Params: { Limit: "-1", Offset: "0" } };// Limit: -1 means return all results
+        apiManager.opayApi(opay_url + admin_merchantlist, params,true).then((res) => {
+
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+
+                    let total = res.data.Response.TotalRecords;
+                    let numberOfPage = Math.floor(total / 10.0);
+
+                    if(total % 10 > 0) {
+                        numberOfPage += 1;
+                    }
+                    let end = total > 10 ? 9 : total;
+                    this.setState({ totalPages: numberOfPage, start: 0, end: end });
+
+                    let list = res.data.Response.Merchants;
+                    for(let merchant of list){
+                        merchant.PhoneNumber = merchant.PhoneNumber ? formattor.addFormatPhoneNumber(merchant.PhoneNumber.toString()) : null;
+                        merchant.CreatedAt = merchant.CreatedAt ? moment(merchant.CreatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
+                        merchant.UpdatedAt = merchant.UpdatedAt ? moment(merchant.UpdatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
+                    }
+                    this.setState({ merList: list })
+                }else{
+                    this.handleTouchTap(`Error: ${res.data.Message}`, false);
+                }
+            }
+        }).catch((err) => {
+            localStorage.removeItem('token');
+            browserHistory.push(`${root_page}`);
         });
     }
 
@@ -282,6 +328,21 @@ class AdminPage extends Component{
         })
     }
 
+    updateRate = (idx, merchant) => {
+
+    }
+
+    assignToSales = (idx, merchant) => {
+        this.setState({
+            tab: 2,
+        })
+        console.log(this.state.tab);
+    }
+
+    dailyReport = () => {
+
+    }
+
     sendEmail = (idx, merchant) => {
         
         let updated = Object.assign({}, this.state);
@@ -363,6 +424,23 @@ class AdminPage extends Component{
                 return (
                     <PosList UserGUID={this.state.UserGUID} OnBack={() => this.handleBackToList()} />
                 );
+            case 2:
+                return (
+                    <div>
+                        <Table>
+                            <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+                                <TableRow>
+                                    {this.state.salesListTitle.map((item) => (
+                                        <TableHeaderColumn style={tableCellStyle}>{item}</TableHeaderColumn>
+                                    ))}
+                                </TableRow>
+                            </TableHeader>
+                        </Table>
+                        <div style={{ textAlign: 'center' }}>
+                            <RaisedButton label="Add Sales" primary={true} onClick={this.addSales} /><br/>
+                        </div>
+                    </div>
+                )
             default:
                 return (
 
@@ -382,8 +460,9 @@ class AdminPage extends Component{
                                             <TableRowColumn style={tableCellStyle}>{msg.FirstName}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{msg.Email}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{msg.PhoneNumber}</TableRowColumn>
-                                            <TableRowColumn style={tableCellStyle}>{msg.CreatedAt}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{msg.Status === 'ACTIVE' ? 'ACTIVE' : 'PENDING'}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{'Sales'}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{'Rate'}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}><div style={{textAlign: 'center'}}>
                                                 <RaisedButton
                                                     onClick={(e) => this.handleAction(e, idx)}
@@ -408,6 +487,8 @@ class AdminPage extends Component{
                                                                 <MenuItem primaryText="Active" onClick={() => this.active(idx)}/>
                                                             )
                                                         }
+                                                        <MenuItem primaryText="Update Rate" onClick={() => this.updateRate(idx, msg)}/>
+                                                        <MenuItem primaryText="Assign To Sales" onClick={() => this.assignToSales(idx, msg)}/>
                                                         <MenuItem primaryText="Documents" onClick={() => this.viewDocuments(idx, msg)}/>
                                                         <MenuItem primaryText="Email" onClick={() => this.sendEmail(idx, msg)}/>
                                                     </Menu>
@@ -479,7 +560,6 @@ class AdminPage extends Component{
                                                 onClick={() => this.sendMessage()} />
                                 </div> 
                             </Dialog>
-
                         </div>
                 );
         }
@@ -510,7 +590,9 @@ class AdminPage extends Component{
 
                     <div style={drawerContainer}>
                         <Drawer open={true} width={150}>
-                            <MenuItem style={drawerItem} primaryText="Merchants" onClick={this.adminMain}/>
+                            <MenuItem style={drawerItem} primaryText="Merchants" onClick={this.adminMain} />
+                            <MenuItem style={drawerItem} primaryText="Sales" onClick={this.salesMain} />
+                            <MenuItem style={drawerItem} primaryText="Report" onClick={this.dailyReport} />
                             <MenuItem style={drawerItem} primaryText="Log out" onClick={this.logout} />
                         </Drawer>
                     </div>
@@ -595,4 +677,11 @@ function validateEmail(email) {
     return re.test(email);
 }
 
-export default AdminPage;
+const stateToProps = (state) => {
+
+    return {
+        UserTypeID: state.admin_reducer.UserTypeID,
+    }
+}
+
+export default connect(stateToProps)(AdminPage);

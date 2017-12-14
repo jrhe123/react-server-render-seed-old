@@ -1,0 +1,1 @@
+export const ADMIN_LOGIN_TYPE = 'ADMIN_LOGIN_TYPE';

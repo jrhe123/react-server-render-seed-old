@@ -6,6 +6,11 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
+//redux
+import {
+    set_UserTypeID
+} from '../actions/admin_action';
+
 import * as apiManager from  '../helpers/apiManager';
 import { opay_url, admin_login } from "../utilities/apiUrl";
 import { root_page, admin_page } from '../utilities/urlPath'
@@ -145,4 +150,11 @@ const styles = {
     }
 }
 
-export default connect()(AdminLoginPage);
+const dispatchToProps = (dispatch) => {
+
+    return {
+        set_UserTypeID: (employeeList) => dispatch(set_UserTypeID(employeeList)),
+    }
+}
+
+export default connect(dispatchToProps)(AdminLoginPage);
