@@ -680,7 +680,7 @@ class AdminPage extends Component{
                                             <TableRowColumn style={tableCellStyle}>{msg.Email}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{msg.PhoneNumber}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{msg.Status === 'ACTIVE' ? 'ACTIVE' : 'PENDING'}</TableRowColumn>
-                                            <TableRowColumn style={tableCellStyle}>{msg.SalesFirstName + ' ' + msg.SalesLastName}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{(msg.SalesFirstName ? msg.SalesFirstName : '') + ' ' + (msg.SalesLastName ? msg.SalesLastName : '')}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{msg.MerchantRate}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}><div style={{textAlign: 'center'}}>
                                                 <RaisedButton
