@@ -23,8 +23,26 @@ import reducers from '../src/reducers';
 
 // initialize the server and configure support for ejs templates
 const app = new Express();
-//const server = https.createServer(options,app);
-const server = http.createServer(app);
+
+const env = process.env.NODE_ENV || 'development';
+
+let httpsOptions = {}
+
+if(env === 'production') {
+    httpsOptions = {
+        key: fs.readFileSync('/home/opay_ssl/opay.key'),
+        cert: fs.readFileSync('/home/opay_ssl/STAR_opay_ca.crt'),
+        ca: [
+            fs.readFileSync('/home/opay_ssl/AddTrustExternalCARoot.crt'),
+            fs.readFileSync('/home/opay_ssl/COMODORSADomainValidationSecureServerCA.crt'),
+            fs.readFileSync('/home/opay_ssl/COMODORSAAddTrustCA.crt'),
+        ]
+    }
+}
+
+
+const server = https.createServer(options,app);
+//const server = http.createServer(app);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname,'../src','views'));
 // define the folder that will be used for static assets
@@ -72,7 +90,7 @@ app.get('*', (req, res) => {
     );
 });
 
-const port = process.env.PORT || 3001;
+const port = (env === 'development') ? 3001 : 443;
 const env = process.env.NODE_ENV || 'production';
 server.listen(port, err => {
   if (err) {
