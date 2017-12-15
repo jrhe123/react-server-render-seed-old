@@ -6,6 +6,11 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
+//redux
+import {
+    set_UserTypeID
+} from '../actions/admin_action';
+
 import * as apiManager from  '../helpers/apiManager';
 import { opay_url, admin_login } from "../utilities/apiUrl";
 import { root_page, admin_page } from '../utilities/urlPath'
@@ -44,18 +49,18 @@ class AdminLoginPage extends Component{
 
         apiManager.opayApi(opay_url + admin_login,params,false).then((res) => {
 
-            console.log(res.data);
-
             if (res.data) {
                 if (res.data.Confirmation === 'Fail') {
                     this.props.dispatch(showSnackbar(res.data.Message, false));
                 } else if (res.data.Confirmation === 'Success') {
                     localStorage.setItem('token', res.data.Token);
+                    localStorage.setItem('userTypeID', res.data.Response.UserTypeID)
                     browserHistory.push(`${root_page}${admin_page}`);
                 }
             }
 
         }).catch((err) => {
+            console.log('err',err);
             localStorage.removeItem('token');
             browserHistory.push(`${root_page}`);
         });
@@ -145,4 +150,11 @@ const styles = {
     }
 }
 
-export default connect()(AdminLoginPage);
+const dispatchToProps = (dispatch) => {
+
+    return {
+        set_UserTypeID: (UserTypeID) => dispatch(set_UserTypeID(UserTypeID)),
+    }
+}
+
+export default connect((state) => {},dispatchToProps)(AdminLoginPage);
