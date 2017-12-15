@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
+import isDecimal from 'validator/lib/isDecimal';
+import isNumeric from 'validator/lib/isNumeric';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Drawer from 'material-ui/Drawer';
@@ -11,11 +13,9 @@ import MenuItem from 'material-ui/MenuItem';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
-import UltimatePagination from 'react-ultimate-pagination-material-ui';
 import { green400, pinkA400 } from 'material-ui/styles/colors';
-import Divider from 'material-ui/Divider';
 import moment from 'moment';
-
+import Pagination from 'material-ui-pagination';
 
 // helper
 import * as formattor from '../helpers/formattor';
@@ -24,12 +24,19 @@ import * as formattor from '../helpers/formattor';
 import { root_page } from '../utilities/urlPath'
 
 // API
-import { opay_url, admin_merchantlist, admin_logout, admin_active_merchant, merchant_transaction_list, admin_create_sales } from "../utilities/apiUrl";
+import { opay_url,
+         admin_merchantlist,
+         admin_logout,
+         admin_active_merchant,
+         admin_upate_merchant_rate,
+         admin_view_merchant_bank_account,
+         admin_update_merchant_bank_account} from "../utilities/apiUrl";
 import * as apiManager from  '../helpers/apiManager';
 
 // Component
 import Snackbar from 'material-ui/Snackbar';
 import PosList from '../components/PosList';
+import SalesList from '../components/SalesList';
 import Loading from '../components/Loading';
 
 
@@ -47,12 +54,40 @@ class AdminPage extends Component{
             emailMerchant: {},
             msgContent: '',
 
+            rate: '',
+            rateModalOpen: false,
+            rateMer: '',
+            rateErr: '',
+
+            bankModalOpen: false,
+            bankMer: '',
+            Account: '',
+            AccountErr: '',
+            AccountName: '',
+            AccountNameErr: '',
+            Transit: '',
+            TransitErr: '',
+            Institution: '',
+            InstitutionErr: '',
+            InstitutionName: '',
+            InstitutionNameErr: '',
+
+
             open: false,
             message: '',
             success: false,
+            UserTypeID: 6,
+            currentPage: 1,
+            display: 10,
 
-            showPagination: false, currentPage: 1, totalPages: 1, boundaryPagesRange: 1,
+            showPagination: false, totalPages: 1, boundaryPagesRange: 1,
             siblingPagesRange: 1, hidePreviousAndNextPageLinks: false, start: 0, end: 9,
+
+            Limit: "10",
+            Offset: "0",
+            serial: '',
+            totalRecords: 0,
+
             hideFirstAndLastPageLinks: false, hideEllipsis: false,
             merListOpenPop: [false],
             merListAnEl: [null],
@@ -70,6 +105,7 @@ class AdminPage extends Component{
         this.handleRequestClose = this.handleRequestClose.bind(this);
         this.active = this.active.bind(this);
         this.onPageChangeFromPagination = this.onPageChangeFromPagination.bind(this);
+        this.handleChangePage = this.handleChangePage.bind(this);
         this.addPos = this.addPos.bind(this);
         this.renderTab = this.renderTab.bind(this);
         this.adminMain = this.adminMain.bind(this);
@@ -77,7 +113,8 @@ class AdminPage extends Component{
         this.assignToSales = this.assignToSales.bind(this);
         this.updateRate = this.updateRate.bind(this);
         this.dailyReport = this.dailyReport.bind(this);
-        this.addSales = this.addSales.bind(this);
+        this.rateChange = this.rateChange.bind(this);
+        this.viewBankSetting = this.viewBankSetting.bind(this);
     }
 
     // Snack
@@ -88,6 +125,10 @@ class AdminPage extends Component{
             success: isSuccess
         });
     };
+
+    handleChangePage = (page) => {
+        this.getMerList(page);
+    }
 
     handleTouchTapClose = () => {
         this.setState({
@@ -113,55 +154,18 @@ class AdminPage extends Component{
         });
     }
 
-    addSales = () => {
-        let params = { Params: { Limit: "-1", Offset: "0" } };// Limit: -1 means return all results
+    getMerList = (page) => {
+
+        if (!page) {
+            page = 1;
+        }
+        let offset = (page - 1) * parseInt(this.state.Limit);
+        let limit = this.state.Limit;
+        let params = { Params: { Limit: limit, Offset: offset.toString(), Extra: {} } };// Limit: -1 means return all results
         apiManager.opayApi(opay_url + admin_merchantlist, params,true).then((res) => {
 
             if (res.data) {
                 if (res.data.Confirmation === 'Success') {
-
-                    let total = res.data.Response.TotalRecords;
-                    let numberOfPage = Math.floor(total / 10.0);
-
-                    if(total % 10 > 0) {
-                        numberOfPage += 1;
-                    }
-                    let end = total > 10 ? 9 : total;
-                    this.setState({ totalPages: numberOfPage, start: 0, end: end });
-
-                    let list = res.data.Response.Merchants;
-                    for(let merchant of list){
-                        merchant.PhoneNumber = merchant.PhoneNumber ? formattor.addFormatPhoneNumber(merchant.PhoneNumber.toString()) : null;
-                        merchant.CreatedAt = merchant.CreatedAt ? moment(merchant.CreatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
-                        merchant.UpdatedAt = merchant.UpdatedAt ? moment(merchant.UpdatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
-                    }
-                    this.setState({ merList: list })
-                }else{
-                    this.handleTouchTap(`Error: ${res.data.Message}`, false);
-                }
-            }
-        }).catch((err) => {
-            localStorage.removeItem('token');
-            browserHistory.push(`${root_page}`);
-        });
-    }
-
-    getMerList = () => {
-
-        let params = { Params: { Limit: "-1", Offset: "0" } };// Limit: -1 means return all results
-        apiManager.opayApi(opay_url + admin_merchantlist, params,true).then((res) => {
-
-            if (res.data) {
-                if (res.data.Confirmation === 'Success') {
-
-                    let total = res.data.Response.TotalRecords;
-                    let numberOfPage = Math.floor(total / 10.0);
-
-                    if(total % 10 > 0) {
-                        numberOfPage += 1;
-                    }
-                    let end = total > 10 ? 9 : total;
-                    this.setState({ totalPages: numberOfPage, start: 0, end: end });
 
                     let list = res.data.Response.Merchants;
                     for(let merchant of list){
@@ -275,8 +279,10 @@ class AdminPage extends Component{
     }
 
     componentDidMount() {
-        this.getMerList();
+        this.getMerList(this.state.currentPage);
         let token = localStorage.getItem('token');
+        let userTypeId = localStorage.getItem('userTypeID');
+        this.setState({ UserTypeID: userTypeId });
         setTimeout(() => {
             if(!token){
                 browserHistory.push(`${root_page}`);
@@ -312,9 +318,7 @@ class AdminPage extends Component{
     }
 
     handleDocClose = () => {
-        this.setState({
-            docModalOpen: false
-        });
+        this.setState({ docModalOpen: false, rateMer: '' });
     }
 
     viewFile = (doc) => {
@@ -328,7 +332,22 @@ class AdminPage extends Component{
         })
     }
 
-    updateRate = (idx, merchant) => {
+    onFieldChange = (e, value, field) => {
+
+        if(field === 'New Rate') {
+            if(!isDecimal(value)) this.setState({ rate: value, rateErr: 'Rate must be decimal' })
+            else this.setState({ rate: value, rateErr: '' })
+        } else if(field === 'Account Name') {
+
+        } else if(field === 'Account') {
+
+        } else if(field === 'Transit') {
+
+        } else if(field === 'Institution Name') {
+
+        } else if(field === 'Institution') {
+
+        }
 
     }
 
@@ -354,6 +373,96 @@ class AdminPage extends Component{
                         + `Opay Inc.\n ${moment().format('YYYY-MM-DD')}`;
         updated.msgContent = defaultMsg;
         this.setState(updated);
+    }
+
+    handleBankSettingClose = () => {
+        this.setState({
+            bankModalOpen: false,
+            bankMer: '',
+            Account: '',
+            AccountErr: '',
+            AccountName: '',
+            AccountNameErr: '',
+            Transit: '',
+            TransitErr: '',
+            Institution: '',
+            InstitutionErr: '',
+            InstitutionName: '',
+            InstitutionNameErr: '',
+        });
+    }
+
+    openBankSetting = (idx, merchant) => {
+        this.setState({ bankModalOpen: true, bankMer: merchant })
+    }
+
+    viewBankSetting = () => {
+
+        let params = {
+            Params: {
+                MerchantUserGUID: this.state.bankMer.UserGUID,
+            }
+        };
+
+        apiManager.opayApi(opay_url + admin_view_merchant_bank_account, params,true).then((res) => {
+
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+                }else{
+                    this.handleTouchTap(`Error: ${res.data.Message}`, false);
+                }
+            }
+        }).catch((err) => {
+            localStorage.removeItem('token');
+            browserHistory.push(`${root_page}`);
+        });
+    }
+
+
+
+    updateRate = (idx, merchant) => {
+        this.setState({ rateModalOpen: true, rateMer: merchant });
+    }
+
+    handleRateClose = (e) => {
+        this.setState({ rateModalOpen: false, rateMer: '', rate: '', rateErr: '' })
+    }
+
+    rateChange = () => {
+
+        if(this.state.rateErr) {
+            return;
+        } else if (!this.state.rate) {
+            this.setState({ rateErr: 'Rate must be decimal' });
+            return
+        } else if(parseFloat(this.state.rate) <= 0.0) {
+            this.setState({ rateErr: 'Rate must be positive' });
+            return
+        }
+
+        this.setState({ rateModalOpen: false });
+
+        let params = {
+            Params: {
+                UserGUID: this.state.rateMer.UserGUID,
+                MerchantRate: this.state.rate
+            }
+        };
+
+        apiManager.opayApi(opay_url + admin_upate_merchant_rate, params,true).then((res) => {
+
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+                    this.getMerList(this.state.currentPage);
+                    this.handleTouchTap(`Success`, true);
+                }else{
+                    this.handleTouchTap(`Error: ${res.data.Message}`, false);
+                }
+            }
+        }).catch((err) => {
+            localStorage.removeItem('token');
+            browserHistory.push(`${root_page}`);
+        });
     }
 
     handleEmailChange = (e) => {
@@ -417,6 +526,7 @@ class AdminPage extends Component{
             docLink,
             msgContainer,
             btnControl,
+            formControl,
         } = styles;
 
         switch(tab) {
@@ -426,20 +536,7 @@ class AdminPage extends Component{
                 );
             case 2:
                 return (
-                    <div>
-                        <Table>
-                            <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-                                <TableRow>
-                                    {this.state.salesListTitle.map((item) => (
-                                        <TableHeaderColumn style={tableCellStyle}>{item}</TableHeaderColumn>
-                                    ))}
-                                </TableRow>
-                            </TableHeader>
-                        </Table>
-                        <div style={{ textAlign: 'center' }}>
-                            <RaisedButton label="Add Sales" primary={true} onClick={this.addSales} /><br/>
-                        </div>
-                    </div>
+                    <SalesList OnBack={() => this.handleBackToList()} />
                 )
             default:
                 return (
@@ -462,7 +559,7 @@ class AdminPage extends Component{
                                             <TableRowColumn style={tableCellStyle}>{msg.PhoneNumber}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{msg.Status === 'ACTIVE' ? 'ACTIVE' : 'PENDING'}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{'Sales'}</TableRowColumn>
-                                            <TableRowColumn style={tableCellStyle}>{'Rate'}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{msg.MerchantRate}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}><div style={{textAlign: 'center'}}>
                                                 <RaisedButton
                                                     onClick={(e) => this.handleAction(e, idx)}
@@ -487,6 +584,7 @@ class AdminPage extends Component{
                                                                 <MenuItem primaryText="Active" onClick={() => this.active(idx)}/>
                                                             )
                                                         }
+                                                        <MenuItem primaryText="Set bank account info" onClick={() => this.openBankSetting(idx, msg)}/>
                                                         <MenuItem primaryText="Update Rate" onClick={() => this.updateRate(idx, msg)}/>
                                                         <MenuItem primaryText="Assign To Sales" onClick={() => this.assignToSales(idx, msg)}/>
                                                         <MenuItem primaryText="Documents" onClick={() => this.viewDocuments(idx, msg)}/>
@@ -499,23 +597,55 @@ class AdminPage extends Component{
                                 </TableBody>
                             </Table>
 
-                            <div style={{ float: 'right', marginTop: 12, textAlign: 'center' }}><UltimatePagination
-                                currentPage={this.state.currentPage}
-                                totalPages={this.state.totalPages}
-                                boundaryPagesRange={this.state.boundaryPagesRange}
-                                siblingPagesRange={this.state.siblingPagesRange}
-                                hidePreviousAndNextPageLinks={this.state.hidePreviousAndNextPageLinks}
-                                hideFirstAndLastPageLinks={this.state.hideFirstAndLastPageLinks}
-                                hideEllipsis={this.state.hideEllipsis}
-                                onChange={this.onPageChangeFromPagination}
-                            /></div>
+                            <div style={{textAlign: 'right', paddingRight: 12, paddingVertical: 12}}>
+                                <Pagination
+                                    total={Math.ceil(this.state.totalRecords / parseInt(this.state.Limit))}
+                                    current={this.state.currentPage}
+                                    display={this.state.display}
+                                    onChange={currentPage => this.handleChangePage(currentPage)}
+                                />
+                            </div>
 
-                            <Dialog
-                                title="Documentation"
-                                modal={false}
-                                open={this.state.docModalOpen}
-                                onRequestClose={this.handleDocClose.bind(this)}
-                            >
+                            <div style={{textAlign: 'center'}}>
+                                <RaisedButton label="Add Merchant" primary={true} onClick={this.openDialog}/><br/>
+                            </div>
+
+                            <Dialog title="Set Bank Account Info" modal={false} open={this.state.bankModalOpen}
+                                    onRequestClose={this.handleBankSettingClose.bind(this)}>
+                                <div>
+                                    <div style={formControl}>
+                                        <TextField floatingLabelText="Account Name" errorText={this.state.AccountNameErr}
+                                                   onChange={(e, value) => this.onFieldChange(e, value, 'Account Name')}/><br/>
+                                        <TextField floatingLabelText="Account" errorText={this.state.AccountErr}
+                                                   onChange={(e, value) => this.onFieldChange(e, value, 'Account')}/><br/>
+                                        <TextField floatingLabelText="Transit" errorText={this.state.TransitErr}
+                                                   onChange={(e, value) => this.onFieldChange(e, value, 'Transit')}/><br/>
+                                        <TextField floatingLabelText="Institution Name" errorText={this.state.InstitutionNameErr}
+                                                   onChange={(e, value) => this.onFieldChange(e, value, 'Institution Name')}/><br/>
+                                        <TextField floatingLabelText="Institution" errorText={this.state.InstitutionErr}
+                                                   onChange={(e, value) => this.onFieldChange(e, value, 'Institution')}/>
+                                    </div>
+                                    <div style={btnControl}>
+                                        <RaisedButton label="Add" primary={true} />
+                                    </div>
+                                </div>
+                            </Dialog>
+
+                            <Dialog title="Change Rate" modal={false} open={this.state.rateModalOpen}
+                                    onRequestClose={this.handleRateClose.bind(this)}>
+                                <div>
+                                    <div style={formControl}>
+                                        <TextField floatingLabelText="New Rate" errorText={this.state.rateErr}
+                                                   onChange={(e, value) => this.onFieldChange(e, value, 'New Rate')}/><br/>
+                                    </div>
+                                    <div style={btnControl}>
+                                        <RaisedButton label="Confirm" primary={true} onClick={this.rateChange}/>
+                                    </div>
+                                </div>
+                            </Dialog>
+
+                            <Dialog title="Documentation" modal={false} open={this.state.docModalOpen}
+                                onRequestClose={this.handleDocClose.bind(this)}>
                                 <div style={{marginBottom: 24}}>
                                     {
                                         this.state.docList.map((doc, idx) => (
@@ -528,12 +658,8 @@ class AdminPage extends Component{
                                 </div>
                             </Dialog>
 
-                            <Dialog
-                                title="Email"
-                                modal={false}
-                                open={this.state.emailModalOpen}
-                                onRequestClose={this.handleEmailClose.bind(this)}
-                            >
+                            <Dialog title="Email" modal={false} open={this.state.emailModalOpen}
+                                onRequestClose={this.handleEmailClose.bind(this)}>
                                 <div style={{marginBottom: 36}}>
                                     <p style={{fontSize: 17, fontWeight: 'bold', color: '#000'}}>Information:</p>
                                     <p style={{fontSize: 15, color: '#000'}}>
@@ -565,7 +691,6 @@ class AdminPage extends Component{
         }
     }
 
-
     render() {
 
         const {
@@ -591,7 +716,7 @@ class AdminPage extends Component{
                     <div style={drawerContainer}>
                         <Drawer open={true} width={150}>
                             <MenuItem style={drawerItem} primaryText="Merchants" onClick={this.adminMain} />
-                            <MenuItem style={drawerItem} primaryText="Sales" onClick={this.salesMain} />
+                            { this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Sales" onClick={this.salesMain} /> : ''}
                             <MenuItem style={drawerItem} primaryText="Report" onClick={this.dailyReport} />
                             <MenuItem style={drawerItem} primaryText="Log out" onClick={this.logout} />
                         </Drawer>
@@ -612,7 +737,9 @@ class AdminPage extends Component{
             </MuiThemeProvider>
         )
     }
+
 }
+
 
 const styles = {
 
@@ -656,6 +783,13 @@ const styles = {
     docLink: {
         textDecoration: 'underline',
         cursor: 'pointer'
+    },
+
+    formControl: {
+        textAlign: 'center',
+        paddingHorizontal: 24,
+        marginTop: 12,
+        marginBottom: 12
     },
 
     msgContainer: {

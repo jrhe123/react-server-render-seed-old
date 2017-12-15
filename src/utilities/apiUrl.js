@@ -1,5 +1,5 @@
 export const opay_url = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/': '';
-// export const opay_url = process.env.NODE_ENV === 'development' ? 'http://54.190.63.31:3000/': '';
+ //export const opay_url = 'https://api.opay.ca/';//process.env.NODE_ENV === 'development' ? 'https://api.opay.ca/': '';
 
 
 export const admin_login = 'admin/login';
@@ -10,9 +10,11 @@ export const admin_create_pos = 'admin/create_merchant_pos';
 export const admin_create_sales = 'admin/create_sales';
 export const admin_remove_sales = 'admin/remove_sales';
 export const admin_sales_list = 'admin/sales_list';
+export const admin_upate_merchant_rate = 'admin/update_merchant_rate';
+export const admin_view_merchant_bank_account = 'admin/view_merchant_bank_account';
+export const admin_update_merchant_bank_account = 'admin/update_merchant_bank_account';
 
-
-export const merchant_upload_file = 'upload/multiple'
+export const merchant_upload_file = 'upload/multiple';
 export const merchant_pos_machines = 'merchant/pos_machine_list_by_guid';
 export const merchant_category_list = 'merchant_category/list';
 export const merchant_signup = 'merchant/sign_up';
