@@ -23,6 +23,7 @@ import reducers from '../src/reducers';
 
 // initialize the server and configure support for ejs templates
 const app = new Express();
+let server = null;
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -40,8 +41,12 @@ if(env === 'production') {
     }
 }
 
+if (env === 'production') {
+    server = https.createServer(options, app);
+} else if (env === 'development') {
+    server = http.createServer(app);
+}
 
-const server = https.createServer(options,app);
 //const server = http.createServer(app);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname,'../src','views'));

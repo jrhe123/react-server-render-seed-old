@@ -30,7 +30,8 @@ import { opay_url,
          admin_active_merchant,
          admin_upate_merchant_rate,
          admin_view_merchant_bank_account,
-         admin_update_merchant_bank_account} from "../utilities/apiUrl";
+         admin_create_merchant_bank_account,
+         admin_update_merchant_bank_account } from "../utilities/apiUrl";
 import * as apiManager from  '../helpers/apiManager';
 
 // Component
@@ -80,8 +81,6 @@ class AdminPage extends Component{
             currentPage: 1,
             display: 10,
 
-            showPagination: false, totalPages: 1, boundaryPagesRange: 1,
-            siblingPagesRange: 1, hidePreviousAndNextPageLinks: false, start: 0, end: 9,
 
             Limit: "10",
             Offset: "0",
@@ -114,7 +113,7 @@ class AdminPage extends Component{
         this.updateRate = this.updateRate.bind(this);
         this.dailyReport = this.dailyReport.bind(this);
         this.rateChange = this.rateChange.bind(this);
-        this.viewBankSetting = this.viewBankSetting.bind(this);
+        this.setBankAccountInfo = this.setBankAccountInfo.bind(this);
     }
 
     // Snack
@@ -173,7 +172,11 @@ class AdminPage extends Component{
                         merchant.CreatedAt = merchant.CreatedAt ? moment(merchant.CreatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
                         merchant.UpdatedAt = merchant.UpdatedAt ? moment(merchant.UpdatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
                     }
-                    this.setState({ merList: list })
+                    this.setState({
+                        currentPage: page,
+                        merList: list,
+                        totalRecords: res.data.Response.TotalRecords
+                    })
                 }else{
                     this.handleTouchTap(`Error: ${res.data.Message}`, false);
                 }
@@ -338,15 +341,18 @@ class AdminPage extends Component{
             if(!isDecimal(value)) this.setState({ rate: value, rateErr: 'Rate must be decimal' })
             else this.setState({ rate: value, rateErr: '' })
         } else if(field === 'Account Name') {
-
+            this.setState({ AccountName: value, AccountNameErr: '' });
         } else if(field === 'Account') {
-
+            if (!isNumeric(value)) { this.setState({ Account: value, AccountErr: 'please input valid account' }) }
+            else this.setState({ Account: value, AccountErr: '' });
         } else if(field === 'Transit') {
-
+            if (!isNumeric(value)) { this.setState({ Transit: value, TransitErr: 'please input valid transit' }) }
+            else this.setState({ Transit: value, TransitErr: '' });
         } else if(field === 'Institution Name') {
-
+            this.setState({ InstitutionName: value, InstitutionNameErr: '' });
         } else if(field === 'Institution') {
-
+            if (!isNumeric(value)) { this.setState({ Institution: value, InstitutionErr: 'please input valid institution' }) }
+            else this.setState({ Institution: value, InstitutionErr: '' });
         }
 
     }
@@ -396,18 +402,53 @@ class AdminPage extends Component{
         this.setState({ bankModalOpen: true, bankMer: merchant })
     }
 
-    viewBankSetting = () => {
+    setBankAccountInfo = () => {
+
+        if(this.state.AccountErr || this.state.AccountNameErr || this.state.TransitErr || this.state.InstitutionErr || this.state.InstitutionNameErr)
+            return;
+
+        if(!this.state.Account || !this.state.AccountName || !this.state.Transit || !this.state.Institution || !this.state.InstitutionName) {
+            if(!this.state.Account) this.setState({ AccountErr: 'Acount is required' });
+            if(!this.state.AccountName) this.setState({ AccountNameErr: 'AccountName is required' });
+            if(!this.state.Transit) this.setState({ TransitErr: 'Transit is required' });
+            if(!this.state.Institution) this.setState({ InstitutionErr: 'Institution is required' });
+            if(!this.state.InstitutionName) this.setState({ InstitutionNameErr: 'InstitutionName is required' });
+            return;
+        }
+
+        console.log(this.state.bankMer);
 
         let params = {
             Params: {
                 MerchantUserGUID: this.state.bankMer.UserGUID,
+                InstitutionName: this.state.InstitutionName,
+                AccountName: this.state.AccountName,
+                AccountNumber: this.state.Account,
+                TransitNumber: this.state.Transit,
+                InstitutionNumber: this.state.Institution
             }
         };
 
-        apiManager.opayApi(opay_url + admin_view_merchant_bank_account, params,true).then((res) => {
+        this.setState({
+            bankModalOpen: false,
+            bankMer: '',
+            Account: '',
+            AccountErr: '',
+            AccountName: '',
+            AccountNameErr: '',
+            Transit: '',
+            TransitErr: '',
+            Institution: '',
+            InstitutionErr: '',
+            InstitutionName: '',
+            InstitutionNameErr: '',
+        });
+
+        apiManager.opayApi(opay_url + admin_create_merchant_bank_account, params,true).then((res) => {
 
             if (res.data) {
                 if (res.data.Confirmation === 'Success') {
+                    this.handleTouchTap(`Success`, true);
                 }else{
                     this.handleTouchTap(`Error: ${res.data.Message}`, false);
                 }
@@ -417,7 +458,6 @@ class AdminPage extends Component{
             browserHistory.push(`${root_page}`);
         });
     }
-
 
 
     updateRate = (idx, merchant) => {
@@ -558,7 +598,7 @@ class AdminPage extends Component{
                                             <TableRowColumn style={tableCellStyle}>{msg.Email}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{msg.PhoneNumber}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{msg.Status === 'ACTIVE' ? 'ACTIVE' : 'PENDING'}</TableRowColumn>
-                                            <TableRowColumn style={tableCellStyle}>{'Sales'}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{msg.SalesFirstName + ' ' + msg.SalesLastName}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{msg.MerchantRate}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}><div style={{textAlign: 'center'}}>
                                                 <RaisedButton
@@ -585,8 +625,8 @@ class AdminPage extends Component{
                                                             )
                                                         }
                                                         <MenuItem primaryText="Set bank account info" onClick={() => this.openBankSetting(idx, msg)}/>
-                                                        <MenuItem primaryText="Update Rate" onClick={() => this.updateRate(idx, msg)}/>
-                                                        <MenuItem primaryText="Assign To Sales" onClick={() => this.assignToSales(idx, msg)}/>
+                                                        { this.state.UserTypeID === '1' ? <MenuItem primaryText="Update Rate" onClick={() => this.updateRate(idx, msg)}/> : '' }
+                                                        { this.state.UserTypeID === '1' ? <MenuItem primaryText="Assign To Sales" onClick={() => this.assignToSales(idx, msg)}/> : ''}
                                                         <MenuItem primaryText="Documents" onClick={() => this.viewDocuments(idx, msg)}/>
                                                         <MenuItem primaryText="Email" onClick={() => this.sendEmail(idx, msg)}/>
                                                     </Menu>
@@ -626,7 +666,7 @@ class AdminPage extends Component{
                                                    onChange={(e, value) => this.onFieldChange(e, value, 'Institution')}/>
                                     </div>
                                     <div style={btnControl}>
-                                        <RaisedButton label="Add" primary={true} />
+                                        <RaisedButton label="Add" primary={true} onClick={this.setBankAccountInfo}/>
                                     </div>
                                 </div>
                             </Dialog>

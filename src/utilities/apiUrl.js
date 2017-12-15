@@ -13,6 +13,7 @@ export const admin_sales_list = 'admin/sales_list';
 export const admin_upate_merchant_rate = 'admin/update_merchant_rate';
 export const admin_view_merchant_bank_account = 'admin/view_merchant_bank_account';
 export const admin_update_merchant_bank_account = 'admin/update_merchant_bank_account';
+export const admin_create_merchant_bank_account = 'admin/create_merchant_bank_account';
 
 export const merchant_upload_file = 'upload/multiple';
 export const merchant_pos_machines = 'merchant/pos_machine_list_by_guid';
