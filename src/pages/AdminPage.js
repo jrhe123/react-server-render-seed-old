@@ -16,6 +16,8 @@ import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 import { green400, pinkA400 } from 'material-ui/styles/colors';
 import moment from 'moment';
 import Pagination from 'material-ui-pagination';
+import SelectField from 'material-ui/SelectField';
+
 
 // helper
 import * as formattor from '../helpers/formattor';
@@ -72,6 +74,10 @@ class AdminPage extends Component{
             InstitutionName: '',
             InstitutionNameErr: '',
 
+            salesModalOpen: false,
+            salesList: [],
+            assignMerchant: {},
+            selectedSales: {},
 
             open: false,
             message: '',
@@ -352,10 +358,32 @@ class AdminPage extends Component{
     }
 
     assignToSales = (idx, merchant) => {
-        this.setState({
-            tab: 2,
-        })
-        console.log(this.state.tab);
+        
+        let params = { 
+            "Params": {
+                "Limit": "-1",
+                "Offset": "0",
+                "Extra": {
+                    
+                }           
+            }
+        };
+        apiManager.opayApi(opay_url + 'admin/sales_list', params, true).then((res) => {
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+                    let salesList = res.data.Response.SalesList;
+                    this.setState({
+                        salesList: salesList,
+                        assignMerchant: merchant,
+                        salesModalOpen: true
+                    })
+                }else{
+                    this.handleTouchTap(`Error: ${res.data.Message}`, false);
+                }
+            }
+        }).catch((err) => {
+            this.handleTouchTap(`Error: ${err}`);
+        });
     }
 
     dailyReport = () => {
@@ -462,6 +490,60 @@ class AdminPage extends Component{
         }).catch((err) => {
             localStorage.removeItem('token');
             browserHistory.push(`${root_page}`);
+        });
+    }
+
+    handleSalesClose = () => {
+        this.setState({ salesModalOpen: false })
+    }
+
+    handleSalesChange = (idx) => {
+        let selectedSales = this.state.salesList[idx];
+        if(selectedSales){
+            let updated = Object.assign({}, this.state);
+            updated.selectedSales = selectedSales;
+            this.setState(updated);
+        }
+    }
+
+    assignSales = () => {
+
+        let { selectedSales, assignMerchant } = this.state;
+        
+        let MerchantUserGUID = assignMerchant.UserGUID;
+        let SalesUserGUID = selectedSales.UserGUID;
+
+        if(!MerchantUserGUID){
+            this.handleTouchTap(`Error`, false);
+            return;
+        }
+        if(!SalesUserGUID){
+            this.handleTouchTap(`Please select a sales`, false);
+            return;
+        }
+        
+        let params = { 
+            "Params": {
+                "MerchantUserGUID": MerchantUserGUID,
+                "SalesUserGUID": SalesUserGUID        
+            }
+        };
+        apiManager.opayApi(opay_url + 'admin/assign_merchant_to_sales', params, true).then((res) => {
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+                    this.handleTouchTap(`Merchant has been assigned to sales`, true);
+                    this.setState({
+                        assignMerchant: {},
+                        selectedSales: {},
+                        salesModalOpen: false,
+                    });
+                    this.getMerList(this.state.currentPage);
+                }else{
+                    this.handleTouchTap(`Error: ${res.data.Message}`, false);
+                }
+            }
+        }).catch((err) => {
+            this.handleTouchTap(`Error: ${err}`);
         });
     }
 
@@ -640,6 +722,27 @@ class AdminPage extends Component{
                                     </div>
                                     <div style={btnControl}>
                                         <RaisedButton label="Confirm" primary={true} onClick={this.rateChange}/>
+                                    </div>
+                                </div>
+                            </Dialog>
+
+                            <Dialog title="Assign sales" modal={false} open={this.state.salesModalOpen}
+                                    onRequestClose={this.handleSalesClose.bind(this)}>
+                                <div>
+                                    <div style={formControl}>
+                                        <SelectField
+                                            style={{textAlign: 'left'}}
+                                            floatingLabelText="Select a sales.."
+                                            value={this.state.selectedSales.FirstName ? this.state.selectedSales.FirstName + ' ' + this.state.selectedSales.LastName : null}
+                                            onChange={(e, value) => this.handleSalesChange(value)}
+                                            >
+                                            {this.state.salesList.map((item, index) => (
+                                                <MenuItem value={item.FirstName+' '+item.LastName} key={index} primaryText={item.FirstName+' '+item.LastName}  />
+                                            ))}
+                                        </SelectField>
+                                    </div>
+                                    <div style={btnControl}>
+                                        <RaisedButton label="Confirm" primary={true} onClick={() => this.assignSales()}/>
                                     </div>
                                 </div>
                             </Dialog>
