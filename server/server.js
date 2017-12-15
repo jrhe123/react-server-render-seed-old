@@ -91,7 +91,6 @@ app.get('*', (req, res) => {
 });
 
 const port = (env === 'development') ? 3001 : 443;
-const env = process.env.NODE_ENV || 'production';
 server.listen(port, err => {
   if (err) {
     return console.error(err);
