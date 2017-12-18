@@ -428,6 +428,26 @@ class AdminPage extends Component{
 
     dailyReport = () => {
 
+        apiManager.opayApi(opay_url + 'admin/daily_report', null, true).then((response) => {
+            if (response.data) {
+                let csvString = response.data;
+                var blob = new Blob([csvString]);
+                if (window.navigator.msSaveOrOpenBlob)  
+                    window.navigator.mßsSaveBlob(blob, "report.csv");
+                else{
+                    var a = window.document.createElement("a");
+                    a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
+                    a.download = "report.csv";
+                    document.body.appendChild(a);
+                    a.click(); 
+                    document.body.removeChild(a);
+                }
+            }else{
+                this.handleTouchTap(`Error: ${res.data.Message}`, false);
+            }
+        }).catch((err) => {
+            this.handleTouchTap(`Error: ${err}`);
+        });
     }
 
     sendEmail = (idx, merchant) => {
@@ -1200,8 +1220,8 @@ class AdminPage extends Component{
                     <div style={drawerContainer}>
                         <Drawer open={true} width={150}>
                             <MenuItem style={drawerItem} primaryText="Merchants" onClick={this.adminMain} />
-                            { this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Sales" onClick={this.salesMain} /> : ''}
-                            <MenuItem style={drawerItem} primaryText="Report" onClick={this.dailyReport} />
+                            {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Sales" onClick={this.salesMain} /> : ''}
+                            {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Report" onClick={this.dailyReport} /> : ''}
                             <MenuItem style={drawerItem} primaryText="Log out" onClick={this.logout} />
                         </Drawer>
                     </div>
