@@ -74,6 +74,8 @@ class AdminPage extends Component{
             InstitutionErr: '',
             InstitutionName: '',
             InstitutionNameErr: '',
+            MerchantBankAccountGUID: '',
+            addOrUpdate: 'Add',
 
             salesModalOpen: false,
             salesList: [],
@@ -120,6 +122,17 @@ class AdminPage extends Component{
         this.dailyReport = this.dailyReport.bind(this);
         this.rateChange = this.rateChange.bind(this);
         this.setBankAccountInfo = this.setBankAccountInfo.bind(this);
+        this.closeAllModal = this.closeAllModal.bind(this);
+    }
+
+    closeAllModal = () => {
+        this.setState({
+            docModalOpen: false,
+            emailModalOpen: false,
+            rateModalOpen: false,
+            bankModalOpen: false,
+            salesModalOpen: false,
+        })
     }
 
     // Snack
@@ -305,6 +318,11 @@ class AdminPage extends Component{
 
     viewDocuments = (idx, merchant) => {
 
+        let updated = Object.assign({}, this.state);
+        updated.merListOpenPop[idx] = false;
+        this.setState(updated);
+        this.closeAllModal();
+
         let params = { Params: { UserGUID: merchant.UserGUID } };
         apiManager.opayApi(opay_url+'admin/view_document_list', params, true).then((res) => {
 
@@ -364,6 +382,11 @@ class AdminPage extends Component{
     }
 
     assignToSales = (idx, merchant) => {
+
+        let updated = Object.assign({}, this.state);
+        updated.merListOpenPop[idx] = false;
+        this.setState(updated);
+        this.closeAllModal();
         
         let params = { 
             "Params": {
@@ -397,16 +420,17 @@ class AdminPage extends Component{
     }
 
     sendEmail = (idx, merchant) => {
-        
+
         let updated = Object.assign({}, this.state);
         updated.merListOpenPop[idx] = false;
         updated.emailModalOpen = true;
         updated.emailMerchant = merchant;
+        this.closeAllModal();
+        this.setState(updated);
         
         let defaultMsg = `Hi ${merchant.FirstName},\n\n\n\n`
                         + `Opay Inc.\n ${moment().format('YYYY-MM-DD')}`;
         updated.msgContent = defaultMsg;
-        this.setState(updated);
     }
 
     handleBankSettingClose = () => {
@@ -423,10 +447,46 @@ class AdminPage extends Component{
             InstitutionErr: '',
             InstitutionName: '',
             InstitutionNameErr: '',
+            MerchantBankAccountGUID: '',
+            addOrUpdate: 'Add'
         });
     }
 
     openBankSetting = (idx, merchant) => {
+
+        let params = {
+            Params: {
+                MerchantUserGUID: merchant.UserGUID,
+            }
+        };
+
+        apiManager.opayApi(opay_url + admin_view_merchant_bank_account, params,true).then((res) => {
+
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+                    let bankInfo = res.data.Response.MerchantBankAccountList[0];
+                    if (res.data.Response.TotalRecords > 0) {
+                        this.setState({
+                            Account: bankInfo.AccountNumber,
+                            AccountName: bankInfo.AccountName,
+                            Transit: bankInfo.TransitNumber,
+                            Institution: bankInfo.InstitutionNumber,
+                            InstitutionName: bankInfo.InstitutionName,
+                            MerchantBankAccountGUID: bankInfo.MerchantBankAccountGUID,
+                            addOrUpdate: 'Update',
+                        })
+                    }
+                } else { }
+            }
+        }).catch((err) => {
+            localStorage.removeItem('token');
+            browserHistory.push(`${root_page}`);
+        });
+
+        let updated = Object.assign({}, this.state);
+        updated.merListOpenPop[idx] = false;
+        this.setState(updated);
+        this.closeAllModal();
         this.setState({ bankModalOpen: true, bankMer: merchant })
     }
 
@@ -444,18 +504,49 @@ class AdminPage extends Component{
             return;
         }
 
-        console.log(this.state.bankMer);
 
-        let params = {
-            Params: {
-                MerchantUserGUID: this.state.bankMer.UserGUID,
-                InstitutionName: this.state.InstitutionName,
-                AccountName: this.state.AccountName,
-                AccountNumber: this.state.Account,
-                TransitNumber: this.state.Transit,
-                InstitutionNumber: this.state.Institution
+        let params = {};
+        let updateOrAdd = '';
+
+        if (this.state.addOrUpdate === 'Add') {
+            params = {
+                Params: {
+                    MerchantUserGUID: this.state.bankMer.UserGUID,
+                    InstitutionName: this.state.InstitutionName,
+                    AccountName: this.state.AccountName,
+                    AccountNumber: this.state.Account,
+                    TransitNumber: this.state.Transit,
+                    InstitutionNumber: this.state.Institution
+                }
+            };
+            updateOrAdd = admin_create_merchant_bank_account
+        } else {
+            params = {
+                Params: {
+                    MerchantBankAccountGUID: this.state.MerchantBankAccountGUID,
+                    InstitutionName: this.state.InstitutionName,
+                    AccountName: this.state.AccountName,
+                    AccountNumber: this.state.Account,
+                    TransitNumber: this.state.Transit,
+                    InstitutionNumber: this.state.Institution
+                }
+            };
+            updateOrAdd = admin_update_merchant_bank_account
+        }
+
+        apiManager.opayApi(opay_url + updateOrAdd, params,true).then((res) => {
+
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+                    this.handleTouchTap(`Success`, true);
+                }else{
+                    this.handleTouchTap(`Error: ${res.data.Message}`, false);
+                }
             }
-        };
+        }).catch((err) => {
+            localStorage.removeItem('token');
+            browserHistory.push(`${root_page}`);
+        });
 
         this.setState({
             bankModalOpen: false,
@@ -470,25 +561,17 @@ class AdminPage extends Component{
             InstitutionErr: '',
             InstitutionName: '',
             InstitutionNameErr: '',
-        });
-
-        apiManager.opayApi(opay_url + admin_create_merchant_bank_account, params,true).then((res) => {
-
-            if (res.data) {
-                if (res.data.Confirmation === 'Success') {
-                    this.handleTouchTap(`Success`, true);
-                }else{
-                    this.handleTouchTap(`Error: ${res.data.Message}`, false);
-                }
-            }
-        }).catch((err) => {
-            localStorage.removeItem('token');
-            browserHistory.push(`${root_page}`);
+            MerchantBankAccountGUID: '',
+            addOrUpdate: 'Add'
         });
     }
 
 
     updateRate = (idx, merchant) => {
+        let updated = Object.assign({}, this.state);
+        updated.merListOpenPop[idx] = false;
+        this.setState(updated);
+        this.closeAllModal();
         this.setState({ rateModalOpen: true, rateMer: merchant });
     }
 
@@ -737,18 +820,18 @@ class AdminPage extends Component{
                                 <div>
                                     <div style={formControl}>
                                         <TextField floatingLabelText="Account Name" errorText={this.state.AccountNameErr}
-                                                   onChange={(e, value) => this.onFieldChange(e, value, 'Account Name')}/><br/>
+                                                   value={this.state.AccountName} onChange={(e, value) => this.onFieldChange(e, value, 'Account Name')}/><br/>
                                         <TextField floatingLabelText="Account" errorText={this.state.AccountErr}
-                                                   onChange={(e, value) => this.onFieldChange(e, value, 'Account')}/><br/>
+                                                   value={this.state.Account} onChange={(e, value) => this.onFieldChange(e, value, 'Account')}/><br/>
                                         <TextField floatingLabelText="Transit" errorText={this.state.TransitErr}
-                                                   onChange={(e, value) => this.onFieldChange(e, value, 'Transit')}/><br/>
+                                                   value={this.state.Transit} onChange={(e, value) => this.onFieldChange(e, value, 'Transit')}/><br/>
                                         <TextField floatingLabelText="Institution Name" errorText={this.state.InstitutionNameErr}
-                                                   onChange={(e, value) => this.onFieldChange(e, value, 'Institution Name')}/><br/>
+                                                   value={this.state.InstitutionName} onChange={(e, value) => this.onFieldChange(e, value, 'Institution Name')}/><br/>
                                         <TextField floatingLabelText="Institution" errorText={this.state.InstitutionErr}
-                                                   onChange={(e, value) => this.onFieldChange(e, value, 'Institution')}/>
+                                                   value={this.state.Institution} onChange={(e, value) => this.onFieldChange(e, value, 'Institution')}/>
                                     </div>
                                     <div style={btnControl}>
-                                        <RaisedButton label="Add" primary={true} onClick={this.setBankAccountInfo}/>
+                                        <RaisedButton label={this.state.addOrUpdate} primary={true} onClick={this.setBankAccountInfo}/>
                                     </div>
                                 </div>
                             </Dialog>
