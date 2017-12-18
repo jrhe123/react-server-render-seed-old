@@ -939,7 +939,12 @@ class AdminPage extends Component{
                                                                 )
                                                                 :
                                                                 (
-                                                                    <MenuItem primaryText="Active" onClick={() => this.active(idx)}/>
+                                                                    this.state.UserTypeID == 1 ?
+                                                                    (
+                                                                        <MenuItem primaryText="Active" onClick={() => this.active(idx)}/>
+                                                                    )
+                                                                    :
+                                                                    (null)                                                                    
                                                                 )
                                                             }
                                                             <MenuItem primaryText="Set bank account info" onClick={() => this.openBankSetting(idx, msg)}/>
