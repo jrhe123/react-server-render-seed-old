@@ -17,6 +17,10 @@ import { green400, pinkA400 } from 'material-ui/styles/colors';
 import moment from 'moment';
 import Pagination from 'material-ui-pagination';
 import SelectField from 'material-ui/SelectField';
+import Divider from 'material-ui/Divider';
+import {Card} from 'material-ui/Card';
+import InputMask from 'react-input-mask';
+import validator from 'validator';
 
 
 // helper
@@ -27,6 +31,7 @@ import { root_page } from '../utilities/urlPath'
 
 // API
 import { opay_url,
+         merchant_category_list,
          admin_merchantlist,
          admin_logout,
          admin_active_merchant,
@@ -48,6 +53,28 @@ class AdminPage extends Component{
     constructor(props) {
         super(props);
         this.state = {
+
+            addMerchantModal: false,
+            website: '',
+            merchantName: '',
+            merchantNameErrorText: '',
+            legalName: '',
+            legalNameErrorText: '',
+            phone: '',
+            phoneErrorText:'',
+            email: '',
+            emailErrorText: '',
+            merchantCategory: [],
+            incorporation: {},
+            identification: {},
+            photographs: {},
+            check: {},
+            incorporationErr: '',
+            identificationErr: '',
+            photographsErr: '',
+            checkErr: '',
+            categoryValue: '',
+            categoryGUID: '',
 
             docModalOpen: false,
             viewMerchant: {},
@@ -96,7 +123,7 @@ class AdminPage extends Component{
             hideFirstAndLastPageLinks: false, hideEllipsis: false,
             merListOpenPop: [false],
             merListAnEl: [null],
-            merListTitle: ['AgentID', 'Merchant', 'Email', 'Phone', 'Status', 'Sales', 'Rate', 'Action'],
+            merListTitle: ['AgentID', 'Merchant', 'Email', 'Phone', 'Status', 'Sales', 'Rate(%)', 'Action'],
             salesListTitle: ['Name', 'Phone','Email','Status','Action'],
             merList: [],
             UserGUID: '',
@@ -120,6 +147,7 @@ class AdminPage extends Component{
         this.dailyReport = this.dailyReport.bind(this);
         this.rateChange = this.rateChange.bind(this);
         this.setBankAccountInfo = this.setBankAccountInfo.bind(this);
+        this.uploadFile = this.uploadFile.bind(this);
     }
 
     // Snack
@@ -147,7 +175,6 @@ class AdminPage extends Component{
 
     salesMain = () => {
         this.setState({ tab: 2 })
-        console.log('salesMain')
     }
 
     addPos = (idx) => {
@@ -359,8 +386,15 @@ class AdminPage extends Component{
         } else if(field === 'Institution') {
             if (!isNumeric(value)) { this.setState({ Institution: value, InstitutionErr: 'please input valid institution' }) }
             else this.setState({ Institution: value, InstitutionErr: '' });
+        } else{
+            let updated = Object.assign({}, this.state);
+            let value = e.target.value;
+            if(field === 'phone'){
+                value = value.replace(/\D/g,'').trim();
+            } 
+            updated[field] = value;
+            this.setState(updated);
         }
-
     }
 
     assignToSales = (idx, merchant) => {
@@ -641,6 +675,188 @@ class AdminPage extends Component{
             });
     }
 
+    openAddMerchantDialog = () => {
+        this.setState({
+            addMerchantModal: true
+        })
+        let params = {
+            Params: {
+                Limit: '-1',
+                Offset: '0',
+                Extra: { SearchType: '', SearchField: '' }
+            }
+        };
+        apiManager.opayApi(opay_url + merchant_category_list, params, false)
+            .then((response) => {
+                if(response.data.Confirmation === 'Success'){
+                    this.setState({
+                        addMerchantModal: true,
+                        merchantCategory: response.data.Response.MerchantCategories
+                    }) 
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+    }
+
+    handleAddMerchantClose = () => {
+        this.setState({
+            addMerchantModal: false
+        })
+    }
+
+    onFieldBlur = (field, e) => {
+
+        let value = e.target.value;
+        if(field === 'merchantName'){
+            if(!value){
+                let updated = Object.assign({}, this.state);
+                updated['merchantNameErrorText'] = "Merchant name is required.";
+                this.setState(updated);
+            }else{
+                let updated = Object.assign({}, this.state);
+                updated['merchantNameErrorText'] = '';
+                this.setState(updated);
+            }
+        } else if(field === 'legalName') {
+            if(!value){
+                let updated = Object.assign({}, this.state);
+                updated['legalNameErrorText'] = "Legal name is required.";
+                this.setState(updated);
+            }else{
+                let updated = Object.assign({}, this.state);
+                updated['legalNameErrorText'] = '';
+                this.setState(updated);
+            }
+
+        } else if(field === 'phone') {
+            let updated = Object.assign({}, this.state);
+            let phoneValue = updated['phone'];
+            if(!phoneValue){
+                let updated = Object.assign({}, this.state);
+                updated['phoneErrorText'] = "Phone is required.";
+                this.setState(updated);
+            } else if(phoneValue.length < 10) {
+                let updated = Object.assign({}, this.state);
+                updated['phoneErrorText'] = "Your phone is invalid. Please enter a valid phone.";
+                this.setState(updated);
+            } else {
+                let updated = Object.assign({}, this.state);
+                updated['phoneErrorText'] = '';
+                this.setState(updated);
+            }
+        } else if(field === 'email'){
+            if(value){          
+                if(!validator.isEmail(value)){
+                    let updated = Object.assign({}, this.state);
+                    updated['emailErrorText'] = "Your email address is invalid. Please enter a valid address.";
+                    updated['isValidEmail'] = false;
+                    this.setState(updated);
+                }else{
+                    let updated = Object.assign({}, this.state);
+                    updated['emailErrorText'] = '';
+                    updated['isValidEmail'] = true;
+                    this.setState(updated);
+                }
+            }else{
+                let updated = Object.assign({}, this.state);
+                updated['emailErrorText'] = "Email address is required.";
+                updated['isValidEmail'] = false;
+                this.setState(updated);
+            }
+        }
+    }
+
+    uploadFile = (field, e) => {
+
+        let file = e.target.files[0];
+        let err = '';
+        let size = file.size / 1000 / 1000;
+
+        if(size > 2.5) {
+            file = {};
+            err = 'File size must smaller than 2.5 Mb';
+        } else if((file.type.substr(0,5) !== 'image') 
+            && (file.type !== 'application/pdf')) {
+            file = {};
+            err = 'only image and pdf filles are accepted';
+        }
+
+        if (field === 'incorporation') {
+            this.setState({ incorporation: file, incorporationErr: err });
+        } else if (field === 'identification') {
+            this.setState({ identification: file, identificationErr: err });
+        } else if (field === 'photographs') {
+            this.setState({ photographs: file, photographsErr: err });
+        } else if (field === 'check') {
+            this.setState({ check: file, checkErr: err });
+        }
+    }
+
+    handleCategoryChange = (value) => {
+        let selectedCategory = this.state.merchantCategory[value];
+        this.setState({ 
+            categoryValue: selectedCategory.CategoryName,
+            categoryGUID: selectedCategory.MerchantCategoryGUID
+        });
+    }
+
+    handleAddMerchant = () => {
+
+        if (!this.state.merchantName) {
+            this.handleTouchTap('Please enter your merchant name', false);
+        } else if(!this.state.legalName) {
+            this.handleTouchTap('Please enter your legal name', false);
+        } else if(!this.state.phone) {
+            this.handleTouchTap('Please enter your phone number', false);
+        } else if(this.state.phone.length < 10) {
+            this.handleTouchTap('Invalid phone number', false);
+        } else if(!this.state.email) {
+            this.handleTouchTap('Please enter your email', false);
+        } else if(!validateEmail(this.state.email)) {
+            this.handleTouchTap('Invalid email address', false);
+        } else if(!this.state.categoryGUID) {
+            this.handleTouchTap('Please select a merchant category', false);
+        } else if(!this.state.incorporation.name){
+            this.handleTouchTap('Please upload incorporation file', false);
+        } else if(!this.state.identification.name){
+            this.handleTouchTap('Please upload identification file', false);
+        } else if(!this.state.photographs.name){
+            this.handleTouchTap('Please upload photographs file', false);
+        } else if(!this.state.check.name){
+            this.handleTouchTap('Please upload check file', false);
+        } else{
+            
+            let formData = new FormData();
+            formData.append('MerchantName', this.state.merchantName);
+            formData.append('MerchantWebsite', this.state.website);
+            formData.append('LegalName', this.state.legalName);
+            formData.append('PhoneNumber', this.state.phone);
+            formData.append('Email', this.state.email);
+            formData.append('MerchantCategoryGUID', this.state.categoryGUID);
+            formData.append('File_incorporation', this.state.incorporation);
+            formData.append('File_identification', this.state.identification);
+            formData.append('File_photographs', this.state.photographs);
+            formData.append('File_check', this.state.check);
+
+            apiManager.opayFileApi(opay_url + 'sales/create_merchant', formData, true)
+                .then((response) => {
+                    if(response.data.Confirmation === 'Success'){   
+                        this.setState({
+                            addMerchantModal: false
+                        })    
+                        this.handleTouchTap(`Merchant has been created`, true);                 
+                        this.getMerList(this.state.currentPage);
+                    }else{
+                        this.handleTouchTap(`${response.data.Message}`, false);
+                    }
+                })
+                .catch((err) => {
+                    this.handleTouchTap(`Error: ${error}`, false);
+                })
+        }
+    }
+
     renderTab(tab) {
 
         const {
@@ -649,6 +865,11 @@ class AdminPage extends Component{
             msgContainer,
             btnControl,
             formControl,
+            sideBtnContainer,
+            addMerchantBtn,
+            tableCardContainer,
+            uploadDescriptionContainer,
+            uploadDescriptionStyle,
         } = styles;
 
         switch(tab) {
@@ -664,60 +885,76 @@ class AdminPage extends Component{
                 return (
 
                         <div>
-                            <Table>
-                                <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-                                    <TableRow>
-                                        {this.state.merListTitle.map((item) => (
-                                            <TableHeaderColumn style={tableCellStyle}>{item}</TableHeaderColumn>
-                                        ))}
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody displayRowCheckbox={false} showRowHover={true}>
-                                    {this.state.merList.slice(this.state.start,this.state.end).map((msg, idx)=>(
-                                        <TableRow key={idx} selectable={false}>
-                                            <TableRowColumn style={tableCellStyle}>{msg.AgentID}</TableRowColumn>
-                                            <TableRowColumn style={tableCellStyle}>{msg.FirstName}</TableRowColumn>
-                                            <TableRowColumn style={tableCellStyle}>{msg.Email}</TableRowColumn>
-                                            <TableRowColumn style={tableCellStyle}>{msg.PhoneNumber}</TableRowColumn>
-                                            <TableRowColumn style={tableCellStyle}>{msg.Status === 'ACTIVE' ? 'ACTIVE' : 'PENDING'}</TableRowColumn>
-                                            <TableRowColumn style={tableCellStyle}>{(msg.SalesFirstName ? msg.SalesFirstName : '') + ' ' + (msg.SalesLastName ? msg.SalesLastName : '')}</TableRowColumn>
-                                            <TableRowColumn style={tableCellStyle}>{msg.MerchantRate}</TableRowColumn>
-                                            <TableRowColumn style={tableCellStyle}><div style={{textAlign: 'center'}}>
-                                                <RaisedButton
-                                                    onClick={(e) => this.handleAction(e, idx)}
-                                                    secondary={msg.Status !== 'ACTIVE'}
-                                                    label='ACTION'
-                                                />
-                                                <Popover
-                                                    onRequestClose={(e, idx) => this.handleRequestClose(idx)}
-                                                    open={this.state.merListOpenPop[idx]}
-                                                    anchorEl={this.state.merListAnEl[idx]}
-                                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                                                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                                                    animation={PopoverAnimationVertical}>
-                                                    <Menu>
-                                                        {
-                                                            (msg.Status === 'ACTIVE') ?
-                                                            (
-                                                                <MenuItem primaryText="Add POS" onClick={() => this.addPos(idx)}/>
-                                                            )
-                                                            :
-                                                            (
-                                                                <MenuItem primaryText="Active" onClick={() => this.active(idx)}/>
-                                                            )
-                                                        }
-                                                        <MenuItem primaryText="Set bank account info" onClick={() => this.openBankSetting(idx, msg)}/>
-                                                        { this.state.UserTypeID === '1' ? <MenuItem primaryText="Update Rate" onClick={() => this.updateRate(idx, msg)}/> : '' }
-                                                        { this.state.UserTypeID === '1' ? <MenuItem primaryText="Assign To Sales" onClick={() => this.assignToSales(idx, msg)}/> : ''}
-                                                        <MenuItem primaryText="Documents" onClick={() => this.viewDocuments(idx, msg)}/>
-                                                        <MenuItem primaryText="Email" onClick={() => this.sendEmail(idx, msg)}/>
-                                                    </Menu>
-                                                </Popover>
-                                            </div></TableRowColumn>
+
+                            {
+                                this.state.UserTypeID == 6 ?
+                                (
+                                    <div style={sideBtnContainer}>
+                                        <div style={addMerchantBtn}>
+                                            <RaisedButton label="Add" primary={true} onClick={() => this.openAddMerchantDialog()}/><br/>
+                                        </div>
+                                    </div>
+                                )
+                                :
+                                (null)
+                            }
+
+                            <Card style={tableCardContainer}>
+                                <Table>
+                                    <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+                                        <TableRow>
+                                            {this.state.merListTitle.map((item) => (
+                                                <TableHeaderColumn style={tableCellStyle}>{item}</TableHeaderColumn>
+                                            ))}
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                                    </TableHeader>
+                                    <TableBody displayRowCheckbox={false} showRowHover={true}>
+                                        {this.state.merList.slice(this.state.start,this.state.end).map((msg, idx)=>(
+                                            <TableRow key={idx} selectable={false}>
+                                                <TableRowColumn style={tableCellStyle}>{msg.AgentID}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{msg.FirstName}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{msg.Email}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{msg.PhoneNumber}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{msg.Status === 'ACTIVE' ? 'ACTIVE' : 'PENDING'}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{(msg.SalesFirstName ? msg.SalesFirstName : '') + ' ' + (msg.SalesLastName ? msg.SalesLastName : '')}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{msg.MerchantRate}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}><div style={{textAlign: 'center'}}>
+                                                    <RaisedButton
+                                                        onClick={(e) => this.handleAction(e, idx)}
+                                                        secondary={msg.Status !== 'ACTIVE'}
+                                                        label='ACTION'
+                                                    />
+                                                    <Popover
+                                                        onRequestClose={(e, idx) => this.handleRequestClose(idx)}
+                                                        open={this.state.merListOpenPop[idx]}
+                                                        anchorEl={this.state.merListAnEl[idx]}
+                                                        anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                                                        targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                                        animation={PopoverAnimationVertical}>
+                                                        <Menu>
+                                                            {
+                                                                (msg.Status === 'ACTIVE') ?
+                                                                (
+                                                                    <MenuItem primaryText="Add POS" onClick={() => this.addPos(idx)}/>
+                                                                )
+                                                                :
+                                                                (
+                                                                    <MenuItem primaryText="Active" onClick={() => this.active(idx)}/>
+                                                                )
+                                                            }
+                                                            <MenuItem primaryText="Set bank account info" onClick={() => this.openBankSetting(idx, msg)}/>
+                                                            { this.state.UserTypeID === '1' ? <MenuItem primaryText="Update Rate" onClick={() => this.updateRate(idx, msg)}/> : '' }
+                                                            { this.state.UserTypeID === '1' ? <MenuItem primaryText="Assign To Sales" onClick={() => this.assignToSales(idx, msg)}/> : ''}
+                                                            <MenuItem primaryText="Documents" onClick={() => this.viewDocuments(idx, msg)}/>
+                                                            <MenuItem primaryText="Email" onClick={() => this.sendEmail(idx, msg)}/>
+                                                        </Menu>
+                                                    </Popover>
+                                                </div></TableRowColumn>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </Card>
 
                             <div style={{textAlign: 'right', paddingRight: 12, paddingVertical: 12}}>
                                 <Pagination
@@ -728,9 +965,108 @@ class AdminPage extends Component{
                                 />
                             </div>
 
-                            <div style={{textAlign: 'center'}}>
-                                <RaisedButton label="Add Merchant" primary={true} onClick={this.openDialog}/><br/>
-                            </div>
+                            <Dialog title="Add Merchant" 
+                                className="add-merchant-modal"
+                                modal={false} 
+                                open={this.state.addMerchantModal}
+                                onRequestClose={this.handleAddMerchantClose.bind(this)}
+                                >
+                                <div style={{marginBottom: 24}}>
+                                    <div style={formControl}>   
+                                        <TextField floatingLabelText="Merchant name"
+                                                value={this.state.merchantName}
+                                                onBlur={this.onFieldBlur.bind(this, 'merchantName')}
+                                                errorText={this.state.merchantNameErrorText}
+                                                onChange={(e, value) => this.onFieldChange(e, value, 'merchantName')} />
+                                    </div>  
+                                    <div style={formControl}>  
+                                        <TextField floatingLabelText="Website (optional)"
+                                                value={this.state.website}
+                                                onChange={(e, value) => this.onFieldChange(e, value, 'website')} />
+                                    </div>    
+                                    <div style={formControl}>         
+                                        <TextField floatingLabelText="Legal Name"
+                                                value={this.state.legalName}
+                                                onBlur={this.onFieldBlur.bind(this, 'legalName')}
+                                                errorText={this.state.legalNameErrorText}
+                                                onChange={(e, value) => this.onFieldChange(e, value, 'legalName')} />
+                                    </div>
+                                    <div style={formControl}>
+                                        <TextField floatingLabelText="Phone"
+                                                value={this.state.phone}
+                                                onBlur={this.onFieldBlur.bind(this, 'phone')}
+                                                errorText={this.state.phoneErrorText}>
+                                            <InputMask mask="(999)999-9999"
+                                                    maskChar=" "
+                                                    defaultValue={this.state.phone}
+                                                    value={this.state.phone}
+                                                    onChange={(e, value) => this.onFieldChange(e, value, 'phone')} />
+                                        </TextField>
+                                    </div>   
+                                    <div style={formControl}> 
+                                        <TextField floatingLabelText="Email"
+                                                value={this.state.email}
+                                                onBlur={this.onFieldBlur.bind(this, 'email')}
+                                                errorText={this.state.emailErrorText}
+                                                onChange={(e, value) => this.onFieldChange(e, value, 'email')} />
+                                    </div>    
+                                    <div style={formControl}> 
+                                        <SelectField
+                                            style={{textAlign: 'left'}}
+                                            floatingLabelText="Select a merchant type.."
+                                            value={this.state.categoryValue}
+                                            onChange={(e, value) => this.handleCategoryChange(value)}
+                                        >
+                                            {this.state.merchantCategory.map((item, index) => (
+                                                <MenuItem value={item.CategoryName} key={index} primaryText={item.CategoryName}  />
+                                            ))}
+                                        </SelectField>
+                                    </div>    
+                                    
+                                    <div style={Object.assign({}, formControl, {marginTop: 48})}>
+                                        <p style={uploadDescriptionStyle}>1. A Copy of Certificate of incorporation</p>
+                                        <RaisedButton primary={true} containerElement='label' label='Upload'>
+                                            <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('incorporation',e)} /></div>
+                                        </RaisedButton>
+                                        <p style={{ color: this.state.incorporationErr ? pinkA400 : green400, marginTop: 6 }}>{this.state.incorporationErr.length > 0 ? this.state.incorporationErr : this.state.incorporation.name}</p>
+                                    </div>
+
+                                    <div style={formControl}>
+                                        <p style={uploadDescriptionStyle}>2. A Copy of OWNER/OFFICER’s valid government-issued identification</p>
+                                        <RaisedButton primary={true} containerElement='label' label='Upload'>
+                                            <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('identification',e)} /></div>
+                                        </RaisedButton>
+                                        <p style={{ color: this.state.identificationErr ? pinkA400 : green400, marginTop: 6 }}>{this.state.identificationErr.length > 0 ? this.state.identificationErr : this.state.identification.name}</p>
+                                    </div>
+
+                                    <div style={formControl}>
+                                        <p style={uploadDescriptionStyle}>3. Representative photographs of the interior and exterior of merchant’s retail
+                                            location, including the merchant’s logo/branding</p>
+                                        <RaisedButton primary={true} containerElement='label' label='Upload'>
+                                            <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('photographs',e)} /></div>
+                                        </RaisedButton>
+                                        <p style={{ color: this.state.photographsErr ? pinkA400 : green400, marginTop: 6 }}>{this.state.photographsErr.length > 0 ? this.state.photographsErr : this.state.photographs.name}</p>
+                                    </div>
+
+                                    <div style={formControl}>
+                                        <p style={uploadDescriptionStyle}>4. One of the following is required:
+                                            1. A voided copy of a permanent check (not a starter or
+                                            handwritten check). OR
+                                            If the voided check is not yet available, a letter is required from your financial institution typed
+                                            on the banks letterhead and signed by an officer of the bank. The letter must include: your
+                                            merchant name, account number, transit number, institution number and the contact details
+                                            (including phone number) of the bank representative who signs the letter.</p>
+                                        <RaisedButton primary={true} containerElement='label' label='Upload'>
+                                            <div><input type="file" style={{ display: 'none' }} onChange={(e) => this.uploadFile('check',e)} /></div>
+                                        </RaisedButton>
+                                        <p style={{ color: this.state.checkErr ? pinkA400 : green400, marginTop: 6 }}>{this.state.checkErr.length > 0 ? this.state.checkErr : this.state.check.name}</p>
+                                    </div>
+
+                                    <div style={btnControl}>
+                                        <RaisedButton label="Confirm" primary={true} onClick={() => this.handleAddMerchant()}/>
+                                    </div>    
+                                </div>
+                            </Dialog>
 
                             <Dialog title="Set Bank Account Info" modal={false} open={this.state.bankModalOpen}
                                     onRequestClose={this.handleBankSettingClose.bind(this)}>
@@ -946,6 +1282,39 @@ const styles = {
         marginTop: 36,
         marginBottom: 12
     },
+
+    uploadDescriptionContainer: {
+        paddingLeft: '50px',
+        paddingRight: '50px',
+        marginTop: 18,
+        marginBottom: 18
+    },
+
+    uploadDescriptionStyle: {
+        textAlign: 'justify',
+        maxWidth: 360,
+        margin: '0 auto',
+        marginTop: 36,
+        marginBottom: 18,
+    },
+
+    sideBtnContainer: {
+        height: 36,
+        marginTop: 24,
+    },
+
+    addMerchantBtn: {
+        float: 'right',
+        height: 36,
+    },
+
+    tableCardContainer: {
+        width: 'calc(100% - 48px)',
+        margin: '0 auto',
+        marginTop: 24
+    },
+
+    
 
 }
 

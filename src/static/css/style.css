@@ -1210,3 +1210,8 @@ table, th, td {
 .refund-modal>div>div>div>div{
     overflow-y: auto !important;
 }
+
+/* add merchant modal */
+.add-merchant-modal>div>div>div>div{
+    overflow-y: scroll !important;
+}

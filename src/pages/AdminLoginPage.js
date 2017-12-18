@@ -22,7 +22,7 @@ class AdminLoginPage extends Component{
         super(props);
         this.state = {
             floatLabelStyle: { fontSize: '19px' },
-            inputStyle: { fontSize: '19px'  },
+            inputStyle: { fontSize: '19px' },
             textFieldStyle: { width: '58%' },
             loginBtnStyle: { marginTop: '19px' },
             paperSize: { height: '60%', width: '50%' },
@@ -51,7 +51,7 @@ class AdminLoginPage extends Component{
 
             if (res.data) {
                 if (res.data.Confirmation === 'Fail') {
-                    this.props.dispatch(showSnackbar(res.data.Message, false));
+                    //this.props.dispatch(showSnackbar(res.data.Message, false));
                 } else if (res.data.Confirmation === 'Success') {
                     localStorage.setItem('token', res.data.Token);
                     localStorage.setItem('userTypeID', res.data.Response.UserTypeID)
@@ -150,11 +150,5 @@ const styles = {
     }
 }
 
-const dispatchToProps = (dispatch) => {
 
-    return {
-        set_UserTypeID: (UserTypeID) => dispatch(set_UserTypeID(UserTypeID)),
-    }
-}
-
-export default connect((state) => {},dispatchToProps)(AdminLoginPage);
+export default connect()(AdminLoginPage);
