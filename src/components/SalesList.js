@@ -27,6 +27,7 @@ import { opay_url,
          admin_remove_sales,
          admin_create_sales } from "../utilities/apiUrl";
 import * as apiManager from  '../helpers/apiManager';
+import Card from 'material-ui/Card/Card';
 
 class SalesList extends Component {
 
@@ -245,7 +246,10 @@ class SalesList extends Component {
             tableCellStyle,
             formControl,
             btnControl,
-            backBtn
+            backBtn,
+            sideBtnContainer,
+            addSalesBtn,
+            tableCardContainer
         } = styles;
 
         const actions = [
@@ -256,7 +260,12 @@ class SalesList extends Component {
         return (
             <MuiThemeProvider>
                 <div>
-                    <div>
+                    <div style={sideBtnContainer}>
+                        <div style={addSalesBtn}>
+                            <RaisedButton label="Add Sales" primary={true} onClick={this.openDialog}/>
+                        </div>
+                    </div>
+                    <Card style={tableCardContainer}>
                         <Table>
                             <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                                 <TableRow>
@@ -282,7 +291,7 @@ class SalesList extends Component {
                                 ))}
                             </TableBody>
                         </Table>
-                    </div>
+                    </Card>
 
                     <div style={{textAlign: 'right', paddingRight: 12, paddingVertical: 12}}>
                         <Pagination
@@ -291,11 +300,6 @@ class SalesList extends Component {
                             display={this.state.display}
                             onChange={currentPage => this.handleChangePage(currentPage)}
                         />
-                    </div>
-
-                    <div style={{textAlign: 'center'}}>
-                        <RaisedButton label="Add Sales" primary={true} onClick={this.openDialog}/><br/>
-                        <a style={backBtn} onClick={() => this.backToList()}>Back</a>
                     </div>
 
                     <Dialog title="Add Sales" modal={false} open={this.state.modalOpen}
@@ -365,7 +369,23 @@ const styles = {
         fontSize: 14,
         cursor: 'pointer',
         textDecoration: 'underline'
-    }
+    },
+
+    sideBtnContainer: {
+        height: 36,
+        marginTop: 24,
+    },
+
+    addSalesBtn: {
+        float: 'right',
+        height: 36,
+    },
+
+    tableCardContainer: {
+        width: 'calc(100% - 48px)',
+        margin: '0 auto',
+        marginTop: 24
+    },
 }
 
 function validateEmail(email) {
