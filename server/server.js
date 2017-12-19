@@ -6,6 +6,7 @@ import fs from 'fs';
 import Express from 'express';
 import React from 'react';
 import bodyParser from 'body-parser';
+import forceSSL from 'express-force-ssl';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { renderToString } from 'react-dom/server';
@@ -42,6 +43,7 @@ if(env === 'production') {
 }
 
 if (env === 'production') {
+    app.use(forceSSL);
     server = https.createServer(options, app);
 } else if (env === 'development') {
     server = http.createServer(app);
