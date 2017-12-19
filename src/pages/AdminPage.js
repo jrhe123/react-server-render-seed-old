@@ -1050,7 +1050,7 @@ class AdminPage extends Component{
                                                                     (null)                                                                    
                                                                 )
                                                             }
-                                                            <MenuItem primaryText="Set bank account info" onClick={() => this.openBankSetting(idx, msg)}/>
+                                                            <MenuItem primaryText="Bank Account" onClick={() => this.openBankSetting(idx, msg)}/>
                                                             { this.state.UserTypeID === '1' ? <MenuItem primaryText="Update Rate" onClick={() => this.updateRate(idx, msg)}/> : '' }
                                                             { this.state.UserTypeID === '1' ? <MenuItem primaryText="Assign To Sales" onClick={() => this.assignToSales(idx, msg)}/> : ''}
                                                             <MenuItem primaryText="Documents" onClick={() => this.viewDocuments(idx, msg)}/>
@@ -1176,19 +1176,19 @@ class AdminPage extends Component{
                                 </div>
                             </Dialog>
 
-                            <Dialog title="Set Bank Account Info" modal={false} open={this.state.bankModalOpen}
+                            <Dialog title="Bank Account Info" modal={false} open={this.state.bankModalOpen}
                                     onRequestClose={this.handleBankSettingClose.bind(this)}>
                                 <div>
                                     <div style={formControl}>
                                         <TextField floatingLabelText="Account Name" errorText={this.state.AccountNameErr}
                                                    value={this.state.AccountName} onChange={(e, value) => this.onFieldChange(e, value, 'Account Name')}/><br/>
-                                        <TextField floatingLabelText="Account" errorText={this.state.AccountErr}
+                                        <TextField floatingLabelText="Account Number" errorText={this.state.AccountErr}
                                                    value={this.state.Account} onChange={(e, value) => this.onFieldChange(e, value, 'Account')}/><br/>
-                                        <TextField floatingLabelText="Transit" errorText={this.state.TransitErr}
+                                        <TextField floatingLabelText="Transit Number" errorText={this.state.TransitErr}
                                                    value={this.state.Transit} onChange={(e, value) => this.onFieldChange(e, value, 'Transit')}/><br/>
                                         <TextField floatingLabelText="Institution Name" errorText={this.state.InstitutionNameErr}
                                                    value={this.state.InstitutionName} onChange={(e, value) => this.onFieldChange(e, value, 'Institution Name')}/><br/>
-                                        <TextField floatingLabelText="Institution" errorText={this.state.InstitutionErr}
+                                        <TextField floatingLabelText="Institution Number" errorText={this.state.InstitutionErr}
                                                    value={this.state.Institution} onChange={(e, value) => this.onFieldChange(e, value, 'Institution')}/>
                                     </div>
                                     <div style={btnControl}>

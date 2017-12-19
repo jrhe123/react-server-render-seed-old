@@ -262,7 +262,7 @@ class SalesList extends Component {
                 <div>
                     <div style={sideBtnContainer}>
                         <div style={addSalesBtn}>
-                            <RaisedButton label="Add Sales" primary={true} onClick={this.openDialog}/>
+                            <RaisedButton label="Add" primary={true} onClick={this.openDialog}/>
                         </div>
                     </div>
                     <Card style={tableCardContainer}>
