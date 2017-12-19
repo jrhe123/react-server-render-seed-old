@@ -10,7 +10,7 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 import { Card, CardHeader } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 import moment from 'moment-timezone';
-import { PieChart, Pie, Legend, Tooltip, Cell } from 'Recharts';
+import { PieChart, Pie, Legend, Tooltip, Cell } from 'recharts';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { scaleOrdinal, schemeCategory10 } from 'd3-scale';
 import { greenA400, deepOrangeA400, green400, pinkA400  } from 'material-ui/styles/colors';
