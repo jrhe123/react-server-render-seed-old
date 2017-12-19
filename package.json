@@ -4,7 +4,7 @@
   "description": "opay web",
   "main": "main.js",
   "scripts": {
-    "start": "npm run build && pm2 start --interpreter babel-node server/server.js --log /home/odi/webconsole/webconsole_log/file.log --node-args=\"--harmony\" ",
+    "start": "NODE_ENV=production pm2 start --interpreter babel-node server/server.js",
     "build": "NODE_ENV=production webpack -p --config webpack/webpack.config.prod.js --progress",
     "dev": "NODE_ENV=development babel-node server/server.js"
   },
@@ -82,3 +82,5 @@
     "validator": "^7.2.0"
   }
 }
+
+//"start": "npm run build && pm2 start --interpreter babel-node server/server.js --log /home/odi/webconsole/webconsole_log/file.log --node-args=\"--harmo\" ",
