@@ -27,7 +27,9 @@ class AdminLoginPage extends Component{
             loginBtnStyle: { marginTop: '19px' },
             paperSize: { height: '60%', width: '50%' },
             username: '',
-            password: ''
+            usernameEr: '',
+            password: '',
+            passwordEr: ''
         }
         this.refactor = this.refactor.bind(this);
         this.login = this.login.bind(this);
@@ -36,14 +38,22 @@ class AdminLoginPage extends Component{
     }
 
     usernameChange = (e, newString) => {
-        this.setState({ username: newString });
+        this.setState({ username: newString, usernameEr: '' });
     }
 
     passwordChange = (e, newString) => {
-        this.setState({ password: newString });
+        this.setState({ password: newString, passwordEr: '' });
     }
 
     login = () => {
+
+        if (!this.state.username || !this.state.password) {
+
+            if (!this.state.username) this.setState({ usernameEr: 'Username is required' });
+            if (!this.state.password) this.setState({ passwordEr: 'Password is required' })
+
+            return
+        }
 
         let params = { Params: { LoginKeyword: this.state.username, Password: this.state.password } };
 
@@ -51,7 +61,7 @@ class AdminLoginPage extends Component{
 
             if (res.data) {
                 if (res.data.Confirmation === 'Fail') {
-                    //this.props.dispatch(showSnackbar(res.data.Message, false));
+                    this.setState({ usernameEr: res.data.Message, passwordEr: res.data.Message })
                 } else if (res.data.Confirmation === 'Success') {
                     localStorage.setItem('token', res.data.Token);
                     localStorage.setItem('userTypeID', res.data.Response.UserTypeID)
@@ -111,9 +121,9 @@ class AdminLoginPage extends Component{
                     <Paper zDepth={3} style={Object.assign({}, this.state.paperSize, paperStyle )}>
                         <div style={verticalCenter}>
                             <TextField floatingLabelText="Username" inputStyle={this.state.inputStyle} onChange={(e, newString) => this.usernameChange(e,newString)}
-                                       floatingLabelStyle={this.state.floatLabelStyle} style={this.state.textFieldStyle} /><br />
+                                       errorText={this.state.usernameEr} floatingLabelStyle={this.state.floatLabelStyle} style={this.state.textFieldStyle} /><br />
                             <TextField floatingLabelText="Password" type="password" inputStyle={this.state.inputStyle} onChange={(e, newString) => this.passwordChange(e,newString)}
-                                       floatingLabelStyle={this.state.floatLabelStyle} style={this.state.textFieldStyle} /><br />
+                                       errorText={this.state.passwordEr} floatingLabelStyle={this.state.floatLabelStyle} style={this.state.textFieldStyle} /><br />
                             <RaisedButton label="Login" primary={true} style={this.state.loginBtnStyle} onClick={() => this.login()}/>
                         </div>
                     </Paper>
@@ -149,6 +159,7 @@ const styles = {
         transform: 'translateY(-50%)'
     }
 }
+
 
 
 export default connect()(AdminLoginPage);
