@@ -44,7 +44,7 @@ if(env === 'production') {
 
 if (env === 'production') {
     app.use(forceSSL);
-    server = https.createServer(options, app);
+    server = https.createServer(httpsOptions, app);
 } else if (env === 'development') {
     server = http.createServer(app);
 }
