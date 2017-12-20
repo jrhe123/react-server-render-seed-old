@@ -17,6 +17,8 @@ import TextField from 'material-ui/TextField';
 import ActionSettings from 'material-ui/svg-icons/action/settings';
 import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 import moment from 'moment';
+import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
+
 
 // Redux
 import { connect } from 'react-redux';
@@ -69,10 +71,18 @@ class MerchantAddresses extends Component{
             deleteAddrModalOpen: false,
             deleteAddr: null,
             deleteAddrIdx: null,
+
+            address: '',
         }
     }
 
     componentDidMount(){
+
+        const googleGeoSrc = document.createElement('script');
+        googleGeoSrc.type="text/javascript";
+        googleGeoSrc.setAttribute('src','https://maps.googleapis.com/maps/api/js?key=AIzaSyDqk8Hjqb3BdigfWrTgJ3OhYeKVZG4Z8Qs&libraries=places');
+        document.body.appendChild(googleGeoSrc);
+
         let params = {
             Params: {
                 Limit: "-1",
@@ -365,6 +375,17 @@ class MerchantAddresses extends Component{
             })
     }
 
+
+    // Google Auto-complete
+    onAutocomplete = (address) => {
+
+        console.log('hit');
+
+        this.setState({
+            address
+        })
+    }
+
     render() {
 
         const {
@@ -390,6 +411,19 @@ class MerchantAddresses extends Component{
                 onClick={() => this.handleAddrDeleteClose()}
             />,
         ];
+
+        // Autocomplete
+        const AutocompleteItem = ({ formattedSuggestion }) => (
+            <div>
+              <strong>{ formattedSuggestion.mainText }</strong>{' '}
+              <small>{ formattedSuggestion.secondaryText }</small>
+            </div>
+        )
+        const inputProps = {
+            value: this.state.address,
+            onChange: this.onAutocomplete,
+            placeholder: 'Address Line 1',
+        }
 
         return (
             <MuiThemeProvider>
@@ -470,6 +504,12 @@ class MerchantAddresses extends Component{
                         open={this.state.addrModalOpen}
                         onRequestClose={this.handleClose.bind(this)}
                     >
+                            {/* <div style={formControl}>
+                                <PlacesAutocomplete 
+                                    inputProps={inputProps}
+                                    autocompleteItem={AutocompleteItem} />
+                            </div> */}
+
                             <div style={formControl}>
                                 <TextField floatingLabelText="Address Line 1" 
                                     onChange={(e, value) => this.onFieldChange(e,value,'addressLine1')}
