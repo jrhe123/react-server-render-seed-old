@@ -1022,7 +1022,7 @@ class AdminPage extends Component{
                                                 <TableRowColumn style={tableCellStyle}>{msg.PhoneNumber}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{msg.Status === 'ACTIVE' ? 'ACTIVE' : 'PENDING'}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{(msg.SalesFirstName ? msg.SalesFirstName : '') + ' ' + (msg.SalesLastName ? msg.SalesLastName : '')}</TableRowColumn>
-                                                <TableRowColumn style={tableCellStyle}>{msg.MerchantRate}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{(parseFloat(msg.MerchantRate) * 100.0).toFixed(2)}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}><div style={{textAlign: 'center'}}>
                                                     <RaisedButton
                                                         onClick={(e) => this.handleAction(e, idx)}
