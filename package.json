@@ -4,11 +4,11 @@
   "description": "opay web",
   "main": "main.js",
   "scripts": {
-    "start": "NODE_ENV=production pm2 start server/app.js",
+    "start": "NODE_ENV=production npm run build && pm2 start server/app.js",
     "build": "NODE_ENV=production webpack -p --config webpack/webpack.config.prod.js --progress",
     "dev": "NODE_ENV=development babel-node server/server.js"
   },
-  "author": "jiamin",
+  "author": "opay",
   "license": "ISC",
   "devDependencies": {
     "babel-loader": "^6.2.10",
