@@ -33,7 +33,7 @@ let httpsOptions = {}
 if(env === 'production') {
     httpsOptions = {
         key: fs.readFileSync('/home/opay_ssl/opay.key'),
-        cert: fs.readFileSync('/home/opay_ssl/opay.crt'),
+        cert: fs.readFileSync('/home/opay_ssl/STAR_opay_ca.crt'),
         ca: [
             fs.readFileSync('/home/opay_ssl/AddTrustExternalCARoot.crt'),
             fs.readFileSync('/home/opay_ssl/COMODORSADomainValidationSecureServerCA.crt'),
