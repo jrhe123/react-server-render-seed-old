@@ -59,7 +59,7 @@ app.use(bodyParser.json()); // handle json data
 app.use('/api',router);
 app.use('/verification',verification_router);
 
-if(process.env.NODE_ENV === "development") { // development mode has hot replace funtion
+if(env === "development") { // development mode has hot replace funtion
   const dev_compiler = webpack(dev_config);
   app.use(webpackDevMiddleware(dev_compiler, {
     publicPath: dev_config.output.publicPath
@@ -67,9 +67,21 @@ if(process.env.NODE_ENV === "development") { // development mode has hot replace
   app.use(webpackHotMiddleware(dev_compiler, {
   }));
 }
+
+if (env === "production") {
+    app.use (function (req, res, next) {
+        let schema = (req.headers['x-forwarded-proto'] || '').toLowerCase();
+        if (schema === 'https') {
+            next();
+        } else {
+            res.redirect('https://' + req.headers.host + req.url);
+        }
+    });
+}
+
 // universal routing and rendering
 app.get('*', (req, res) => {
-   if(env === 'production') res.redirect('https://' + req.headers.host + req.url);
+  // if(env === 'production') res.redirect('https://' + req.headers.host + req.url);
     match(
         { routes, location: req.url },
         (err, redirectLocation, renderProps) => {
