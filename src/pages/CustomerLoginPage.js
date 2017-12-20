@@ -8,14 +8,9 @@ import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import { green400, pinkA400 } from 'material-ui/styles/colors';
 
-
-// Redux
-import { connect } from 'react-redux';
-import { showSnackbar }  from '../actions/layout_action';
-
 // Router
 import { browserHistory } from 'react-router';
-import { root_page } from '../utilities/urlPath'
+import { root_page, customer_login } from '../utilities/urlPath'
 
 // API
 import { opay_url } from '../utilities/apiUrl';
@@ -73,7 +68,7 @@ class CustomerLoginPage extends Component{
                 document.body.appendChild(googleTransSrc);
                 window.addEventListener('resize', this.refactor);
             }else{
-                browserHistory.push(`${root_page}${merchant_admin}`);
+                browserHistory.push(`${root_page}${customer_login}`);
             }
         }, 1000);
 
@@ -118,7 +113,6 @@ class CustomerLoginPage extends Component{
     };
 
     SignUp = () => {
-        // browserHistory.push(`${root_page}${merchant_register}`);
     }
 
     onFieldChange = (field, e, value) => {
@@ -129,36 +123,6 @@ class CustomerLoginPage extends Component{
 
     login = () => {
 
-        // if(!this.state.agentID){
-        //     this.handleTouchTap('Please enter your agentID', false);
-        // }else if(!this.state.userName){
-        //     this.handleTouchTap('Please enter your userName', false);
-        // }else if(!this.state.password){
-        //     this.handleTouchTap('Please enter password', false);
-        // }else{
-        //     let params = {
-        //         Params: {
-        //             LoginKeyword: this.state.userName,
-        //             Password: this.state.password
-        //         }
-        //     };
-        //     apiManager.opayApi(opay_url+'user/login', params, false)
-        //         .then((response) => {
-        //             if(response.data.Confirmation === 'Success'){
-        //                 localStorage.setItem('token', response.data.Token);
-        //                 localStorage.setItem('userTypeID', response.data.Response.UserTypeID);
-        //                 localStorage.setItem('agentID', this.state.agentID);
-        //                 localStorage.setItem('loginKeyword', this.state.userName);
-        //                 localStorage.setItem('profileImage', response.data.Response.ProfileImage);
-        //                 browserHistory.push(`${root_page}${merchant_admin}`);
-        //             }else{
-        //                 this.handleTouchTap(`${response.data.Message}`, false);
-        //             }
-        //         })
-        //         .catch((error) => {
-        //             this.handleTouchTap(`Error: ${error}`, false);
-        //         })
-        // }
     }
 
     render() {
@@ -188,6 +152,7 @@ class CustomerLoginPage extends Component{
 
                         <div style={verticalCenter}>
 
+                                       onChange={this.onFieldChange.bind(this, 'agentID')} /><br />
                             <TextField floatingLabelText="Username"
                                        inputStyle={this.state.inputStyle}
                                        floatingLabelStyle={this.state.floatLabelStyle}
@@ -203,8 +168,6 @@ class CustomerLoginPage extends Component{
                                           primary={true}
                                           style={this.state.loginBtnStyle}
                                           onClick={this.login} /> <br /> <br />
-                            <FlatButton label="Sign Up"
-                                        onClick={this.SignUp} />
                         </div>
                     </Paper>
 
@@ -252,4 +215,4 @@ const styles = {
     }
 }
 
-export default connect()(CustomerLoginPage);
+export default CustomerLoginPage;
