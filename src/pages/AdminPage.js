@@ -1199,7 +1199,7 @@ class AdminPage extends Component{
                                 </div>
                             </Dialog>
 
-                            <Dialog title="Change Rate" modal={false} open={this.state.rateModalOpen}
+                            <Dialog title="Change Rate (%)" modal={false} open={this.state.rateModalOpen}
                                     onRequestClose={this.handleRateClose.bind(this)}>
                                 <div>
                                     <div style={formControl}>
