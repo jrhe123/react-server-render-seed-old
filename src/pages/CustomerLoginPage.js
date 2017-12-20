@@ -152,7 +152,6 @@ class CustomerLoginPage extends Component{
 
                         <div style={verticalCenter}>
 
-                                       onChange={this.onFieldChange.bind(this, 'agentID')} /><br />
                             <TextField floatingLabelText="Username"
                                        inputStyle={this.state.inputStyle}
                                        floatingLabelStyle={this.state.floatLabelStyle}
