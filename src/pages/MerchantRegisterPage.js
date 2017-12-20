@@ -168,7 +168,9 @@ class MerchantRegisterPage extends Component{
     handleCategoryChange = (value) => {
 
         let selectedCategory = this.state.category[value];
-        this.setState({ 
+        console.log('m1',selectedCategory.MerchantCategoryGUID)
+        console.log('m2',selectedCategory.MerchantCategoryGUID.replace(/(\r\n|\n|\r)/gm,""))
+        this.setState({
             categoryValue: selectedCategory.CategoryName,
             categoryGUID: selectedCategory.MerchantCategoryGUID.replace(/(\r\n|\n|\r)/gm,"")
         });

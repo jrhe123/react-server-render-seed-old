@@ -142,10 +142,10 @@ class MerchantAddresses extends Component{
             this.handleTouchTap('Please enter address line 1', false);
             return;
         }
-        if(!this.state.addressLine2){
-            this.handleTouchTap('Please enter address line 2', false);
-            return;
-        }
+        // if(!this.state.addressLine2){
+        //      this.handleTouchTap('Please enter address line 2', false);
+        //      return;
+        //  }
         if(!this.state.city){
             this.handleTouchTap('Please enter city', false);
             return;
@@ -163,7 +163,7 @@ class MerchantAddresses extends Component{
         let params = {
             Params: {
                 AddressLine1: addressLine1,
-                AddressLine2: addressLine2,
+                AddressLine2: addressLine2 ? addressLine2 : '' ,
                 City: city,
                 Province: province,
                 Country: "CA",

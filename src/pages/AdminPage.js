@@ -900,6 +900,8 @@ class AdminPage extends Component{
 
     handleCategoryChange = (value) => {
         let selectedCategory = this.state.merchantCategory[value];
+        console.log('m1',selectedCategory.MerchantCategoryGUID)
+        console.log('m2',selectedCategory.MerchantCategoryGUID.replace(/(\r\n|\n|\r)/gm,""))
         this.setState({
             categoryValue: selectedCategory.CategoryName,
             categoryGUID: selectedCategory.MerchantCategoryGUID.replace(/(\r\n|\n|\r)/gm,"")
