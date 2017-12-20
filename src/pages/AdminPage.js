@@ -647,7 +647,7 @@ class AdminPage extends Component{
 
         this.setState({ rateModalOpen: false });
 
-        let converRate = parseFloat(this.state.rate.toFixed(2)) / 100.00;
+        let converRate = parseFloat(this.state.rate).toFixed(2) / 100.00;
 
         let params = {
             Params: {
