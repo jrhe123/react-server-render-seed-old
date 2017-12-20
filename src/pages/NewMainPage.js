@@ -9,7 +9,7 @@ import { Link } from 'react-router';
 import Header from '../components/Header';
 
 // Router
-import { root_page, merchant_login } from '../utilities/urlPath'
+import { root_page, merchant_login, customer_login } from '../utilities/urlPath'
 
 // API
 import { facebook, twitter, instagram, youtube } from '../utilities/apiUrl'
@@ -45,7 +45,7 @@ class NewMainPage extends Component{
                                 <Link to={`${root_page}${merchant_login}`}><RaisedButton className="raised-btn" label="Merchant" backgroundColor="#E5873C" labelColor="#FFF" /></Link>
                             </div>
                             <div className="btn-flex-item">
-                                <RaisedButton className="raised-btn" label="Customer" backgroundColor="#E5873C" labelColor="#FFF" />
+                                <Link to={`${root_page}${customer_login}`}><RaisedButton className="raised-btn" label="Customer" backgroundColor="#E5873C" labelColor="#FFF" /></Link>
                             </div>
                         </div>
                     </div>

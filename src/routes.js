@@ -13,6 +13,8 @@ import MerchantRegisterPage from './pages/MerchantRegisterPage';
 import MerchantLoginPage from './pages/MerchantLoginPage';
 import MerchantAdminPage from './pages/MerchantAdminPage'
 
+import CustomerLoginPage from './pages/CustomerLoginPage'
+
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminPage from './pages/AdminPage';
 
@@ -28,6 +30,7 @@ const routes = (
         <Route path="merchantregister" component={MerchantRegisterPage} />
         <Route path="merchantlogin" component={MerchantLoginPage} />
         <Route path="merchantadmin" component={MerchantAdminPage} />
+        <Route path="customerlogin" componet={CustomerLoginPage} />
         <Route path="websiteterm" component={WebSiteTerm} />
         <Route path="3b8ff9b" component={AdminLoginPage} />
         <Route path="042481b" component={AdminPage} />
