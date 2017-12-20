@@ -170,7 +170,7 @@ class MerchantRegisterPage extends Component{
         let selectedCategory = this.state.category[value];
         this.setState({ 
             categoryValue: selectedCategory.CategoryName,
-            categoryGUID: selectedCategory.MerchantCategoryGUID
+            categoryGUID: selectedCategory.MerchantCategoryGUID.replace(/(\r\n|\n|\r)/gm,"")
         });
         sessionStorage.setItem('merchant_register_categoryValue', selectedCategory.CategoryName);
         sessionStorage.setItem('merchant_register_categoryGUID', selectedCategory.MerchantCategoryGUID);

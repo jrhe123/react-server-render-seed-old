@@ -647,10 +647,12 @@ class AdminPage extends Component{
 
         this.setState({ rateModalOpen: false });
 
+        let converRate = parseFloat(this.state.rate) / 100.00;
+
         let params = {
             Params: {
                 UserGUID: this.state.rateMer.UserGUID,
-                MerchantRate: this.state.rate
+                MerchantRate: converRate.toFixed(2)
             }
         };
 
@@ -898,9 +900,9 @@ class AdminPage extends Component{
 
     handleCategoryChange = (value) => {
         let selectedCategory = this.state.merchantCategory[value];
-        this.setState({ 
+        this.setState({
             categoryValue: selectedCategory.CategoryName,
-            categoryGUID: selectedCategory.MerchantCategoryGUID
+            categoryGUID: selectedCategory.MerchantCategoryGUID.replace(/(\r\n|\n|\r)/gm,"")
         });
     }
 
