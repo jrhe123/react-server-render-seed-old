@@ -572,7 +572,7 @@ class MerchantCharts extends Component{
                                                         <span style={contentLabel}>-$ 
                                                             {
                                                                 this.state.hasTodayData ? 
-                                                                    (parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli)) * this.state.merchantRate
+                                                                    ((parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli)) * this.state.merchantRate).toFixed(2)
                                                                     : 
                                                                     0.00
                                                             }

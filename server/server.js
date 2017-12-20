@@ -69,7 +69,7 @@ if(process.env.NODE_ENV === "development") { // development mode has hot replace
 }
 // universal routing and rendering
 app.get('*', (req, res) => {
-    res.redirect('https://' + req.headers.host + req.url);
+   if(env === 'production') res.redirect('https://' + req.headers.host + req.url);
     match(
         { routes, location: req.url },
         (err, redirectLocation, renderProps) => {
