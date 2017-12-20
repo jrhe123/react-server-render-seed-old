@@ -43,7 +43,7 @@ if(env === 'production') {
 }
 
 if (env === 'production') {
-    app.use(forceSSL);
+    //app.use(forceSSL);
     server = https.createServer(httpsOptions, app);
 } else if (env === 'development') {
     server = http.createServer(app);
@@ -69,6 +69,7 @@ if(process.env.NODE_ENV === "development") { // development mode has hot replace
 }
 // universal routing and rendering
 app.get('*', (req, res) => {
+    res.redirect('https://' + req.headers.host + req.url);
     match(
         { routes, location: req.url },
         (err, redirectLocation, renderProps) => {

@@ -398,11 +398,13 @@ class AdminPage extends Component{
             else this.setState({ Account: value, AccountErr: '' });
         } else if(field === 'Transit') {
             if (!isNumeric(value)) { this.setState({ Transit: value, TransitErr: 'please input valid transit' }) }
+            else if (value.length !== 5) { this.setState({ Transit: value, TransitErr: 'The length of Transit Number should be 5' }) }
             else this.setState({ Transit: value, TransitErr: '' });
         } else if(field === 'Institution Name') {
             this.setState({ InstitutionName: value, InstitutionNameErr: '' });
         } else if(field === 'Institution') {
             if (!isNumeric(value)) { this.setState({ Institution: value, InstitutionErr: 'please input valid institution' }) }
+            else if(value.length !== 3) { this.setState({ Institution: value, InstitutionErr: 'The length of Institution Number should be 3' }) }
             else this.setState({ Institution: value, InstitutionErr: '' });
         } else{
             let updated = Object.assign({}, this.state);

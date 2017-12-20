@@ -584,14 +584,14 @@ class MerchantCharts extends Component{
                                                     <div style={feeLabel}>
                                                         <p style={titleLabel}>Total:</p>
                                                         <span style={contentLabel}>$ {this.state.hasTodayData ? 
-                                                            parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli) - (parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli)) * this.state.merchantRate
+                                                            (parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli) - (parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli)) * this.state.merchantRate).toFixed(2)
                                                             : 
                                                             0.00}</span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <p style={descText}>We will deposit the amount ${this.state.hasTodayData ? 
-                                                            parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli) - (parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli)) * this.state.merchantRate
+                                                            (parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli) - (parseFloat(this.state.totalTodayWechat) + parseFloat(this.state.totalTodayAli)) * this.state.merchantRate).toFixed(2)
                                                             : 
                                                             0.00} to your bank account.</p>
                                         </div>
