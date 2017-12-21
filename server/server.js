@@ -69,14 +69,7 @@ if(env === "development") { // development mode has hot replace funtion
 }
 
 if (env === "production") {
-    app.use (function (req, res, next) {
-        let schema = (req.headers['x-forwarded-proto'] || '').toLowerCase();
-        if (schema === 'https') {
-            next();
-        } else {
-            res.redirect('https://' + req.headers.host + req.url);
-        }
-    });
+    app.use(forceSSL);
 }
 
 // universal routing and rendering
