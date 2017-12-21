@@ -46,6 +46,7 @@ import Snackbar from 'material-ui/Snackbar';
 import PosList from '../components/PosList';
 import SalesList from '../components/SalesList';
 import Loading from '../components/Loading';
+import EFT from '../components/EFT';
 
 
 class AdminPage extends Component{
@@ -151,6 +152,7 @@ class AdminPage extends Component{
         this.setBankAccountInfo = this.setBankAccountInfo.bind(this);
         this.uploadFile = this.uploadFile.bind(this);
         this.closeAllModal = this.closeAllModal.bind(this);
+        this.EFT = this.EFT.bind(this);
     }
 
     closeAllModal = () => {
@@ -181,6 +183,10 @@ class AdminPage extends Component{
             open: false,
         });
     };
+
+    EFT = () => {
+        this.setState({ tab: 3 })
+    }
 
     adminMain = () => {
         this.setState({ tab: 0 })
@@ -398,11 +404,13 @@ class AdminPage extends Component{
             else this.setState({ Account: value, AccountErr: '' });
         } else if(field === 'Transit') {
             if (!isNumeric(value)) { this.setState({ Transit: value, TransitErr: 'please input valid transit' }) }
+            else if (value.length !== 5) { this.setState({ Transit: value, TransitErr: 'The length of Transit Number should be 5' }) }
             else this.setState({ Transit: value, TransitErr: '' });
         } else if(field === 'Institution Name') {
             this.setState({ InstitutionName: value, InstitutionNameErr: '' });
         } else if(field === 'Institution') {
             if (!isNumeric(value)) { this.setState({ Institution: value, InstitutionErr: 'please input valid institution' }) }
+            else if(value.length !== 3) { this.setState({ Institution: value, InstitutionErr: 'The length of Institution Number should be 3' }) }
             else this.setState({ Institution: value, InstitutionErr: '' });
         } else{
             let updated = Object.assign({}, this.state);
@@ -900,6 +908,8 @@ class AdminPage extends Component{
 
     handleCategoryChange = (value) => {
         let selectedCategory = this.state.merchantCategory[value];
+        console.log('m1',selectedCategory.MerchantCategoryGUID)
+        console.log('m2',selectedCategory.MerchantCategoryGUID.replace(/(\r\n|\n|\r)/gm,""))
         this.setState({
             categoryValue: selectedCategory.CategoryName,
             categoryGUID: selectedCategory.MerchantCategoryGUID.replace(/(\r\n|\n|\r)/gm,"")
@@ -985,6 +995,10 @@ class AdminPage extends Component{
             case 2:
                 return (
                     <SalesList OnBack={() => this.handleBackToList()} />
+                )
+            case 3:
+                return (
+                    <EFT />
                 )
             default:
                 return (
@@ -1441,3 +1455,5 @@ const stateToProps = (state) => {
 }
 
 export default connect(stateToProps)(AdminPage);
+
+//{this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="EFT" onClick={this.EFT} /> : ''}
