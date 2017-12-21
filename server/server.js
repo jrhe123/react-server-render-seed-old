@@ -42,8 +42,19 @@ if(env === 'production') {
     }
 }
 
+
 if (env === 'production') {
     //app.use(forceSSL);
+    app.all('*', (req, res, next) => {
+        if(req.secure){
+            // OK, continue
+            return next();
+        };
+        // handle port numbers if you need non defaults
+        // res.redirect('https://' + req.host + req.url); // express 3.x
+        res.redirect('https://' + req.hostname + req.url); // express 4.x
+    });
+    http.createServer(app).listen(80)
     server = https.createServer(httpsOptions, app);
 } else if (env === 'development') {
     server = http.createServer(app);
@@ -68,19 +79,6 @@ if(env === "development") { // development mode has hot replace funtion
   }));
 }
 
-if (env === "production") {
-    app.use (function (req, res, next) {
-        console.log('https_pre',req.headers.host,req.url)
-        let schema = (req.headers['x-forwarded-proto'] || '').toLowerCase();
-        if (schema === 'https') {
-            console.log('https_is',req.headers.host,req.url)
-            next();
-        } else {
-            console.log('https_not',req.headers.host,req.url)
-            res.redirect('https://' + req.headers.host + req.url);
-        }
-    });
-}
 
 // universal routing and rendering
 app.get('*', (req, res) => {
