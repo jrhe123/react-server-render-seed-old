@@ -46,6 +46,7 @@ import Snackbar from 'material-ui/Snackbar';
 import PosList from '../components/PosList';
 import SalesList from '../components/SalesList';
 import Loading from '../components/Loading';
+import EFT from '../components/EFT';
 
 
 class AdminPage extends Component{
@@ -151,6 +152,7 @@ class AdminPage extends Component{
         this.setBankAccountInfo = this.setBankAccountInfo.bind(this);
         this.uploadFile = this.uploadFile.bind(this);
         this.closeAllModal = this.closeAllModal.bind(this);
+        this.EFT = this.EFT.bind(this);
     }
 
     closeAllModal = () => {
@@ -181,6 +183,10 @@ class AdminPage extends Component{
             open: false,
         });
     };
+
+    EFT = () => {
+        this.setState({ tab: 3 })
+    }
 
     adminMain = () => {
         this.setState({ tab: 0 })
@@ -990,6 +996,10 @@ class AdminPage extends Component{
                 return (
                     <SalesList OnBack={() => this.handleBackToList()} />
                 )
+            case 3:
+                return (
+                    <EFT />
+                )
             default:
                 return (
 
@@ -1445,3 +1455,5 @@ const stateToProps = (state) => {
 }
 
 export default connect(stateToProps)(AdminPage);
+
+//{this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="EFT" onClick={this.EFT} /> : ''}
