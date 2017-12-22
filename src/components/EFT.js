@@ -10,6 +10,7 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 import Pagination from 'material-ui-pagination';
 import { green400, pinkA400 } from 'material-ui/styles/colors';
 import moment from 'moment';
+import {Card} from 'material-ui/Card';
 
 // Router
 import {
@@ -40,8 +41,8 @@ class EFT extends Component {
             serial: '',
             totalRecords: 0,
             currentPage: 1,
-            tableField: ['#', 'Serial', 'Status', 'CreatedAt', 'UpdatedAt'],
-            posList: [],
+            tableField: ['#', 'FileName', 'DateTime', 'Action'],
+            eftFileList: [],
             display: 10,
             modalOpen: false,
         }
@@ -74,7 +75,6 @@ class EFT extends Component {
         this.getEFTList(page);
     }
 
-
     getEFTList = (page) => {
 
         if(!page){
@@ -82,38 +82,79 @@ class EFT extends Component {
         }
         let offset = (page - 1) * parseInt(this.state.Limit);
         let limit = this.state.Limit;
-        let UserGUID = this.state.UserGUID;
 
         let params = { Params: {
-            UserGUID: UserGUID,
             Limit: limit,
             Offset: offset.toString(),
             Extra: { SearchType: '', SearchField: '' } }
         };// Limit: -1 means return all results
 
-        apiManager.opayApi(opay_url + merchant_pos_machines, params,true).then((res) => {
+        apiManager.opayApi(opay_url + 'admin/view_eft_list', params, true).then((res) => {
 
             if (res.data) {
-
                 if (res.data.Confirmation === 'Fail') {
                 } else if (res.data.Confirmation === 'Success') {
-                    let posList = res.data.Response.PosMachines;
-                    for(let pos of posList){
-                        pos.CreatedAt = pos.CreatedAt ? moment(pos.CreatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
-                        pos.UpdatedAt = pos.UpdatedAt ? moment(pos.UpdatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
+                    
+                    let outputArr = [];
+                    let dateArr = res.data.FileArr;
+                    for(let date of dateArr){
+                        for (var prop in date) {
+                            if(!date.hasOwnProperty(prop)) continue;
+                            
+                            let datetime = prop;
+                            let fileArr = date[prop];
+                            for(let file of fileArr){
+                                let item = {
+                                    Date: moment(datetime).format('YYYY-MM-DD'),
+                                    DateTime: datetime,
+                                    FileName: file
+                                };
+                                outputArr.push(item);
+                            }
+                        }
                     }
-                    this.setState({ currentPage: page, posList: posList, totalRecords: res.data.Response.TotalRecords });
+
+                    outputArr.sort(function(a, b){
+                        if (a.Date < b.Date)
+                            return 1 
+                        if (a.Date > b.Date)
+                            return -1
+                        return 0
+                    })
+                    this.setState({
+                        eftFileList: outputArr
+                    })
                 }
             }
-
         }).catch((err) => {
             localStorage.removeItem('token');
             browserHistory.push(`${root_page}`);
         });
     }
 
-    onFieldChange = (e, value) => {
-        this.setState({ serial: value })
+    handleDownload = (e, idx) => {
+        e.preventDefault();
+        let file = this.state.eftFileList[idx];
+        let url = `${opay_url}${file.DateTime}/${file.FileName}`;
+
+        apiManager.get(url, null)
+            .then((response) => {
+                let txtString = response.data;
+                var blob = new Blob([txtString]);
+                if (window.navigator.msSaveOrOpenBlob)  
+                    window.navigator.mßsSaveBlob(blob, file.FileName);
+                else{
+                    var a = window.document.createElement("a");
+                    a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
+                    a.download = file.FileName;
+                    document.body.appendChild(a);
+                    a.click(); 
+                    document.body.removeChild(a);
+                }
+            })
+            .catch((err) => {
+                console.log('err: ', err);
+            })  
     }
 
     handleClose = () => {
@@ -121,11 +162,7 @@ class EFT extends Component {
     }
 
     componentDidMount() {
-        this.getPosList();
-    }
-
-    backToList = () => {
-        this.props.OnBack();
+        this.getEFTList();
     }
 
     render() {
@@ -134,13 +171,14 @@ class EFT extends Component {
             tableCellStyle,
             formControl,
             btnControl,
-            backBtn
+            backBtn,
+            tableCardContainer,
         } = styles;
 
         return (
             <MuiThemeProvider>
                 <div>
-                    <div>
+                    <Card style={tableCardContainer}>
                         <Table>
                             <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                                 <TableRow>
@@ -149,19 +187,24 @@ class EFT extends Component {
                                     ))}
                                 </TableRow>
                             </TableHeader>
-                            <TableBody displayRowCheckbox={false}>
-                                {this.state.posList.map((pos, idx)=>(
-                                    <TableRow key={pos.PosGUID} selectable={false}>
+                            <TableBody displayRowCheckbox={false} showRowHover={true}>
+                                {this.state.eftFileList.map((file, idx)=>(
+                                    <TableRow key={idx} selectable={false}>
                                         <TableRowColumn style={tableCellStyle}>{idx + 1}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{pos.Serial}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{pos.Status}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{pos.CreatedAt}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{pos.UpdatedAt}</TableRowColumn>
+                                        <TableRowColumn style={tableCellStyle}>{file.FileName}</TableRowColumn>
+                                        <TableRowColumn style={tableCellStyle}>{file.Date}</TableRowColumn>
+                                        <TableRowColumn style={tableCellStyle}>
+                                            <RaisedButton
+                                                onClick={(e) => this.handleDownload(e, idx)}
+                                                secondary={true}
+                                                label='Download'
+                                            />
+                                        </TableRowColumn>
                                     </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
-                    </div>
+                    </Card>
 
                     <div style={{textAlign: 'right', paddingRight: 12, paddingVertical: 12}}>
                         <Pagination
@@ -171,26 +214,6 @@ class EFT extends Component {
                             onChange = { currentPage => this.handleChangePage(currentPage) }
                         />
                     </div>
-
-                    <div style={{ textAlign: 'center' }}>
-                        <RaisedButton label="Add POS" primary={true} onClick={this.openDialog} /><br/>
-                        <a style={backBtn} onClick={() => this.backToList()}>Back</a>
-                    </div>
-
-                    <Dialog title="Add POS" modal={false} open={this.state.modalOpen}
-                            onRequestClose={this.handleClose.bind(this)}
-                    >
-                        <div>
-                            <div style={formControl}>
-                                <TextField floatingLabelText="Serial Number"
-                                           onChange={(e, value) => this.onFieldChange(e,value)} />
-                            </div>
-                            <div style={btnControl}>
-                                <RaisedButton label="Add" primary={true} onClick={this.addPos} />
-                            </div>
-                        </div>
-                    </Dialog>
-
                 </div>
                 <Snackbar
                     open={this.state.open}
@@ -201,9 +224,7 @@ class EFT extends Component {
                 />
             </MuiThemeProvider>
         )
-
     }
-
 }
 
 const styles = {
@@ -235,7 +256,13 @@ const styles = {
         fontSize: 14,
         cursor: 'pointer',
         textDecoration: 'underline'
-    }
+    },
+
+    tableCardContainer: {
+        width: 'calc(100% - 48px)',
+        margin: '0 auto',
+        marginTop: 24
+    },
 }
 
 export default EFT;

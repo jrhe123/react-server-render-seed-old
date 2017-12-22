@@ -1321,6 +1321,7 @@ class AdminPage extends Component{
                             <MenuItem style={drawerItem} primaryText="Merchants" onClick={this.adminMain} />
                             {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Sales" onClick={this.salesMain} /> : ''}
                             {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Report" onClick={this.dailyReport} /> : ''}
+                            {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="EFT" onClick={this.EFT} /> : ''}
                             <MenuItem style={drawerItem} primaryText="Log out" onClick={this.logout} />
                         </Drawer>
                     </div>
@@ -1455,5 +1456,3 @@ const stateToProps = (state) => {
 }
 
 export default connect(stateToProps)(AdminPage);
-
-//{this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="EFT" onClick={this.EFT} /> : ''}
