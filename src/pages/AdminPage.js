@@ -282,6 +282,7 @@ class AdminPage extends Component{
                 if (res.data.Confirmation === 'Success') {
                     let updated = Object.assign({}, this.state);
                     for (let i = 0;i < this.state.merList.length;i++) {
+                        updated.merList[idx].AgentID = res.data.Response.AgentID;
                         updated.merList[idx].Status = 'ACTIVE';
                     }
                     this.setState(updated);
