@@ -584,7 +584,8 @@ class MerchantTransactions extends Component{
                                                                 {
                                                                     (tran.Type !== 'REFUND' && tran.Status === 'Success') ? 
                                                                     (
-                                                                        <MenuItem primaryText="Refund" onClick={() => this.handleRefund(tran, idx)}/>
+                                                                        null
+                                                                        // <MenuItem primaryText="Refund" onClick={() => this.handleRefund(tran, idx)}/>
                                                                     )
                                                                     :
                                                                     (null)

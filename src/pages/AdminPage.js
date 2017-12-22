@@ -1031,7 +1031,7 @@ class AdminPage extends Component{
                                     <TableBody displayRowCheckbox={false} showRowHover={true}>
                                         {this.state.merList.slice(this.state.start,this.state.end).map((msg, idx)=>(
                                             <TableRow key={idx} selectable={false}>
-                                                <TableRowColumn style={tableCellStyle}>{msg.AgentID}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{msg.AgentID ? msg.AgentID : 'PENDING'}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{msg.FirstName}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{msg.Email}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{msg.PhoneNumber}</TableRowColumn>
