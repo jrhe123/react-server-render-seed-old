@@ -446,7 +446,7 @@ class MerchantRegisterPage extends Component{
                                onChange={this.onFieldChange.bind(this, 'email')} /><br />
                     
                     <SelectField
-                        style={{textAlign: 'left'}}
+                        style={{textAlign: 'left', width: 300}}
                         floatingLabelText="Select a merchant type.."
                         value={this.state.categoryValue}
                         onChange={(e, value) => this.handleCategoryChange(value)}
