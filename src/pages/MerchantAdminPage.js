@@ -263,7 +263,7 @@ class MerchantAdminPage extends Component{
                                         leftIcon={<SocialPeople color="#fff" />}
                                         onClick={this.switchTab.bind(this, 'employees')} />
                             {
-                                (this.state.userTypeID == 2) ?
+                                (this.state.userTypeID == 2 || this.state.userTypeID == 7) ?
                                 (
                                     <div>    
                                         <MenuItem style={{color: '#fff'}} 

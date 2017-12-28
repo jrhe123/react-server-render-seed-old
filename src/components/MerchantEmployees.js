@@ -648,7 +648,7 @@ class MerchantEmplyees extends Component{
                         onChange={(event, index, value) => this.handleSearchUserTypeChange(event, index, value)}>
                         <MenuItem value="ALL" label="All" primaryText="All" />
                         {
-                            (this.state.userTypeID == 2) ? 
+                            (this.state.userTypeID == 2 || this.state.userTypeID == 7) ? 
                             (
                                 <MenuItem value="MANAGER" label="Manager" primaryText="Manager" />
                             )
@@ -700,7 +700,7 @@ class MerchantEmplyees extends Component{
                                                     animation={PopoverAnimationVertical}>
                                                     <Menu>
                                                         {
-                                                            (this.state.userTypeID == 2) ? 
+                                                            (this.state.userTypeID == 2 || this.state.userTypeID == 7) ? 
                                                             (
                                                                 (emp.UserTypeID === 5) ? 
                                                                 (null)
