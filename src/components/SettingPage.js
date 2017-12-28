@@ -405,8 +405,8 @@ class SettingPage extends Component{
                         />
                         <Divider />
                         <List style={{marginBottom: 24}}>
-                            <ListItem primaryText={this.props.profile.agentID} leftIcon={<ActionAccountBox />} />
-                            <ListItem primaryText={this.props.profile.email} leftIcon={<CommunicationEmail />} />
+                            <ListItem style={{height: 48}} primaryText={this.props.profile.agentID} leftIcon={<ActionAccountBox />} />
+                            <ListItem style={{height: 48}} primaryText={this.props.profile.email} leftIcon={<CommunicationEmail />} />
                             <ListItem primaryText={this.props.profile.phoneNumber ? formattor.addFormatPhoneNumber(this.props.profile.phoneNumber) : (<div style={{height: 16}}></div>)} leftIcon={<CommunicationPhone />} />
                             {
                                 this.state.userTypeID == 2 ?
@@ -418,16 +418,23 @@ class SettingPage extends Component{
                             }        
                         </List>
                         <Divider />
-                        <CardActions>
-                            <FlatButton label="Edit Profile"
-                                        onClick={this.handleOpen.bind(this)}
-                                        primary={true} 
-                                        icon={<ActionBuild />} />
-                            <FlatButton label="Change Password" 
-                                        onClick={this.handleOpenPass.bind(this)}
-                                        primary={true} 
-                                        icon={<ActionHttps />} />
-                        </CardActions>
+                        {
+                            this.state.userTypeID == 7 ?
+                            (null)
+                            :
+                            (
+                                <CardActions>
+                                    <FlatButton label="Edit Profile"
+                                                onClick={this.handleOpen.bind(this)}
+                                                primary={true} 
+                                                icon={<ActionBuild />} />
+                                    <FlatButton label="Change Password" 
+                                                onClick={this.handleOpenPass.bind(this)}
+                                                primary={true} 
+                                                icon={<ActionHttps />} />
+                                </CardActions>
+                            )
+                        }
                     </Card>    
 
                 </div>
