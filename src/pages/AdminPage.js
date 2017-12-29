@@ -496,6 +496,35 @@ class AdminPage extends Component{
         updated.msgContent = defaultMsg;
     }
 
+    sendServiceAccount = (idx) => {
+
+        let updated = Object.assign({}, this.state);
+        updated.merListOpenPop[idx] = false;
+        this.setState(updated);
+
+        let merchantUserGUID = this.state.merList[idx].UserGUID;
+        if(!merchantUserGUID){
+            this.handleTouchTap(`Error: merchant UserGUID cannot be empty`, false);
+        }
+
+        let params = {
+            Params: {
+                MerchantUserGUID: merchantUserGUID
+            }
+        };
+        apiManager.opayApi(opay_url + 'admin/assign_service_account', params, true).then((res) => {
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+                    this.handleTouchTap(`${res.data.Message}`, true);
+                }else{
+                    this.handleTouchTap(`${res.data.Message}`, false);
+                }
+            }
+        }).catch((err) => {
+            this.handleTouchTap(`Error: ${err}`);
+        });
+    }
+
     handleBankSettingClose = () => {
         this.setState({
             bankModalOpen: false,
@@ -1055,7 +1084,15 @@ class AdminPage extends Component{
                                                             {
                                                                 (msg.Status === 'ACTIVE') ?
                                                                 (
-                                                                    <MenuItem primaryText="Add POS" onClick={() => this.addPos(idx)}/>
+                                                                    this.state.UserTypeID == 1 ?
+                                                                    (
+                                                                        <div>
+                                                                            <MenuItem primaryText="Add POS" onClick={() => this.addPos(idx)}/>
+                                                                            <MenuItem primaryText="Service Account" onClick={() => this.sendServiceAccount(idx)}/>
+                                                                        </div>
+                                                                    )
+                                                                    :
+                                                                    (null)
                                                                 )
                                                                 :
                                                                 (
