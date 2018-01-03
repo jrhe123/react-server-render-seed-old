@@ -192,6 +192,8 @@ class MerchantTransactions extends Component{
                     let displayType = '';
                     if(tran.Type == 'COMPLETE_QRCODE'){
                         displayType = 'QR code';
+                    }else if(tran.Type == 'COMPLETE_MERCHANT_QRCODE'){
+                        displayType = 'Merchant QR code';
                     }else if(tran.Type == 'SCAN_QRCODE' || tran.Type == 'SCAN_QRCODE_COMPLETE'){
                         displayType = 'Scan';
                     }else if(tran.Type == 'REFUND'){
