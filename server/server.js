@@ -111,7 +111,7 @@ app.get('*', (req, res) => {
     );
 });
 
-const port = (env === 'development') ? 3001 : 443;
+const port = (env === 'development') ? 3002 : 443;
 server.listen(port, err => {
   if (err) {
     return console.error(err);

@@ -38,7 +38,9 @@ import { opay_url,
          admin_upate_merchant_rate,
          admin_view_merchant_bank_account,
          admin_create_merchant_bank_account,
-         admin_update_merchant_bank_account } from "../utilities/apiUrl";
+         admin_update_merchant_bank_account,
+         admin_daily_report,
+         admin_assign_service_account } from "../utilities/apiUrl";
 import * as apiManager from  '../helpers/apiManager';
 
 // Component
@@ -47,6 +49,7 @@ import PosList from '../components/PosList';
 import SalesList from '../components/SalesList';
 import Loading from '../components/Loading';
 import EFT from '../components/EFT';
+import AdminReport from '../components/AdminReport';
 
 
 class AdminPage extends Component{
@@ -460,12 +463,14 @@ class AdminPage extends Component{
 
     dailyReport = () => {
 
-        apiManager.opayApi(opay_url + 'admin/daily_report', null, true).then((response) => {
+        this.setState({ tab: 4 })
+
+     /*   apiManager.opayApi(opay_url + admin_daily_report, null, true).then((response) => {
             if (response.data) {
                 let csvString = response.data;
                 var blob = new Blob([csvString]);
                 if (window.navigator.msSaveOrOpenBlob)  
-                    window.navigator.mßsSaveBlob(blob, "report.csv");
+                    window.navigator.msSaveBlob(blob, "report.csv");
                 else{
                     var a = window.document.createElement("a");
                     a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
@@ -479,7 +484,7 @@ class AdminPage extends Component{
             }
         }).catch((err) => {
             this.handleTouchTap(`Error: ${err}`);
-        });
+        }); */
     }
 
     sendEmail = (idx, merchant) => {
@@ -512,7 +517,7 @@ class AdminPage extends Component{
                 MerchantUserGUID: merchantUserGUID
             }
         };
-        apiManager.opayApi(opay_url + 'admin/assign_service_account', params, true).then((res) => {
+        apiManager.opayApi(opay_url + admin_assign_service_account, params, true).then((res) => {
             if (res.data) {
                 if (res.data.Confirmation === 'Success') {
                     this.handleTouchTap(`${res.data.Message}`, true);
@@ -1029,6 +1034,10 @@ class AdminPage extends Component{
             case 3:
                 return (
                     <EFT />
+                )
+            case 4:
+                return (
+                    <AdminReport />
                 )
             default:
                 return (

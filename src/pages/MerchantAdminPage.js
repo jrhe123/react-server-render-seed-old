@@ -17,6 +17,7 @@ import HardwareSmartphone from 'material-ui/svg-icons/hardware/smartphone';
 import CommunicationBusiness from 'material-ui/svg-icons/communication/business';
 import EditorShowChart from 'material-ui/svg-icons/editor/show-chart';
 import HardwareDesktopWindows from 'material-ui/svg-icons/hardware/desktop-windows';
+import LocalAtm from 'material-ui/svg-icons/maps/local-atm';
 
 
 // Redux
@@ -274,11 +275,26 @@ class MerchantAdminPage extends Component{
                                                     primaryText="Address" 
                                                     leftIcon={<CommunicationBusiness color="#fff" />}
                                                     onClick={this.switchTab.bind(this, 'address')} />
+
                                     </div>            
                                 )
                                 :
                                 (null)
-                            }            
+                            }
+                            {
+                                (this.state.userTypeID == 2 || this.state.userTypeID == 5) ?
+                                    (
+                                        <div>
+                                            <MenuItem style={{color: '#fff'}}
+                                                      primaryText="INVOICE"
+                                                      leftIcon={<LocalAtm color="#fff" />}
+                                                      onClick={this.switchTab.bind(this, 'posMachines')} />
+
+                                        </div>
+                                    )
+                                    :
+                                    (null)
+                            }
                                         
                         </Drawer>
                     </div>
