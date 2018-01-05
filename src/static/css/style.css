@@ -1215,3 +1215,43 @@ table, th, td {
 .add-merchant-modal>div>div>div>div{
     overflow-y: scroll !important;
 }
+
+/* invoice modal */
+.invoice-modal>div>div>div>div{
+    overflow-y: auto !important;
+}
+
+.m-input-moment.moment-select{
+
+    display: block;
+    margin: 0 auto;
+
+    -webkit-animation: fadein 0.5s; /* Safari, Chrome and Opera > 12.1 */
+       -moz-animation: fadein 0.5s; /* Firefox < 16 */
+        -ms-animation: fadein 0.5s; /* Internet Explorer */
+         -o-animation: fadein 0.5s; /* Opera < 12.1 */
+            animation: fadein 0.5s;
+}
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.moment-input-display{
+    width: 50%;
+    padding-bottom: 3px;
+    border-bottom: 1px solid #c9c9c9;
+}
+
+.ion-ios-arrow-left::before{
+    display: block;
+    content: "<";
+    margin-top: -2px;
+}
+
+.ion-ios-arrow-right::after{
+    display: block;
+    content: ">";
+    margin-top: -2px;
+    margin-left: 2px;
+}

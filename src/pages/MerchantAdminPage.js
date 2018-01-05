@@ -43,6 +43,7 @@ import MerchantMonitor from '../components/MerchantMonitor';
 import MerchantEmployees from '../components/MerchantEmployees';
 import MerchantAddresses from '../components/MerchantAddresses';
 import MerchantPOSMachines from '../components/MerchantPOSMachines';
+import MerchantInvoices from '../components/MerchantInvoices';
 import SettingPage from '../components/SettingPage';
 import PosSettingPage from '../components/PosSettingPage';
 
@@ -165,6 +166,10 @@ class MerchantAdminPage extends Component{
                 return (
                     <MerchantAddresses />
                 );    
+            case 'invoice':
+                return (
+                    <MerchantInvoices />
+                );
             default:
                 return (
                     <MerchantTransactions />
@@ -286,9 +291,9 @@ class MerchantAdminPage extends Component{
                                     (
                                         <div>
                                             <MenuItem style={{color: '#fff'}}
-                                                      primaryText="INVOICE"
+                                                      primaryText="Invoice"
                                                       leftIcon={<LocalAtm color="#fff" />}
-                                                      onClick={this.switchTab.bind(this, 'posMachines')} />
+                                                      onClick={this.switchTab.bind(this, 'invoice')} />
 
                                         </div>
                                     )
