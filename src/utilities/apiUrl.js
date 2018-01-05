@@ -16,7 +16,7 @@ export const admin_update_merchant_bank_account = 'admin/update_merchant_bank_ac
 export const admin_create_merchant_bank_account = 'admin/create_merchant_bank_account';
 export const admin_daily_report = 'admin/daily_report';
 export const admin_assign_service_account = 'admin/assign_service_account';
-export const admin_report = 'admin/report';
+export const admin_report = 'admin/export_report';
 
 export const merchant_upload_file = 'upload/multiple';
 export const merchant_pos_machines = 'merchant/pos_machine_list_by_guid';

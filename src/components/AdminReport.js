@@ -17,8 +17,8 @@ class AdminReport extends Component{
         this.state = {
           agentIDEr: '',
           agentID: '',
-          start: '2017-01-01 00:00:00',
-          end: '2017-01-01 00:00:00'
+          start: '',
+          end: ''
         };
         this.dailyReport = this.dailyReport.bind(this);
         this.midChange = this.midChange.bind(this);
@@ -32,10 +32,11 @@ class AdminReport extends Component{
     }
 
     changeDate = (n, date, which) => {
-        let new_date = JSON.stringify(date).substring(1,11) + ' 00:00:00';
         if (which === 'start') {
+            let new_date = JSON.stringify(date).substring(1,11) + ' 00:00:00';
             this.setState({ start: new_date });
         } else if (which === 'end') {
+            let new_date = JSON.stringify(date).substring(1,11) + ' 23:59:59';
             this.setState({ end: new_date });
         }
     }
