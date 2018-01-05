@@ -21,7 +21,7 @@ import ActionWatchLater from 'material-ui/svg-icons/action/watch-later';
 import validator from 'validator';
 import InputMask from 'react-input-mask';
 import InputMoment from 'input-moment';
-import 'input-moment/dist/input-moment.css';
+
 
 // Component
 import Snackbar from 'material-ui/Snackbar';
