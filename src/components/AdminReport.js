@@ -44,10 +44,10 @@ class AdminReport extends Component{
 
     dailyReport = () => {
 
-        if (!this.state.agentID) {
-            this.setState({ agentIDEr: 'This field is required' });
-            return;
-        }
+        // if (!this.state.agentID) {
+        //     this.setState({ agentIDEr: 'This field is required' });
+        //     return;
+        // }
 
         let params = {
             "Params": {
