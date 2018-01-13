@@ -93,6 +93,12 @@ class AdminPage extends Component{
             rateMer: '',
             rateErr: '',
 
+            timeZoneModalOpen: false,
+            timeZoneMer: null,
+            timeZoneList: ['EST', 'PST'],
+            selectedTimeZone: '',
+            selectedTimeZoneMerIdx: null,
+
             bankModalOpen: false,
             bankMer: '',
             Account: '',
@@ -156,6 +162,7 @@ class AdminPage extends Component{
         this.uploadFile = this.uploadFile.bind(this);
         this.closeAllModal = this.closeAllModal.bind(this);
         this.EFT = this.EFT.bind(this);
+        this.setMerchantTimeZone = this.setMerchantTimeZone.bind(this);
     }
 
     closeAllModal = () => {
@@ -220,6 +227,8 @@ class AdminPage extends Component{
 
             if (res.data) {
                 if (res.data.Confirmation === 'Success') {
+
+                    console.log('check: ', res.data);
 
                     let list = res.data.Response.Merchants;
                     for(let merchant of list){
@@ -521,6 +530,76 @@ class AdminPage extends Component{
             if (res.data) {
                 if (res.data.Confirmation === 'Success') {
                     this.handleTouchTap(`${res.data.Message}`, true);
+                }else{
+                    this.handleTouchTap(`${res.data.Message}`, false);
+                }
+            }
+        }).catch((err) => {
+            this.handleTouchTap(`Error: ${err}`);
+        });
+    }
+
+    openTimeZoneSetting = (idx, merchant) => {
+
+        let updated = Object.assign({}, this.state);
+        updated.merListOpenPop[idx] = false;
+        this.setState(updated);
+        this.closeAllModal();
+        this.setState({ timeZoneModalOpen: true, timeZoneMer: merchant, selectedTimeZoneMerIdx: idx })
+    }
+
+    handleTimeZoneClose = () => {
+        this.setState({
+            timeZoneModalOpen: false,
+            timeZoneMer: null,
+            selectedTimeZone: null
+        });
+    }
+
+    handleTimeZoneChange = (idx) => {
+        let selectedTimeZone = this.state.timeZoneList[idx];
+        if(selectedTimeZone){
+            let updated = Object.assign({}, this.state);
+            updated.selectedTimeZone = selectedTimeZone;
+            this.setState(updated);
+        }
+    }
+
+    setMerchantTimeZone = () => {
+
+        let merchantUserGUID = this.state.timeZoneMer.UserGUID;
+        let selectedTimeZone = this.state.selectedTimeZone;
+        if(selectedTimeZone != 'EST' &&
+            selectedTimeZone != 'PST'){
+            
+            selectedTimeZone = this.state.timeZoneMer.ZoneType;
+        }
+        
+        if(!merchantUserGUID){
+            this.handleTouchTap(`Error: merchant UserGUID cannot be empty`, false);
+            return;
+        }
+        if(selectedTimeZone != 'EST'
+            && selectedTimeZone != 'PST'){
+            this.handleTouchTap(`Error: time zone must be EST or PST`, false);
+            return;
+        }
+       
+        let params = {
+            Params: {
+                UserGUID: merchantUserGUID,
+                ZoneType: selectedTimeZone
+            }
+        };
+        apiManager.opayApi(opay_url + 'admin/update_merchant_zone_type', params, true).then((res) => {
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+
+                    this.handleTouchTap(`${res.data.Message}`, true);
+                    let updated = Object.assign({}, this.state);                    
+                    updated.merList[this.state.selectedTimeZoneMerIdx].ZoneType = selectedTimeZone;
+                    this.setState(updated);
+                    this.handleTimeZoneClose();
                 }else{
                     this.handleTouchTap(`${res.data.Message}`, false);
                 }
@@ -1116,6 +1195,7 @@ class AdminPage extends Component{
                                                             <MenuItem primaryText="Bank Account" onClick={() => this.openBankSetting(idx, msg)}/>
                                                             { this.state.UserTypeID === '1' ? <MenuItem primaryText="Update Rate" onClick={() => this.updateRate(idx, msg)}/> : '' }
                                                             { this.state.UserTypeID === '1' ? <MenuItem primaryText="Assign To Sales" onClick={() => this.assignToSales(idx, msg)}/> : ''}
+                                                            <MenuItem primaryText="TimeZone" onClick={() => this.openTimeZoneSetting(idx, msg)}/>
                                                             <MenuItem primaryText="Documents" onClick={() => this.viewDocuments(idx, msg)}/>
                                                             <MenuItem primaryText="Email" onClick={() => this.sendEmail(idx, msg)}/>
                                                         </Menu>
@@ -1256,6 +1336,27 @@ class AdminPage extends Component{
                                     </div>
                                     <div style={btnControl}>
                                         <RaisedButton label={this.state.addOrUpdate} primary={true} onClick={this.setBankAccountInfo}/>
+                                    </div>
+                                </div>
+                            </Dialog>
+
+                            <Dialog title="Time Zone" modal={false} open={this.state.timeZoneModalOpen}
+                                    onRequestClose={this.handleTimeZoneClose.bind(this)}>
+                                <div>
+                                    <div style={formControl}>
+                                        <SelectField
+                                            style={{textAlign: 'left'}}
+                                            floatingLabelText="Select a time zone.."
+                                            value={this.state.selectedTimeZone ? this.state.selectedTimeZone : (this.state.timeZoneMer ? this.state.timeZoneMer.ZoneType : null)}
+                                            onChange={(e, value) => this.handleTimeZoneChange(value)}
+                                            >
+                                            {this.state.timeZoneList.map((item, index) => (
+                                                <MenuItem value={item} key={index} primaryText={item}  />
+                                            ))}
+                                        </SelectField>
+                                    </div>
+                                    <div style={btnControl}>
+                                        <RaisedButton label="Update" primary={true} onClick={this.setMerchantTimeZone}/>
                                     </div>
                                 </div>
                             </Dialog>
