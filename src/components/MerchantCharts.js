@@ -72,7 +72,8 @@ class MerchantCharts extends Component{
         this.fetch_merchant_rate();
 
         this.setState({
-            userTypeID: localStorage.getItem('userTypeID')
+            userTypeID: localStorage.getItem('userTypeID'),
+            zoneType: localStorage.getItem('zoneType')
         }) 
     }
 
@@ -142,19 +143,41 @@ class MerchantCharts extends Component{
     }
 
     fetch_today = () => {
-        let today = moment().tz('America/Toronto').format('YYYY-MM-DD')
-        let params = {
-            Params: {
-                Limit: "-1",
-                Offset: "0",
-                Extra: {
-                    TransactionType: "TransactionType",
-                    TransactionField: "ALL",
-                    SearchType: "TIMERANGE",
-                    SearchField: `${today} 00:00:00|${today} 23:59:59`
+
+        let params;
+        let zoneType = localStorage.getItem('zoneType');
+        if(zoneType == 'EST'){
+
+            let today = moment().tz('America/Toronto').format('YYYY-MM-DD');
+            params = {
+                Params: {
+                    Limit: "-1",
+                    Offset: "0",
+                    Extra: {
+                        TransactionType: "TransactionType",
+                        TransactionField: "ALL",
+                        SearchType: "TIMERANGE",
+                        SearchField: `${today} 00:00:00|${today} 23:59:59`
+                    }
                 }
-            }
-        };
+            };
+        }else if(zoneType == 'PST'){
+
+            let today = moment().tz('America/Vancouver').format('YYYY-MM-DD');
+            let tmpToday = moment().tz('America/Vancouver').add(1,'days').format('YYYY-MM-DD');
+            params = {
+                Params: {
+                    Limit: "-1",
+                    Offset: "0",
+                    Extra: {
+                        TransactionType: "TransactionType",
+                        TransactionField: "ALL",
+                        SearchType: "TIMERANGE",
+                        SearchField: `${today} 03:00:00|${tmpToday} 02:59:59`
+                    }
+                }
+            };
+        }
         this.fetch_data(params, 'todayData');
     }
     process_today = (data) => {
@@ -233,20 +256,40 @@ class MerchantCharts extends Component{
     }
 
     fetch_monthly = () => {
-        let from = moment().tz('America/Toronto').subtract(30, 'day').format('YYYY-MM-DD')
-        let to = moment().tz('America/Toronto').format('YYYY-MM-DD')
-        let params = {
-            Params: {
-                Limit: "-1",
-                Offset: "0",
-                Extra: {
-                    TransactionType: "TransactionType",
-                    TransactionField: "ALL",
-                    SearchType: "TIMERANGE",
-                    SearchField: `${from} 00:00:00|${to} 23:59:59`
+
+        let params;
+        let zoneType = localStorage.getItem('zoneType');
+        if(zoneType == 'EST'){
+            let from = moment().tz('America/Toronto').subtract(30, 'day').format('YYYY-MM-DD')
+            let to = moment().tz('America/Toronto').format('YYYY-MM-DD')
+            params = {
+                Params: {
+                    Limit: "-1",
+                    Offset: "0",
+                    Extra: {
+                        TransactionType: "TransactionType",
+                        TransactionField: "ALL",
+                        SearchType: "TIMERANGE",
+                        SearchField: `${from} 00:00:00|${to} 23:59:59`
+                    }
                 }
-            }
-        };
+            };
+        }else if(zoneType == 'PST'){
+            let from = moment().tz('America/Vancouver').subtract(29, 'day').format('YYYY-MM-DD')
+            let to = moment().tz('America/Vancouver').add(1, 'day').format('YYYY-MM-DD')
+            params = {
+                Params: {
+                    Limit: "-1",
+                    Offset: "0",
+                    Extra: {
+                        TransactionType: "TransactionType",
+                        TransactionField: "ALL",
+                        SearchType: "TIMERANGE",
+                        SearchField: `${from} 03:00:00|${to} 02:59:59`
+                    }
+                }
+            };
+        }
         this.fetch_data(params, 'monthData');
     }
 
@@ -333,20 +376,43 @@ class MerchantCharts extends Component{
     }
 
     fetch_annual = () => {
-        let from = moment().tz('America/Toronto').subtract(12, 'month').format('YYYY-MM-DD')
-        let to = moment().tz('America/Toronto').format('YYYY-MM-DD')
-        let params = {
-            Params: {
-                Limit: "-1",
-                Offset: "0",
-                Extra: {
-                    TransactionType: "TransactionType",
-                    TransactionField: "ALL",
-                    SearchType: "TIMERANGE",
-                    SearchField: `${from} 00:00:00|${to} 23:59:59`
+
+        let params;
+        let zoneType = localStorage.getItem('zoneType');
+        if(zoneType == 'EST'){
+
+            let from = moment().tz('America/Toronto').subtract(12, 'month').format('YYYY-MM-DD')
+            let to = moment().tz('America/Toronto').format('YYYY-MM-DD')
+            params = {
+                Params: {
+                    Limit: "-1",
+                    Offset: "0",
+                    Extra: {
+                        TransactionType: "TransactionType",
+                        TransactionField: "ALL",
+                        SearchType: "TIMERANGE",
+                        SearchField: `${from} 00:00:00|${to} 23:59:59`
+                    }
                 }
-            }
-        };
+            };
+        }else{
+
+            let from = moment().tz('America/Vancouver').subtract(12, 'month').format('YYYY-MM-DD')
+            let to = moment().tz('America/Vancouver').format('YYYY-MM-DD')
+            params = {
+                Params: {
+                    Limit: "-1",
+                    Offset: "0",
+                    Extra: {
+                        TransactionType: "TransactionType",
+                        TransactionField: "ALL",
+                        SearchType: "TIMERANGE",
+                        SearchField: `${from} 03:00:00|${to} 02:59:59`
+                    }
+                }
+            };
+        }
+
         this.fetch_data(params, 'annualData');
     }
 
@@ -465,28 +531,60 @@ class MerchantCharts extends Component{
     handleExport = (type) => {
 
         let from, to;
-        if(type == 'TODAY'){
-            from = moment().tz('America/Toronto').format('YYYY-MM-DD')
-            to = moment().tz('America/Toronto').format('YYYY-MM-DD')
-        }else if(type == 'MONTH'){
-            from = moment().tz('America/Toronto').subtract(30, 'day').format('YYYY-MM-DD')
-            to = moment().tz('America/Toronto').format('YYYY-MM-DD')
-        }else if(type == 'ANNUAL'){
-            from = moment().tz('America/Toronto').subtract(12, 'month').format('YYYY-MM-DD')
-            to = moment().tz('America/Toronto').format('YYYY-MM-DD')
-        }
-        let params = {
-            Params: {
-                Limit: "-1",
-                Offset: "0",
-                Extra: {
-                    TransactionType: "TransactionType",
-                    TransactionField: "ALL",
-                    SearchType: "TIMERANGE",
-                    SearchField: `${from} 00:00:00|${to} 23:59:59`
-                }
+        let zoneType = localStorage.getItem('zoneType');
+        let zone = zoneType == 'EST' ? 'America/Toronto' : 'America/Vancouver';
+        let params;
+
+        if(zoneType == 'EST'){
+
+            if(type == 'TODAY'){
+                from = moment().tz(zone).format('YYYY-MM-DD')
+                to = moment().tz(zone).format('YYYY-MM-DD')
+            }else if(type == 'MONTH'){
+                from = moment().tz(zone).subtract(30, 'day').format('YYYY-MM-DD')
+                to = moment().tz(zone).format('YYYY-MM-DD')
+            }else if(type == 'ANNUAL'){
+                from = moment().tz(zone).subtract(12, 'month').format('YYYY-MM-DD')
+                to = moment().tz(zone).format('YYYY-MM-DD')
             }
-        };
+            params = {
+                Params: {
+                    Limit: "-1",
+                    Offset: "0",
+                    Extra: {
+                        TransactionType: "TransactionType",
+                        TransactionField: "ALL",
+                        SearchType: "TIMERANGE",
+                        SearchField: `${from} 00:00:00|${to} 23:59:59`
+                    }
+                }
+            };
+        }else{
+
+            if(type == 'TODAY'){
+                from = moment().tz(zone).format('YYYY-MM-DD')
+                to = moment().tz(zone).add(1, 'days').format('YYYY-MM-DD')
+            }else if(type == 'MONTH'){
+                from = moment().tz(zone).subtract(29, 'day').format('YYYY-MM-DD')
+                to = moment().tz(zone).add(1, 'days').format('YYYY-MM-DD')
+            }else if(type == 'ANNUAL'){
+                from = moment().tz(zone).subtract(12, 'month').format('YYYY-MM-DD')
+                to = moment().tz(zone).format('YYYY-MM-DD')
+            }
+            params = {
+                Params: {
+                    Limit: "-1",
+                    Offset: "0",
+                    Extra: {
+                        TransactionType: "TransactionType",
+                        TransactionField: "ALL",
+                        SearchType: "TIMERANGE",
+                        SearchField: `${from} 03:00:00|${to} 02:59:59`
+                    }
+                }
+            };
+        }
+        
         apiManager.opayCsvApi(opay_url+'merchant/export_transaction_list', params, true)
             .then((response) => {
                 
@@ -543,11 +641,25 @@ class MerchantCharts extends Component{
                     this.state.userTypeID == 2 ? 
                     (
                         <Card style={{width: 'calc(100% - 48px)', margin: '24px auto', position: 'relative'}}>
-                            <CardHeader
-                                title="Today's Opay service fee"
-                                subtitle={moment().tz('America/Toronto').format('YYYY-MM-DD')}
-                            >
-                            </CardHeader>   
+                            {
+                                localStorage.getItem('zoneType') == 'EST' ?
+                                (
+                                    <CardHeader
+                                        title="Today's Opay service fee"
+                                        subtitle={moment().tz('America/Toronto').format('YYYY-MM-DD')}
+                                    >
+                                    </CardHeader>  
+                                )
+                                :
+                                (
+                                    <CardHeader
+                                        title="Today's Opay service fee"
+                                        subtitle={moment().tz('America/Vancouver').format('YYYY-MM-DD')}
+                                    >
+                                    </CardHeader> 
+                                )
+                            }
+                            
                             <Divider />
                                 {
                                     this.state.hasTodayData ? 
@@ -607,7 +719,12 @@ class MerchantCharts extends Component{
                 <Card style={{width: 'calc(100% - 48px)', margin: '24px auto', position: 'relative'}}>
                     <CardHeader
                         title="Today Transactions"
-                        subtitle={moment().tz('America/Toronto').format('YYYY-MM-DD')}
+                        subtitle={
+                            localStorage.getItem('zoneType') == 'EST' ?
+                            (moment().tz('America/Toronto').format('YYYY-MM-DD'))
+                            :
+                            (moment().tz('America/Vancouver').format('YYYY-MM-DD'))
+                        }
                     >
                         <RaisedButton
                             style={exportBtn}
@@ -663,7 +780,12 @@ class MerchantCharts extends Component{
                 <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
                     <CardHeader
                         title="Daily Transactions of Last 30 Days"
-                        subtitle={'From ' + moment().tz('America/Toronto').subtract(30, 'day').format('YYYY-MM-DD') + ' to ' + moment().tz('America/Toronto').format('YYYY-MM-DD')}
+                        subtitle={
+                            localStorage.getItem('zoneType') == 'EST' ?
+                            ('From ' + moment().tz('America/Toronto').subtract(30, 'day').format('YYYY-MM-DD') + ' to ' + moment().tz('America/Toronto').format('YYYY-MM-DD'))
+                            :
+                            ('From ' + moment().tz('America/Vancouver').subtract(30, 'day').format('YYYY-MM-DD') + ' to ' + moment().tz('America/Vancouver').format('YYYY-MM-DD'))
+                        }
                     >  
                         <RaisedButton
                                 style={exportBtn}
@@ -694,7 +816,12 @@ class MerchantCharts extends Component{
                 <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
                     <CardHeader
                         title="Monthly Transactions of Last 12 Months"
-                        subtitle={'From ' + moment().tz('America/Toronto').subtract(12, 'month').format('YYYY-MM') + ' to ' + moment().tz('America/Toronto').format('YYYY-MM')}
+                        subtitle={
+                            localStorage.getItem('zoneType') == 'EST' ?
+                            ('From ' + moment().tz('America/Toronto').subtract(12, 'month').format('YYYY-MM') + ' to ' + moment().tz('America/Toronto').format('YYYY-MM'))
+                            :
+                            ('From ' + moment().tz('America/Vancouver').subtract(12, 'month').format('YYYY-MM') + ' to ' + moment().tz('America/Vancouver').format('YYYY-MM'))
+                        }
                     >   
                         <RaisedButton
                                     style={exportBtn}

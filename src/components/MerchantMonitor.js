@@ -89,9 +89,17 @@ class MerchantMonitor extends Component{
                 
                 if(response.data.Confirmation === 'Success'){
                     let updated = Object.assign([], this.state.timeLine);
-                    updated.push(
-                        {name: moment().tz('America/Toronto').format('HH:mm:ss'), number: response.data.Response.TotalRecords}
-                    );
+
+                    if(localStorage.getItem('zoneType') == 'EST'){
+                        updated.push(
+                            {name: moment().tz('America/Toronto').format('HH:mm:ss'), number: response.data.Response.TotalRecords}
+                        );
+                    }else{
+                        updated.push(
+                            {name: moment().tz('America/Vancouver').format('HH:mm:ss'), number: response.data.Response.TotalRecords}
+                        );
+                    }
+                    
                     if(updated.length > 20){
                         updated.shift();
                     }
@@ -137,7 +145,12 @@ class MerchantMonitor extends Component{
                 <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
                     <CardHeader
                         title="Live Transactions"
-                        subtitle={moment().tz('America/Toronto').format('YYYY-MM-DD')}
+                        subtitle={
+                            localStorage.getItem('zoneType') == 'EST' ? 
+                            (moment().tz('America/Toronto').format('YYYY-MM-DD'))
+                            :
+                            (moment().tz('America/Vancouver').format('YYYY-MM-DD'))
+                        }
                     >
                     </CardHeader>   
                     <Divider style={{marginBottom: 48}}/>

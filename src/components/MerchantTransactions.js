@@ -59,6 +59,8 @@ class MerchantTransactions extends Component{
         this.handleDetail = this.handleDetail.bind(this);
         this.state = {
 
+            zoneType: 'EST',
+
             open: false,
             message: '',
             success: false,
@@ -88,6 +90,11 @@ class MerchantTransactions extends Component{
     }
 
     componentDidMount() {
+
+        let zoneType = localStorage.getItem('zoneType');
+        this.setState({
+            zoneType
+        })
         this.fetchTransaction(1, 'ALL', null);
     }
 
@@ -202,6 +209,10 @@ class MerchantTransactions extends Component{
                     tran.DisplayType = displayType;
                     tran.Status = formattor.capitalStr(tran.Status);
                     tran.CreatedAt = tran.CreatedAt ? formattor.formatDatetime(tran.CreatedAt) : '';
+                    
+                    if(this.state.zoneType == 'PST'){
+                        tran.CreatedAt = tran.CreatedAt ? moment(tran.CreatedAt).tz('America/Toronto').subtract('3', 'hours').format('YYYY-MM-DD HH:mm:ss') : ''
+                    }               
                 }
 
                 let updated = Object.assign({}, this.state);

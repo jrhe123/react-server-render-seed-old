@@ -9,7 +9,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import {Card} from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import Pagination from 'material-ui-pagination';
 import SelectField from 'material-ui/SelectField';
 import Dialog from 'material-ui/Dialog';
@@ -64,7 +64,7 @@ class MerchantInvoices extends Component{
             ],
             newInvoice: {},
 
-            moment: moment(),
+            moment: localStorage.getItem('zoneType') == 'EST' ? moment().tz('America/Toronto') : moment().tz('America/Vancouver'),
             displayMoment: false,
 
             phoneNumberErrorText: '',
@@ -118,6 +118,10 @@ class MerchantInvoices extends Component{
                     for(let invoice of Invoices){
                         invoice.PhoneNumber = invoice.PhoneNumber ? formattor.addFormatPhoneNumber(invoice.PhoneNumber.toString()) : null; 
                         invoice.OutTime = invoice.OutTime ? formattor.formatDatetime(invoice.OutTime) : '';
+                        
+                        if(localStorage.getItem('zoneType') != 'EST'){
+                            invoice.OutTime = invoice.OutTime ? formattor.formatDatetime(moment(invoice.OutTime).tz('America/Vancouver').format('YYYY-MM-DD HH:mm:ss')) : ''
+                        }
                     }
                     let updated = Object.assign({}, this.state);
                     updated.totalRecords = TotalRecords;
@@ -243,7 +247,12 @@ class MerchantInvoices extends Component{
 
     addInvoice = () => {
 
-        let dateTime = this.state.moment.format('YYYY-MM-DD HH:mm:ss');
+        let dateTime;
+        if(localStorage.getItem('zoneType') == 'EST'){
+            dateTime = this.state.moment.format('YYYY-MM-DD HH:mm:ss');
+        }else{
+            dateTime = this.state.moment.add('3','hours').format('YYYY-MM-DD HH:mm:ss');
+        }
         let { invoiceType, phoneNumber, email, totalFee, subject } = this.state.newInvoice;
         
         if(phoneNumber)

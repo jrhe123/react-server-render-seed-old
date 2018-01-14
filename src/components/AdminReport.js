@@ -5,6 +5,8 @@ import DatePicker from 'material-ui/DatePicker';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import moment from 'moment-timezone';
+
 
 import { opay_url,
          admin_report } from "../utilities/apiUrl";
@@ -33,10 +35,10 @@ class AdminReport extends Component{
 
     changeDate = (n, date, which) => {
         if (which === 'start') {
-            let new_date = JSON.stringify(date).substring(1,11) + ' 00:00:00';
+            let new_date = moment(date).tz('America/Toronto').format('YYYY-MM-DD') + ' 00:00:00';
             this.setState({ start: new_date });
         } else if (which === 'end') {
-            let new_date = JSON.stringify(date).substring(1,11) + ' 23:59:59';
+            let new_date = moment(date).tz('America/Toronto').format('YYYY-MM-DD') + ' 23:59:59';
             this.setState({ end: new_date });
         }
     }
@@ -60,6 +62,8 @@ class AdminReport extends Component{
                 }
             }
         };
+
+        console.log('params: ', params);
 
         apiManager.opayApi(opay_url + admin_report, params, true).then((response) => {
                if (response.data) {
