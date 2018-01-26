@@ -7,10 +7,12 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import { green400, pinkA400 } from 'material-ui/styles/colors';
+import validator from 'validator';
+import md5 from 'md5';
 
 // Router
 import { browserHistory } from 'react-router';
-import { root_page, customer_login } from '../utilities/urlPath'
+import { root_page, customer_login, customer_dashboard } from '../utilities/urlPath'
 
 // API
 import { opay_url } from '../utilities/apiUrl';
@@ -27,7 +29,6 @@ class CustomerLoginPage extends Component{
         super(props);
         this.refactor = this.refactor.bind(this);
         this.login = this.login.bind(this);
-        this.SignUp = this.SignUp.bind(this);
         this.state = {
 
             open: false,
@@ -41,8 +42,7 @@ class CustomerLoginPage extends Component{
             paperSize: { height: '60%', width: '50%' },
 
             isLoading: true,
-            agentID: '',
-            userName: '',
+            loginKeyword: '',
             password: ''
         }
     }
@@ -112,9 +112,6 @@ class CustomerLoginPage extends Component{
         });
     };
 
-    SignUp = () => {
-    }
-
     onFieldChange = (field, e, value) => {
         let updated = Object.assign({}, this.state);
         updated[field] = value;
@@ -123,6 +120,46 @@ class CustomerLoginPage extends Component{
 
     login = () => {
 
+        let { loginKeyword, password } = this.state;
+
+        if(!loginKeyword){
+            this.handleTouchTap('Please enter your phone OR email', false);
+        }else if(!password){
+            this.handleTouchTap('Please enter password', false);
+        }else{
+
+            loginKeyword = loginKeyword.trim();
+            if(!validator.isEmail(loginKeyword)){
+
+                loginKeyword = loginKeyword.replace(/[+()-\s]/g, "");
+                if(loginKeyword.length == 10){
+                    loginKeyword = '1' + loginKeyword;
+                }
+            }else{
+                loginKeyword = loginKeyword.toLowerCase();
+            }
+
+            let params = {
+                Params: {
+                    LoginKeyword: loginKeyword,
+                    Password: md5(password),
+                }
+            };
+            apiManager.opayApi(opay_url+'customer/login', params, false)
+                .then((response) => {
+
+                    if(response.data.Confirmation === 'Success'){
+                        localStorage.setItem('token', response.data.Token);
+                        localStorage.setItem('userTypeID', response.data.Response.UserTypeID);
+                        browserHistory.push(`${root_page}${customer_dashboard}`);
+                    }else{
+                        this.handleTouchTap(`${response.data.Message}`, false);
+                    }
+                })
+                .catch((error) => {
+                    this.handleTouchTap(`Error: ${error}`, false);
+                })
+        }
     }
 
     render() {
@@ -152,11 +189,11 @@ class CustomerLoginPage extends Component{
 
                         <div style={verticalCenter}>
 
-                            <TextField floatingLabelText="Username"
+                            <TextField floatingLabelText="Phone/Email"
                                        inputStyle={this.state.inputStyle}
                                        floatingLabelStyle={this.state.floatLabelStyle}
                                        style={this.state.textFieldStyle}
-                                       onChange={this.onFieldChange.bind(this, 'userName')} /><br />
+                                       onChange={this.onFieldChange.bind(this, 'loginKeyword')} /><br />
                             <TextField floatingLabelText="Password"
                                        type="password"
                                        inputStyle={this.state.inputStyle}
@@ -166,7 +203,7 @@ class CustomerLoginPage extends Component{
                             <RaisedButton label="Login"
                                           primary={true}
                                           style={this.state.loginBtnStyle}
-                                          onClick={this.login} /> <br /> <br />
+                                          onClick={this.login} /> <br /> <br />              
                         </div>
                     </Paper>
 

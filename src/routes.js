@@ -14,6 +14,7 @@ import MerchantLoginPage from './pages/MerchantLoginPage';
 import MerchantAdminPage from './pages/MerchantAdminPage'
 
 import CustomerLoginPage from './pages/CustomerLoginPage';
+import CustomerDashboardPage from './pages/CustomerDashboardPage';
 
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminPage from './pages/AdminPage';
@@ -31,6 +32,7 @@ const routes = (
         <Route path="merchantlogin" component={MerchantLoginPage} />
         <Route path="merchantadmin" component={MerchantAdminPage} />
         <Route path="customerlogin" component={CustomerLoginPage} />
+        <Route path="customerdashboard" component={CustomerDashboardPage} />
         <Route path="websiteterm" component={WebSiteTerm} />
         <Route path="3b8ff9b" component={AdminLoginPage} />
         <Route path="042481b" component={AdminPage} />
