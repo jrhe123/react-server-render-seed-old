@@ -99,6 +99,11 @@ class AdminPage extends Component{
             selectedTimeZone: '',
             selectedTimeZoneMerIdx: null,
 
+            widModalOpen: false, 
+            widMer: null, 
+            selectedWidMerIdx: null,
+            selecctedWID: null,
+
             bankModalOpen: false,
             bankMer: '',
             Account: '',
@@ -425,6 +430,8 @@ class AdminPage extends Component{
             if (!isNumeric(value)) { this.setState({ Institution: value, InstitutionErr: 'please input valid institution' }) }
             else if(value.length !== 3) { this.setState({ Institution: value, InstitutionErr: 'The length of Institution Number should be 3' }) }
             else this.setState({ Institution: value, InstitutionErr: '' });
+        } else if(field === 'WID'){
+            this.setState({ selecctedWID: value });
         } else{
             let updated = Object.assign({}, this.state);
             let value = e.target.value;
@@ -530,6 +537,66 @@ class AdminPage extends Component{
             if (res.data) {
                 if (res.data.Confirmation === 'Success') {
                     this.handleTouchTap(`${res.data.Message}`, true);
+                }else{
+                    this.handleTouchTap(`${res.data.Message}`, false);
+                }
+            }
+        }).catch((err) => {
+            this.handleTouchTap(`Error: ${err}`);
+        });
+    }
+
+    openWIDSetting = (idx, merchant) => {
+
+        let updated = Object.assign({}, this.state);
+        updated.merListOpenPop[idx] = false;
+        this.setState(updated);
+        this.closeAllModal();
+        this.setState({ widModalOpen: true, widMer: merchant, selectedWidMerIdx: idx })
+    }
+
+    handleWidClose = () => {
+        this.setState({
+            widModalOpen: false,
+            widMer: null,
+            selectedWidMerIdx: null,
+            selecctedWID: null,
+        });
+    }
+
+    setMerchantWID = () => {
+        
+        let merchantUserGUID = this.state.widMer.UserGUID;
+        let selecctedWID = this.state.selecctedWID;
+        if(!selecctedWID){
+            selecctedWID = this.state.widMer.WID;
+        }
+        
+        if(!merchantUserGUID){
+            this.handleTouchTap(`Error: merchant UserGUID cannot be empty`, false);
+            return;
+        }
+        if(!selecctedWID){
+            this.handleTouchTap(`Error: wechat id cannot be empty`, false);
+            return;
+        }
+       
+        let params = {
+            Params: {
+                UserGUID: merchantUserGUID,
+                WID: selecctedWID
+            }
+        };
+
+        apiManager.opayApi(opay_url + 'admin/update_wechat_id', params, true).then((res) => {
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+
+                    this.handleTouchTap(`${res.data.Message}`, true);
+                    let updated = Object.assign({}, this.state);                    
+                    updated.merList[this.state.selectedWidMerIdx].WID = selecctedWID;
+                    this.setState(updated);
+                    this.handleWidClose();
                 }else{
                     this.handleTouchTap(`${res.data.Message}`, false);
                 }
@@ -1195,6 +1262,7 @@ class AdminPage extends Component{
                                                             <MenuItem primaryText="Bank Account" onClick={() => this.openBankSetting(idx, msg)}/>
                                                             { this.state.UserTypeID === '1' ? <MenuItem primaryText="Update Rate" onClick={() => this.updateRate(idx, msg)}/> : '' }
                                                             { this.state.UserTypeID === '1' ? <MenuItem primaryText="Assign To Sales" onClick={() => this.assignToSales(idx, msg)}/> : ''}
+                                                            <MenuItem primaryText="Wechat ID" onClick={() => this.openWIDSetting(idx, msg)}/>
                                                             <MenuItem primaryText="TimeZone" onClick={() => this.openTimeZoneSetting(idx, msg)}/>
                                                             <MenuItem primaryText="Documents" onClick={() => this.viewDocuments(idx, msg)}/>
                                                             <MenuItem primaryText="Email" onClick={() => this.sendEmail(idx, msg)}/>
@@ -1336,6 +1404,25 @@ class AdminPage extends Component{
                                     </div>
                                     <div style={btnControl}>
                                         <RaisedButton label={this.state.addOrUpdate} primary={true} onClick={this.setBankAccountInfo}/>
+                                    </div>
+                                </div>
+                            </Dialog>
+
+                            <Dialog title="Wechat ID" modal={false} open={this.state.widModalOpen}
+                                    onRequestClose={this.handleWidClose.bind(this)}>
+                                <div>
+                                    <div style={formControl}>
+                                        <TextField 
+                                            floatingLabelText="Sub merchant"
+                                            defaultValue={this.state.widMer ? this.state.widMer.WID : ""}
+                                            value={this.state.selecctedWID}
+                                            onChange={(e, value) => this.onFieldChange(e, value, 'WID')}/>
+                                    </div>
+                                    <div style={btnControl}>
+                                        <RaisedButton 
+                                            label="Update" 
+                                            primary={true} 
+                                            onClick={this.setMerchantWID}/>
                                     </div>
                                 </div>
                             </Dialog>
