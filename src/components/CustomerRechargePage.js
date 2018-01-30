@@ -52,10 +52,16 @@ class CustomerRechargePage extends Component{
 
     componentDidMount(){
 
-        const googleGeoSrc = document.createElement('script');
-        googleGeoSrc.type="text/javascript";
-        googleGeoSrc.setAttribute('src','https://maps.googleapis.com/maps/api/js?key=AIzaSyDqk8Hjqb3BdigfWrTgJ3OhYeKVZG4Z8Qs&libraries=places');
-        document.body.appendChild(googleGeoSrc);
+        apiManager.opayApi(opay_url+'customer/view', null, true)
+            .then((response) => {
+                
+            })
+            .catch((error) => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userTypeID');
+                localStorage.removeItem('profileImage');
+                browserHistory.push(`${root_page}`);
+            })
     }
 
     // Snack
@@ -82,11 +88,19 @@ class CustomerRechargePage extends Component{
     onFieldBlur = (field, e) => {
         let value = e.target.value;
         if(field === 'amount'){
-            value = parseFloat(value).toFixed(2);
+            if(value != null && value != ""){
+                value = parseFloat(value).toFixed(2);
+            }else{
+                value = 0.00;
+            }
         }
         let updated = Object.assign({}, this.state);
         updated[field] = value;
         this.setState(updated);
+
+        if(value <= 0){
+            this.handleTouchTap(`Amount must be greater than zero`, false);
+        }
     }
 
     renderButton() {
@@ -103,8 +117,8 @@ class CustomerRechargePage extends Component{
             const paymentId = paypal.rest.payment.create(this.props.env, this.props.client, {
                 transactions: [{
                     amount: {
-                    currency: 'CAD',
-                    total,
+                        currency: 'CAD',
+                        total,
                     },
                     description: 'Opay recharge service',
                 }],
@@ -127,7 +141,24 @@ class CustomerRechargePage extends Component{
                 let transactionID = tran.related_resources[0].sale.id;
 
                 if(status == "approved" && transactionID){
-                    this.handleTouchTap(`Recharge Succeed: $${total} to your account`, true);
+
+                    let params = {
+                        Params: {
+                            PaypalID: transactionID
+                        }
+                    };
+                    apiManager.opayApi(opay_url+'customer/recharge', params, true)
+                        .then((response) => {
+                            if(response.data.Confirmation === 'Success'){
+                                let amount = response.data.Response.OpayTransaction.Amount;
+                                this.handleTouchTap(`Recharge Succeed: $${amount} to your account`, true);
+                            }else{
+                                this.handleTouchTap(`${response.data.Message}`, false);
+                            }
+                        })
+                        .catch((error) => {
+                            this.handleTouchTap(`Error: ${error}`, false);
+                        })                    
                 }else{
                     this.handleTouchTap(`Failed`, false);
                 }

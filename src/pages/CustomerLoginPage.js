@@ -151,6 +151,7 @@ class CustomerLoginPage extends Component{
                     if(response.data.Confirmation === 'Success'){
                         localStorage.setItem('token', response.data.Token);
                         localStorage.setItem('userTypeID', response.data.Response.UserTypeID);
+                        localStorage.setItem('profileImage', response.data.Response.ProfileImage);
                         browserHistory.push(`${root_page}${customer_dashboard}`);
                     }else{
                         this.handleTouchTap(`${response.data.Message}`, false);

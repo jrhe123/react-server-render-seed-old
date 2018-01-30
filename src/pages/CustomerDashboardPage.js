@@ -25,8 +25,8 @@ import EditorAttachMoney from 'material-ui/svg-icons/editor/attach-money';
 import { connect } from 'react-redux';
 import { showSnackbar }  from '../actions/layout_action';
 import { 
-    fetch_profile_image
-} from '../actions/merchant_action';
+    fetch_customer_img
+} from '../actions/customer_action';
 
 // Router
 import { browserHistory } from 'react-router';
@@ -40,6 +40,7 @@ import * as apiManager from '../helpers/apiManager';
 import Loading from '../components/Loading';
 import CustomerSettingPage from '../components/CustomerSettingPage';
 import CustomerRechargePage from '../components/CustomerRechargePage';
+import CustomerTransactionPage from '../components/CustomerTransactionPage';
 
 
 class CustomerDashboardPage extends Component{
@@ -50,7 +51,7 @@ class CustomerDashboardPage extends Component{
             isLoading: true,
             tab: 'default',
             open: false,
-            userTypeID: null
+            userTypeID: null,
         }
         this.refactor = this.refactor.bind(this);
     }
@@ -66,6 +67,11 @@ class CustomerDashboardPage extends Component{
     componentDidMount() {
         let token = localStorage.getItem('token');
         let userTypeID = localStorage.getItem('userTypeID');
+
+        if(localStorage.getItem('profileImage') != ''){
+            this.props.fetch_customer_img(localStorage.getItem('profileImage'));
+        }
+
         this.setState({
             userTypeID: userTypeID
         })
@@ -73,6 +79,9 @@ class CustomerDashboardPage extends Component{
         setTimeout(() => { 
             if(!token){
                 browserHistory.push(`${root_page}`);
+                localStorage.removeItem('token');
+                localStorage.removeItem('userTypeID');
+                localStorage.removeItem('profileImage');
             }else{
                 this.setState({
                     isLoading: false
@@ -104,11 +113,13 @@ class CustomerDashboardPage extends Component{
             .then((response) => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('userTypeID');
+                localStorage.removeItem('profileImage');
                 browserHistory.push(`${root_page}`);
             })
             .catch((error) => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('userTypeID');
+                localStorage.removeItem('profileImage');
                 browserHistory.push(`${root_page}`);
             })
     }
@@ -124,7 +135,7 @@ class CustomerDashboardPage extends Component{
         switch(tab) {
             case 'default':
                 return (
-                    <div>default page</div>
+                    <CustomerTransactionPage />
                 ); 
             case 'setting':
                 return (
@@ -136,7 +147,7 @@ class CustomerDashboardPage extends Component{
                 );               
             default:
                 return (
-                    <div>default page</div>
+                    <CustomerTransactionPage />
                 );
         }
     }
@@ -284,13 +295,13 @@ const styles = {
 
 const stateToProps = (state) => {
 	return {
-
-    }
+        img: state.customer_reducer.img
+	}
 }
 
 const dispatchToProps = (dispatch) => {
 	return {
-
+        fetch_customer_img: (img) => dispatch(fetch_customer_img(img)),
     }
 }
 
