@@ -9,3 +9,6 @@ export const customer_dashboard = 'customerdashboard/';
 
 export const admin_login = '3b8ff9b/';
 export const admin_page = '042481b/';
+
+export const franchise_login = 'franchiselogin/';
+export const franchise_admin = 'franchiseadmin';

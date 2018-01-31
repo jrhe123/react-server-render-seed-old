@@ -11,7 +11,9 @@ import PrivacyPolicy  from './pages/PrivacyPolicy';
 
 import MerchantRegisterPage from './pages/MerchantRegisterPage';
 import MerchantLoginPage from './pages/MerchantLoginPage';
-import MerchantAdminPage from './pages/MerchantAdminPage'
+import MerchantAdminPage from './pages/MerchantAdminPage';
+import FranchiseLoginPage from './pages/FranchiseLoginPage';
+import FranchiseAdminPage from './pages/FranchiseAdminPage';
 
 import CustomerLoginPage from './pages/CustomerLoginPage';
 import CustomerDashboardPage from './pages/CustomerDashboardPage';
@@ -31,6 +33,8 @@ const routes = (
         <Route path="merchantregister" component={MerchantRegisterPage} />
         <Route path="merchantlogin" component={MerchantLoginPage} />
         <Route path="merchantadmin" component={MerchantAdminPage} />
+        <Route path="franchiselogin" component={FranchiseLoginPage} />
+        <Route path="franchiseadmin" component={FranchiseAdminPage} />
         <Route path="customerlogin" component={CustomerLoginPage} />
         <Route path="customerdashboard" component={CustomerDashboardPage} />
         <Route path="websiteterm" component={WebSiteTerm} />

@@ -49,6 +49,7 @@ import PosList from '../components/PosList';
 import SalesList from '../components/SalesList';
 import Loading from '../components/Loading';
 import EFT from '../components/EFT';
+import Franchise from '../components/Franchise'
 import AdminReport from '../components/AdminReport';
 
 
@@ -167,6 +168,7 @@ class AdminPage extends Component{
         this.uploadFile = this.uploadFile.bind(this);
         this.closeAllModal = this.closeAllModal.bind(this);
         this.EFT = this.EFT.bind(this);
+        this.Franchise = this.Franchise.bind(this);
         this.setMerchantTimeZone = this.setMerchantTimeZone.bind(this);
     }
 
@@ -218,6 +220,10 @@ class AdminPage extends Component{
             merListOpenPop: [false],
             merListAnEl: [null],
         });
+    }
+
+    Franchise = () => {
+        this.setState({ tab: 5 });
     }
 
     getMerList = (page) => {
@@ -1185,6 +1191,10 @@ class AdminPage extends Component{
                 return (
                     <AdminReport />
                 )
+            case 5:
+                return (
+                    <Franchise OnBack={() => this.handleBackToList()} />
+                )
             default:
                 return (
 
@@ -1557,6 +1567,7 @@ class AdminPage extends Component{
                             {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Sales" onClick={this.salesMain} /> : ''}
                             {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Report" onClick={this.dailyReport} /> : ''}
                             {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="EFT" onClick={this.EFT} /> : ''}
+                            {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Franchise" onClick={this.Franchise} /> : ''}
                             <MenuItem style={drawerItem} primaryText="Log out" onClick={this.logout} />
                         </Drawer>
                     </div>

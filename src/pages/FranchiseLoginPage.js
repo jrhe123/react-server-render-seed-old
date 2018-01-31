@@ -13,8 +13,8 @@ import { connect } from 'react-redux';
 import { showSnackbar }  from '../actions/layout_action';
 
 // Router
-import { browserHistory, Link } from 'react-router';
-import { root_page, merchant_admin, merchant_register, franchise_login } from '../utilities/urlPath'
+import { browserHistory } from 'react-router';
+import { root_page, franchise_admin } from '../utilities/urlPath'
 
 // API
 import { opay_url } from '../utilities/apiUrl';
@@ -25,13 +25,12 @@ import Loading from '../components/Loading';
 import Snackbar from 'material-ui/Snackbar';
 
 
-class MerchantLoginPage extends Component{
+class FranchiseLoginPage extends Component{
 
     constructor(props) {
         super(props);
         this.refactor = this.refactor.bind(this);
         this.login = this.login.bind(this);
-        this.SignUp = this.SignUp.bind(this);
         this.state = {
 
             open: false,
@@ -55,7 +54,7 @@ class MerchantLoginPage extends Component{
 
 
         let token = localStorage.getItem('token');
-        setTimeout(() => { 
+        setTimeout(() => {
             if(!token){
                 this.setState({
                     isLoading: false,
@@ -72,7 +71,7 @@ class MerchantLoginPage extends Component{
                 document.body.appendChild(googleTransSrc);
                 window.addEventListener('resize', this.refactor);
             }else{
-                browserHistory.push(`${root_page}${merchant_admin}`);
+                browserHistory.push(`${root_page}${franchise_admin}`);
             }
         }, 1000);
 
@@ -116,10 +115,6 @@ class MerchantLoginPage extends Component{
         });
     };
 
-    SignUp = () => {
-        browserHistory.push(`${root_page}${merchant_register}`);
-    }
-
     onFieldChange = (field, e, value) => {
         let updated = Object.assign({}, this.state);
         updated[field] = value;
@@ -151,7 +146,7 @@ class MerchantLoginPage extends Component{
                         localStorage.setItem('loginKeyword', this.state.userName);
                         localStorage.setItem('profileImage', response.data.Response.ProfileImage);
                         localStorage.setItem('zoneType', response.data.Response.ZoneType);
-                        browserHistory.push(`${root_page}${merchant_admin}`);
+                        browserHistory.push(`${root_page}${franchise_admin}`);
                     }else{
                         this.handleTouchTap(`${response.data.Message}`, false);
                     }
@@ -169,7 +164,6 @@ class MerchantLoginPage extends Component{
             paperStyle,
             verticalCenter,
             loadingContainer,
-            rightUpper,
         } = styles;
 
         if(this.state.isLoading){
@@ -190,30 +184,26 @@ class MerchantLoginPage extends Component{
 
                         <div style={verticalCenter}>
 
-                            <Link to={`${franchise_login}`} style={rightUpper}>{'Franchise'}</Link><br />
-
-                            <TextField floatingLabelText="Agent ID" 
-                                        inputStyle={this.state.inputStyle}
-                                        floatingLabelStyle={this.state.floatLabelStyle} 
-                                        style={this.state.textFieldStyle}
-                                        onChange={this.onFieldChange.bind(this, 'agentID')} /><br />
-                            <TextField floatingLabelText="Username" 
-                                        inputStyle={this.state.inputStyle}
-                                        floatingLabelStyle={this.state.floatLabelStyle} 
-                                        style={this.state.textFieldStyle}
-                                        onChange={this.onFieldChange.bind(this, 'userName')} /><br />
-                            <TextField floatingLabelText="Password" 
-                                        type="password" 
-                                        inputStyle={this.state.inputStyle}
-                                        floatingLabelStyle={this.state.floatLabelStyle} 
-                                        style={this.state.textFieldStyle}
-                                        onChange={this.onFieldChange.bind(this, 'password')} /><br /><br />
-                            <RaisedButton label="Login" 
-                                            primary={true} 
-                                            style={this.state.loginBtnStyle} 
-                                            onClick={this.login} /> <br /> <br />
-                            <FlatButton label="Sign Up" 
-                                        onClick={this.SignUp} />
+                            <TextField floatingLabelText="Agent ID"
+                                       inputStyle={this.state.inputStyle}
+                                       floatingLabelStyle={this.state.floatLabelStyle}
+                                       style={this.state.textFieldStyle}
+                                       onChange={this.onFieldChange.bind(this, 'agentID')} /><br />
+                            <TextField floatingLabelText="Username"
+                                       inputStyle={this.state.inputStyle}
+                                       floatingLabelStyle={this.state.floatLabelStyle}
+                                       style={this.state.textFieldStyle}
+                                       onChange={this.onFieldChange.bind(this, 'userName')} /><br />
+                            <TextField floatingLabelText="Password"
+                                       type="password"
+                                       inputStyle={this.state.inputStyle}
+                                       floatingLabelStyle={this.state.floatLabelStyle}
+                                       style={this.state.textFieldStyle}
+                                       onChange={this.onFieldChange.bind(this, 'password')} /><br /><br />
+                            <RaisedButton label="Login"
+                                          primary={true}
+                                          style={this.state.loginBtnStyle}
+                                          onClick={this.login} /> <br /> <br />
                         </div>
                     </Paper>
 
@@ -224,7 +214,7 @@ class MerchantLoginPage extends Component{
                     autoHideDuration={3000}
                     onRequestClose={this.handleRequestClose}
                     bodyStyle={{backgroundColor: this.state.success ? green400 : pinkA400, textAlign: 'center' }}
-                    />
+                />
             </MuiThemeProvider>
         )
     }
@@ -260,11 +250,6 @@ const styles = {
         height: '100vh',
     },
 
-    rightUpper: {
-        float: 'right',
-        position: 'absolute',
-        right: '20px'
-    }
 }
 
-export default connect()(MerchantLoginPage);
+export default connect()(FranchiseLoginPage);
