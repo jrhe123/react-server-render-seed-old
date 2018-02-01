@@ -106,10 +106,10 @@ class CustomerRechargePage extends Component{
     renderButton() {
         let total = this.state.amount;
         const opts = {
-        env: 'sandbox',
+        env: 'production',
         client: {
-            sandbox: 'ASJBnI5Op5b-gTWi-Zvtu_KTLO91WyWSGJqektOGGlrEeGRJwb3npYVDjEXnk-wqtX3zx6QrHTHkAscC',
-            production: 'AYUrd_5ZUpACjK9F2Z7fPFIutyLllf6008drTABbqoO_iTAMQAYv7i3RBrbm4JzqBJvqIu-C-O-aZccc'
+            sandbox: 'ARPemHzRC1hnybnVV6chsOO3rcn9OK3F-h8VZ9sBfgYCE2-_a75VX0ukLYEbBkhc3l1fP8z0DCZGKNLC',
+            production: 'AVYPy1SGydPBisuq4Jmq9OkQRjNT3fhAPbCg4wAnMN6_kEpACouEbiwo0kS1IT8dhXgJyFFq0DmJfZUF'
         },
         commit: true,
         payment: function createPayment() {

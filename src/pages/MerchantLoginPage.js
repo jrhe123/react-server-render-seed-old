@@ -120,6 +120,10 @@ class MerchantLoginPage extends Component{
         browserHistory.push(`${root_page}${merchant_register}`);
     }
 
+    handleFranchiseLogin = () => {
+        browserHistory.push(`${root_page}${franchise_login}`);
+    }
+
     onFieldChange = (field, e, value) => {
         let updated = Object.assign({}, this.state);
         updated[field] = value;
@@ -170,6 +174,7 @@ class MerchantLoginPage extends Component{
             verticalCenter,
             loadingContainer,
             rightUpper,
+            linkStyle,
         } = styles;
 
         if(this.state.isLoading){
@@ -188,9 +193,11 @@ class MerchantLoginPage extends Component{
 
                     <Paper zDepth={3} style={Object.assign({}, this.state.paperSize, paperStyle )}>
 
-                        <div style={verticalCenter}>
+                        <div style={rightUpper}>
+                            <a style={linkStyle} onClick={() => this.handleFranchiseLogin()}>{'Franchise'}</a>
+                        </div>
 
-                            <Link to={`${franchise_login}`} style={rightUpper}>{'Franchise'}</Link><br />
+                        <div style={verticalCenter}>                            
 
                             <TextField floatingLabelText="Agent ID" 
                                         inputStyle={this.state.inputStyle}
@@ -263,7 +270,14 @@ const styles = {
     rightUpper: {
         float: 'right',
         position: 'absolute',
-        right: '20px'
+        right: 24,
+        top: 12
+    },
+
+    linkStyle: {
+        cursor: 'pointer',
+        textDecoration: 'underline',
+        color: '#3E7AED'
     }
 }
 

@@ -232,7 +232,7 @@ class CustomerDashboardPage extends Component{
                                         leftIcon={<EditorShowChart color="#fff" />}
                                         onClick={this.switchTab.bind(this, 'charts')} />        
                             <MenuItem style={{color: '#fff'}} 
-                                        primaryText="Recharge" 
+                                        primaryText="Top up" 
                                         leftIcon={<EditorAttachMoney color="#fff" />}
                                         onClick={this.switchTab.bind(this, 'recharge')} />                              
                         </Drawer>
