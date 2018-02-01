@@ -6,26 +6,31 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
+import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Pagination from 'material-ui-pagination';
 import { green400, pinkA400 } from 'material-ui/styles/colors';
+import Snackbar from 'material-ui/Snackbar';
+import Card from 'material-ui/Card/Card';
 import moment from 'moment';
 
 // Router
 import {
     root_page,
-    admin_page
-} from '../utilities/urlPath'
+} from '../utilities/urlPath';
 
 // Components
-import Snackbar from 'material-ui/Snackbar';
+import AddMerchant from './AddMerchant';
+import ViewMerchant from './ViewMerchant'
+
 
 // API
 import { opay_url,
-    admin_sales_list,
-    admin_create_sales } from "../utilities/apiUrl";
+    admin_franchise_list,
+    admin_create_franchise } from "../utilities/apiUrl";
 import * as apiManager from  '../helpers/apiManager';
-import Card from 'material-ui/Card/Card';
 
 class Franchise extends Component {
 
@@ -36,6 +41,8 @@ class Franchise extends Component {
             open: false,
             message: '',
             success: false,
+            franListOpenPop: [false],
+            franListAnEl: [null],
 
             firstName: '',
             lastName: '',
@@ -44,33 +51,45 @@ class Franchise extends Component {
             lastNameErr: '',
             EmailErr: '',
 
+            tab: 0,
             Limit: "10",
             Offset: "0",
             serial: '',
             totalRecords: 0,
             currentPage: 1,
-            tableField: [ 'Name', 'Email', 'Status', 'CreatedAt', 'Action'],
+            tableField: [ 'AgentID', 'Name', 'Email', 'Status', 'Action'],
             franchiseList: [],
             display: 10,
             UserTypeID: 6,
             modalOpen: false,
             addFranchiseModalOpen: false,
+            UserGUID: ''
         }
         this.openDialog = this.openDialog.bind(this);
         this.getFranchiseList = this.getFranchiseList.bind(this);
         this.handleChangePage = this.handleChangePage.bind(this);
         this.handleClose = this.handleClose.bind(this);
+        this.handleRequestClose = this.handleRequestClose.bind(this);
+        this.handleBackToList = this.handleBackToList.bind(this);
         this.addFranchise = this.addFranchise.bind(this);
+        this.action = this.action.bind(this);
         this.addMerchant = this.addMerchant.bind(this);
+        this.viewMerchant = this.viewMerchant.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.onFieldChange = this.onFieldChange.bind(this);
-
+        this.renderTab = this.renderTab.bind(this);
     }
 
     componentDidMount() {
         let userTypeId = localStorage.getItem('userTypeID');
         this.setState({ UserTypeID: userTypeId });
         this.getFranchiseList();
+    }
+
+    handleBackToList = () => {
+        this.setState({
+            tab: 0,
+        })
     }
 
     // Snack
@@ -93,11 +112,47 @@ class Franchise extends Component {
     }
 
     handleChangePage = (page) => {
-        this.getSalesList(page);
+        this.getFranchiseList(page);
     }
 
-    addMerchant = (e, idx) => {
+    handleRequestClose = (idx) => {
 
+        let franListOpenPop = [];
+
+        for (let i = 0;i < this.state.franListOpenPop.length;i++) {
+            franListOpenPop[i] = false;
+        }
+
+        this.setState({
+            franListOpenPop: franListOpenPop
+        })
+    }
+
+    addMerchant = (idx) => {
+
+        let updated = Object.assign({}, this.state);
+        updated.franListOpenPop[idx] = false;
+        updated.tab = 1;
+        updated.UserGUID = this.state.franchiseList[idx].UserGUID
+        this.setState(updated)
+
+    }
+
+    viewMerchant = (idx) => {
+        let updated = Object.assign({}, this.state);
+        updated.franListOpenPop[idx] = false;
+        updated.tab = 2;
+        updated.UserGUID = this.state.franchiseList[idx].UserGUID
+        this.setState(updated)
+    }
+
+    action = (e, idx) => {
+
+        e.preventDefault();
+        let updated = Object.assign({}, this.state);
+        updated.franListOpenPop[idx] = true;
+        updated.franListAnEl[idx] = e.currentTarget;
+        this.setState(updated)
     }
 
     addFranchise = () => {
@@ -128,15 +183,15 @@ class Franchise extends Component {
         }
         };
 
-        apiManager.opayApi(opay_url + admin_create_sales, params,true).then((res) => {
+        apiManager.opayApi(opay_url + admin_create_franchise, params,true).then((res) => {
 
             if (res.data) {
                 if (res.data.Confirmation === 'Fail') {
                     this.handleTouchTap(`${res.data.Message}`, false);
                 } else if (res.data.Confirmation === 'Success') {
                     this.setState({ modalOpen: false });
-                    this.handleTouchTap(`Sales has been added`, true);
-                    this.getSalesList(this.state.currentPage);// may have problem when the current page contains 10 item
+                    this.handleTouchTap(`Franchise has been added`, true);
+                    this.getFranchiseList(this.state.currentPage);// may have problem when the current page contains 10 item
                 }
             }
 
@@ -162,19 +217,20 @@ class Franchise extends Component {
             }
         };// Limit: -1 means return all results
 
-        apiManager.opayApi(opay_url + admin_sales_list, params, true).then((res) => {
+        apiManager.opayApi(opay_url + admin_franchise_list, params, true).then((res) => {
 
             if (res.data) {
 
                 if (res.data.Confirmation === 'Fail') {
                 } else if (res.data.Confirmation === 'Success') {
-                    let salesList = res.data.Response.SalesList;
-                    for (let sales of salesList) {
-                        sales.CreatedAt = sales.CreatedAt ? moment(sales.CreatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
+                    let FranchisesList = res.data.Response.UserList;
+                    for (let franchise of FranchisesList) {
+                        franchise.CreatedAt = franchise.CreatedAt ? moment(franchise.CreatedAt).format('YYYY-MM-DD HH:mm:ss') : '';
                     }
+
                     this.setState({
                         currentPage: page,
-                        franchiseList: salesList,
+                        franchiseList: FranchisesList,
                         totalRecords: res.data.Response.TotalRecords
                     });
                 }
@@ -207,11 +263,8 @@ class Franchise extends Component {
         this.setState({modalOpen: false, addFranchiseModalOpen: false});
     }
 
-    backToList = () => {
-        this.props.OnBack();
-    }
+    renderTab = (tab) => {
 
-    render(){
         const {
             tableCellStyle,
             formControl,
@@ -221,83 +274,110 @@ class Franchise extends Component {
             tableCardContainer
         } = styles;
 
+        switch(tab) {
 
-        return (
-            <MuiThemeProvider>
-                <div>
-                    <div style={sideBtnContainer}>
-                        <div style={addMerchantBtn}>
-                            <RaisedButton label="Add" primary={true} onClick={this.openDialog}/>
+            case 1: return (
+                <AddMerchant UserGUID={this.state.UserGUID} OnBack={() => this.handleBackToList()}/>
+            );
+            case 2: return (
+                <ViewMerchant UserGUID={this.state.UserGUID} OnBack={() => this.handleBackToList()} />
+            );
+            default: return (
+                <MuiThemeProvider>
+                    <div>
+                        <div style={sideBtnContainer}>
+                            <div style={addMerchantBtn}>
+                                <RaisedButton label="Add" primary={true} onClick={this.openDialog}/>
+                            </div>
                         </div>
-                    </div>
-                    <Card style={tableCardContainer}>
-                        <Table>
-                            <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-                                <TableRow>
-                                    {this.state.tableField.map((item) => (
-                                        <TableHeaderColumn style={tableCellStyle}>{item}</TableHeaderColumn>
-                                    ))}
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody displayRowCheckbox={false}>
-                                {this.state.franchiseList.map((sales, idx) => (
-                                    <TableRow key={idx} selectable={false}>
-                                        <TableRowColumn style={tableCellStyle}>{sales.FirstName + ' ' + sales.LastName}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{sales.Email}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{sales.Status}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{sales.CreatedAt}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{<div style={{textAlign: 'center'}}>
-                                            <RaisedButton
-                                                onClick={(e) => this.addMerchant(e, idx)}
-                                                secondary={true}
-                                                label='Add Merchant'
-                                            /></div>}</TableRowColumn>
+                        <Card style={tableCardContainer}>
+                            <Table>
+                                <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+                                    <TableRow>
+                                        {this.state.tableField.map((item) => (
+                                            <TableHeaderColumn style={tableCellStyle}>{item}</TableHeaderColumn>
+                                        ))}
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </Card>
+                                </TableHeader>
+                                <TableBody displayRowCheckbox={false}>
+                                    {this.state.franchiseList.map((franchise, idx) => (
+                                        <TableRow key={idx} selectable={false}>
+                                            <TableRowColumn style={tableCellStyle}>{franchise.AgentID}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{franchise.FirstName + ' ' + franchise.LastName}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{franchise.Email}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{franchise.Status}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{<div style={{textAlign: 'center'}}>
+                                                <RaisedButton
+                                                    onClick={(e) => this.action(e, idx)}
+                                                    primary={true}
+                                                    label='Action'
+                                                />
+                                                <Popover
+                                                    onRequestClose={(e, idx) => this.handleRequestClose(idx)}
+                                                    open={this.state.franListOpenPop[idx]}
+                                                    anchorEl={this.state.franListAnEl[idx]}
+                                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                                                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                                    animation={PopoverAnimationVertical}>
+                                                    <Menu>
+                                                        <MenuItem primaryText="Add Merchant" onClick={() => this.addMerchant(idx)}/>
+                                                        <MenuItem primaryText="View" onClick={() => this.viewMerchant(idx)}/>
+                                                    </Menu>
+                                                </Popover>
+                                            </div>}</TableRowColumn>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </Card>
 
-                    <div style={{textAlign: 'right', paddingRight: 12, paddingVertical: 12}}>
-                        <Pagination
-                            total={Math.ceil(this.state.totalRecords / parseInt(this.state.Limit))}
-                            current={this.state.currentPage}
-                            display={this.state.display}
-                            onChange={currentPage => this.handleChangePage(currentPage)}
-                        />
-                    </div>
-
-                    <Dialog title="Add Sales" modal={false} open={this.state.modalOpen}
-                            onRequestClose={this.handleClose.bind(this)}>
-                        <div>
-                            <div style={formControl}>
-                                <TextField floatingLabelText="First Name" errorText={this.state.firstNameErr}
-                                           onChange={(e, value) => this.onFieldChange(e, value, 'First Name')}/><br/>
-                                <TextField floatingLabelText="Last Name" errorText={this.state.lastNameErr}
-                                           onChange={(e, value) => this.onFieldChange(e, value, 'Last Name')}/><br/>
-                                <TextField floatingLabelText="Email" errorText={this.state.EmailErr}
-                                           onChange={(e, value) => this.onFieldChange(e, value, 'Email')}/>
-                            </div>
-                            <div style={btnControl}>
-                                <RaisedButton label="Add" primary={true} onClick={this.addFranchise}/>
-                            </div>
+                        <div style={{textAlign: 'right', paddingRight: 12, paddingVertical: 12}}>
+                            <Pagination
+                                total={Math.ceil(this.state.totalRecords / parseInt(this.state.Limit))}
+                                current={this.state.currentPage}
+                                display={this.state.display}
+                                onChange={currentPage => this.handleChangePage(currentPage)}
+                            />
                         </div>
-                    </Dialog>
 
+                        <Dialog title="Add Franchise" modal={false} open={this.state.modalOpen}
+                                onRequestClose={this.handleClose.bind(this)}>
+                            <div>
+                                <div style={formControl}>
+                                    <TextField floatingLabelText="First Name" errorText={this.state.firstNameErr}
+                                               onChange={(e, value) => this.onFieldChange(e, value, 'First Name')}/><br/>
+                                    <TextField floatingLabelText="Last Name" errorText={this.state.lastNameErr}
+                                               onChange={(e, value) => this.onFieldChange(e, value, 'Last Name')}/><br/>
+                                    <TextField floatingLabelText="Email" errorText={this.state.EmailErr}
+                                               onChange={(e, value) => this.onFieldChange(e, value, 'Email')}/>
+                                </div>
+                                <div style={btnControl}>
+                                    <RaisedButton label="Add" primary={true} onClick={this.addFranchise}/>
+                                </div>
+                            </div>
+                        </Dialog>
 
-                </div>
-                <Snackbar
-                    open={this.state.open}
-                    message={this.state.message}
-                    autoHideDuration={3000}
-                    onRequestClose={this.handleTouchTapClose}
-                    bodyStyle={{backgroundColor: this.state.success ? green400 : pinkA400, textAlign: 'center'}}
-                />
-            </MuiThemeProvider>
-        )
-
+                    </div>
+                    <Snackbar
+                        open={this.state.open}
+                        message={this.state.message}
+                        autoHideDuration={3000}
+                        onRequestClose={this.handleTouchTapClose}
+                        bodyStyle={{backgroundColor: this.state.success ? green400 : pinkA400, textAlign: 'center'}}
+                    />
+                </MuiThemeProvider>
+            );
+        }
     }
 
+    render() {
+
+        return (
+            <div>
+                {this.renderTab(this.state.tab)}
+            </div>
+        )
+    }
 
 }
 

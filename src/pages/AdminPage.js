@@ -132,7 +132,6 @@ class AdminPage extends Component{
             currentPage: 1,
             display: 10,
 
-
             Limit: "10",
             Offset: "0",
             serial: '',
@@ -239,8 +238,6 @@ class AdminPage extends Component{
             if (res.data) {
                 if (res.data.Confirmation === 'Success') {
 
-                    console.log('check: ', res.data);
-
                     let list = res.data.Response.Merchants;
                     for(let merchant of list){
                         merchant.PhoneNumber = merchant.PhoneNumber ? formattor.addFormatPhoneNumber(merchant.PhoneNumber.toString()) : null;                        
@@ -327,6 +324,7 @@ class AdminPage extends Component{
             merListOpenPop[i] = false;
         }
         merListOpenPop[idx] = false;
+
 
         this.setState({
             merListOpenPop: merListOpenPop
