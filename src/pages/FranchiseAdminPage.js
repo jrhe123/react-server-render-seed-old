@@ -29,7 +29,7 @@ import * as apiManager from '../helpers/apiManager';
 // Components
 import Loading from '../components/Loading';
 import FranchiseTransactions from '../components/FranchiseTransactions';
-import SettingPage from '../components/SettingPage';
+import FranchiseSettingPage from '../components/FranchiseSettingPage';
 
 
 class FranchiseAdminPage extends Component{
@@ -66,6 +66,11 @@ class FranchiseAdminPage extends Component{
 
         setTimeout(() => {
             if(!token){
+                localStorage.removeItem('token');
+                localStorage.removeItem('userTypeID');
+                localStorage.removeItem('agentID');
+                localStorage.removeItem('loginKeyword');
+                localStorage.removeItem('profileImage');
                 browserHistory.push(`${root_page}`);
             }else{
                 this.setState({
@@ -94,7 +99,7 @@ class FranchiseAdminPage extends Component{
     };
 
     logout = () => {
-        apiManager.opayApi(opay_url+'user/logout', null, true)
+        apiManager.opayApi(opay_url+'franchise/logout', null, true)
             .then((response) => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('userTypeID');
@@ -124,7 +129,7 @@ class FranchiseAdminPage extends Component{
         switch(tab) {
             case 'setting':
                 return (
-                    <SettingPage />
+                    <FranchiseSettingPage />
                 );
             case 'transactions':
                 return (

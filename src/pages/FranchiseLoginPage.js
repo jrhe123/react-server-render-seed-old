@@ -13,9 +13,8 @@ import { connect } from 'react-redux';
 import { showSnackbar }  from '../actions/layout_action';
 
 // Router
-import { browserHistory } from 'react-router';
-import { root_page, franchise_admin } from '../utilities/urlPath'
-
+import { browserHistory, Link } from 'react-router';
+import { root_page, franchise_admin, merchant_login } from '../utilities/urlPath'
 // API
 import { opay_url } from '../utilities/apiUrl';
 import * as apiManager from '../helpers/apiManager';
@@ -121,6 +120,10 @@ class FranchiseLoginPage extends Component{
         this.setState(updated);
     }
 
+    handleBackToMerchant = () => {
+        browserHistory.push(`${root_page}${merchant_login}`);
+    }
+
     login = () => {
 
         if(!this.state.agentID){
@@ -132,20 +135,19 @@ class FranchiseLoginPage extends Component{
         }else{
             let params = {
                 Params: {
-                    AgentID: this.state.agentID,
-                    LoginKeyword: this.state.userName,
+                    AgentID: this.state.agentID.trim(),
+                    LoginKeyword: this.state.userName.trim(),
                     Password: this.state.password
                 }
             };
-            apiManager.opayApi(opay_url+'user/login', params, false)
+            apiManager.opayApi(opay_url+'franchise/login', params, false)
                 .then((response) => {
                     if(response.data.Confirmation === 'Success'){
                         localStorage.setItem('token', response.data.Token);
                         localStorage.setItem('userTypeID', response.data.Response.UserTypeID);
-                        localStorage.setItem('agentID', this.state.agentID);
-                        localStorage.setItem('loginKeyword', this.state.userName);
+                        localStorage.setItem('agentID', this.state.agentID.trim());
+                        localStorage.setItem('loginKeyword', this.state.userName.trim());
                         localStorage.setItem('profileImage', response.data.Response.ProfileImage);
-                        localStorage.setItem('zoneType', response.data.Response.ZoneType);
                         browserHistory.push(`${root_page}${franchise_admin}`);
                     }else{
                         this.handleTouchTap(`${response.data.Message}`, false);
@@ -164,6 +166,7 @@ class FranchiseLoginPage extends Component{
             paperStyle,
             verticalCenter,
             loadingContainer,
+            rightUpper,
         } = styles;
 
         if(this.state.isLoading){
@@ -181,6 +184,8 @@ class FranchiseLoginPage extends Component{
                     <div id="google_translate_element" style={{float:'right'}}></div>
 
                     <Paper zDepth={3} style={Object.assign({}, this.state.paperSize, paperStyle )}>
+
+                        
 
                         <div style={verticalCenter}>
 
@@ -204,6 +209,9 @@ class FranchiseLoginPage extends Component{
                                           primary={true}
                                           style={this.state.loginBtnStyle}
                                           onClick={this.login} /> <br /> <br />
+
+                            <FlatButton label="Back" 
+                                        onClick={this.handleBackToMerchant} />
                         </div>
                     </Paper>
 
@@ -249,6 +257,13 @@ const styles = {
         width: '100vw',
         height: '100vh',
     },
+
+    rightUpper: {
+        float: 'right',
+        position: 'absolute',
+        right: 24,
+        top: 12
+    }
 
 }
 

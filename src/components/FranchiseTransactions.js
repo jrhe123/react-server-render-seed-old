@@ -48,18 +48,11 @@ class FranchiseTransactions extends Component{
     constructor(props) {
         super(props);
         this.handleChangePage = this.handleChangePage.bind(this);
-        this.fetchTransaction = this.fetchTransaction.bind(this);
         this.handleActionOpen = this.handleActionOpen.bind(this);
         this.handleActionClose = this.handleActionClose.bind(this);
-        this.handleRefund = this.handleRefund.bind(this);
-        this.handleConfirmRefund = this.handleConfirmRefund.bind(this);
-        this.handleRefundClose = this.handleRefundClose.bind(this);
-        this.onRefundChange = this.onRefundChange.bind(this);
-        this.handleReasonChange = this.handleReasonChange.bind(this);
         this.handleDetail = this.handleDetail.bind(this);
         this.handleMerchantChange = this.handleMerchantChange.bind(this);
-        this.fetchMerchantTransaction = this.fetchMerchantTransaction.bind(this);
-        this.export = this.export.bind(this);
+        this.exportCSV = this.exportCSV.bind(this);
         this.state = {
 
             zoneType: 'EST',
@@ -76,18 +69,13 @@ class FranchiseTransactions extends Component{
             display: 10,
 
             anchorEl: null,
-            refundModalOpen: false,
-            refundTran: {},
-            refundAmount: '',
-            refundReason: '',
-            refundErrMsg: '',
-
             viewModalOpen: false,
             viewTran: {},
             viewParentTran: {},
 
             transactionType: 'ALL',
-            merchant: 'MERCHANT',
+            merchant: '@',
+            selectedMerchants: [],
             merchantList: [],
             fromDate: null,
             endDate: null
@@ -100,11 +88,8 @@ class FranchiseTransactions extends Component{
         this.setState({
             zoneType
         })
-        this.fetchTransaction(1, 'ALL', null);
-    }
-
-    export = () => {
-
+        this.fetchTransaction(1, 'ALL', null, []);
+        this.fetchAssignMerchantList();
     }
 
     // Snack
@@ -122,6 +107,83 @@ class FranchiseTransactions extends Component{
         });
     };
 
+    fetchAssignMerchantList = () => {
+
+        let params = {
+            Params: {
+                Limit: '-1',
+                Offset: "0",
+                Extra: {}
+            }
+        };
+        apiManager.opayApi(opay_url+'franchise/assign_merchant_list', params, true)
+            .then((response) => {
+                let res = response.data.Response;
+                let { MerchantList } = res;
+                this.setState({
+                    merchantList: MerchantList
+                })
+            })
+            .catch((error) => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userTypeID');
+                localStorage.removeItem('agentID');
+                localStorage.removeItem('loginKeyword');
+                localStorage.removeItem('profileImage');
+                browserHistory.push(`${root_page}`);
+            })
+    }
+
+    exportCSV = () => {
+
+        let transactionField, timerange, merchant;
+        transactionField = this.state.transactionType;
+        if(this.state.fromDate && this.state.endDate){
+            timerange = this.state.fromDate+'|'+this.state.endDate;
+        }
+        merchant = this.state.selectedMerchants;
+
+        let params = {
+            Params: {
+                Limit: "-1",
+                Offset: "0",
+                Extra: {
+                    TransactionType: "TransactionType",
+                    TransactionField: transactionField,
+                    SearchType: "TIMERANGE",
+                    SearchField: timerange ? timerange : "",
+                    Merchants: merchant
+                }
+            }
+        };
+
+        apiManager.opayCsvApi(opay_url+'franchise/export_transactions', params, true)
+            .then((response) => {
+                
+                if(response.data){
+                    
+                    let csvString = response.data;
+                    var blob = new Blob([csvString]);
+                    if (window.navigator.msSaveOrOpenBlob)  
+                        window.navigator.msSaveBlob(blob, "report.csv");
+                    else
+                    {
+                        var a = window.document.createElement("a");
+                        a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
+                        a.download = "report.csv";
+                        document.body.appendChild(a);
+                        a.click(); 
+                        document.body.removeChild(a);
+                    }
+                }else{
+                    this.handleTouchTap(`${response.data.Message}`, false);
+                }
+            })
+            .catch((error) => {
+                this.handleTouchTap(`Error: ${error}`, false);
+            })        
+    }
+
     handleChangePage = (page) => {
         this.setState({
             currentPage: page
@@ -131,13 +193,33 @@ class FranchiseTransactions extends Component{
         if(this.state.fromDate && this.state.endDate){
             timerange = this.state.fromDate+'|'+this.state.endDate;
         }
-        this.fetchTransaction(page, this.state.transactionType, timerange);
+        this.fetchTransaction(page, this.state.transactionType, timerange, this.state.selectedMerchants);
     }
 
     handleMerchantChange = (event, index, value) => {
+
+        let selectedMerchants = [];
+        let isExist = false;
+        for(let v of value){
+            if(v != "@"){
+                selectedMerchants.push(v);
+            }else{
+                isExist = true;
+            }
+        }
+
+        if(isExist && value.length > 1){
+            for(let i = 0; i < value.length; i++){
+                if(value[i] == '@'){
+                    value.splice(i, 1);
+                }
+            }
+        }
+
         this.setState({
             currentPage: 1,
-            merchant: value
+            merchant: value,
+            selectedMerchants: selectedMerchants
         })
 
         if (index === 0) return;
@@ -146,8 +228,8 @@ class FranchiseTransactions extends Component{
         if(this.state.fromDate && this.state.endDate){
             timerange = this.state.fromDate+'|'+this.state.endDate;
         }
-
-        this.fetchMerchantTransaction(1, index, timerange);
+        
+        this.fetchTransaction(1, this.state.transactionType, timerange, selectedMerchants);
     }
 
     handleTransactionTypeChange = (event, index, value) => {
@@ -160,7 +242,7 @@ class FranchiseTransactions extends Component{
         if(this.state.fromDate && this.state.endDate){
             timerange = this.state.fromDate+'|'+this.state.endDate;
         }
-        this.fetchTransaction(1, value, timerange);
+        this.fetchTransaction(1, value, timerange, this.state.selectedMerchants);
     }
 
     handleChangeDate = (date, field) => {
@@ -174,7 +256,7 @@ class FranchiseTransactions extends Component{
             if(this.state.endDate){
                 timerange = formatted+'|'+this.state.endDate;
             }
-            this.fetchTransaction(1, this.state.transactionType, timerange);
+            this.fetchTransaction(1, this.state.transactionType, timerange, this.state.selectedMerchants);
         }else{
             let formatted = moment(date).tz('America/Toronto').hour(23).minute(59).second(59).format('YYYY-MM-DD HH:mm:ss');
             this.setState({
@@ -183,7 +265,7 @@ class FranchiseTransactions extends Component{
             if(this.state.fromDate){
                 timerange = this.state.fromDate+'|'+formatted;
             }
-            this.fetchTransaction(1, this.state.transactionType, timerange);
+            this.fetchTransaction(1, this.state.transactionType, timerange, this.state.selectedMerchants);
         }
     }
 
@@ -193,14 +275,10 @@ class FranchiseTransactions extends Component{
             endDate: null,
             currentPage: 1,
         })
-        this.fetchTransaction(1, this.state.transactionType, null);
+        this.fetchTransaction(1, this.state.transactionType, null, this.state.selectedMerchants);
     }
 
-    fetchMerchantTransaction = (page, idx, timerange) => {
-
-    }
-
-    fetchTransaction = (page, transactionField, timerange) => {
+    fetchTransaction = (page, transactionField, timerange, merchant) => {
         let offset = (page - 1) * parseInt(this.state.Limit);
         let params = {
             Params: {
@@ -210,16 +288,16 @@ class FranchiseTransactions extends Component{
                     TransactionType: "TransactionType",
                     TransactionField: transactionField,
                     SearchType: "TIMERANGE",
-                    SearchField: timerange ? timerange : ""
+                    SearchField: timerange ? timerange : "",
+                    Merchants: merchant
                 }
             }
         };
 
-        apiManager.opayApi(opay_url+'merchant/transaction_list', params, true)
+        apiManager.opayApi(opay_url+'franchise/transactions', params, true)
             .then((response) => {
                 let res = response.data.Response;
                 let { TotalRecords, Transactions } = res;
-
                 for(let tran of Transactions){
                     tran.OperatorName = (tran.FirstName ? formattor.capitalStr(tran.FirstName): '')+" "+(tran.LastName ? formattor.capitalStr(tran.LastName): '');
                     tran.DisplayAmount = tran.Currency == 'CNY' ? (parseFloat(tran.Amount) / parseFloat(tran.Rate)).toFixed(2) : (tran.Amount).toFixed(2);
@@ -280,160 +358,6 @@ class FranchiseTransactions extends Component{
             anchorEl: null,
             transactionList: updated
         })
-    }
-
-    handleRefund = (tran, idx) => {
-        let updated =  Object.assign([], this.state);
-        updated.transactionList[idx].IsOpen = false;
-        updated.refundModalOpen = true;
-
-        if(tran.Platform == 'ALIPAY'){
-            tran.DisplayRefundedAmount = (parseFloat(tran.AccountRefundedAmount) / parseFloat(tran.Rate)).toFixed(2);
-        }else{
-            tran.DisplayRefundedAmount = (parseFloat(tran.AccountRefundedAmount) / 100).toFixed(2);
-        }
-        updated.refundTran = tran;
-        this.setState(updated);
-    }
-
-    onRefundChange = (e,value) => {
-        e.preventDefault();
-        this.setState({
-            refundAmount: value
-        });
-    }
-
-    handleReasonChange = (e) => {
-        this.setState({
-            refundReason: e.target.value
-        });
-    }
-
-    onFieldBlur = (field, e) => {
-
-        let value = e.target.value;
-        let formatted = parseFloat((' ' + value).slice(1)).toFixed(2);
-        if(field === 'refundAmount'){
-            if(!value){
-                let updated = Object.assign({}, this.state);
-                updated.refundErrMsg = "invalid refund amount";
-                this.setState(updated);
-            }else if(!isNumeric(formatted)){
-                let updated = Object.assign({}, this.state);
-                updated.refundErrMsg = "invalid refund amount";
-                this.setState(updated);
-            }else if(formatted > parseFloat(this.state.refundTran.DisplayAmount)){
-                let updated = Object.assign({}, this.state);
-                updated.refundErrMsg = "refund amount cannot exceed the maximum amount";
-                this.setState(updated);
-            }else if(formatted == 0){
-                let updated = Object.assign({}, this.state);
-                updated.refundErrMsg = "refund amount must be greater than 0";
-                this.setState(updated);
-            }else{
-                let updated = Object.assign({}, this.state);
-                updated.refundErrMsg = "";
-                updated.refundAmount = formatted;
-                this.setState(updated);
-            }
-        }
-    }
-
-    handleConfirmRefund = () => {
-
-        let { refundAmount, refundReason } = this.state;
-        let { AccountAmount, GUID, Platform, Currency, Rate, Status } = this.state.refundTran;
-        if(!refundAmount){
-            this.handleTouchTap('Please enter refund amount', false);
-            return;
-        }else if(!isNumeric(refundAmount)){
-            this.handleTouchTap('Refund amount is invalid', false);
-            return;
-        }else if(refundAmount > this.state.refundTran.DisplayAmount){
-            this.handleTouchTap('Refund amount cannot be greater than transaction amount', false);
-            return;
-        }else if(refundAmount == 0){
-            this.handleTouchTap('Refund amount must be greater than 0', false);
-            return;
-        }else if(!refundReason){
-            this.handleTouchTap('Please enter refund reason', false);
-            return;
-        }else if(!GUID){
-            this.handleTouchTap('Invalid transaction', false);
-            return;
-        }else if(Platform != 'ALIPAY' && Platform != 'WECHAT'){
-            this.handleTouchTap('Invalid transaction type', false);
-            return;
-        }else if(!Rate){
-            this.handleTouchTap('Invalid transaction rate', false);
-            return;
-        }else if(Status != 'Success'){
-            this.handleTouchTap('Invalid transaction status', false);
-            return;
-        }
-
-        let params = null;
-        if(Platform === 'ALIPAY'){
-            let formattedRefundAmount = (parseFloat(refundAmount) * parseFloat(Rate)).toFixed(2);
-
-            if(Math.abs(AccountAmount - formattedRefundAmount) < 0.1){
-                formattedRefundAmount = AccountAmount;
-            }
-            if(formattedRefundAmount < 0.1){
-                formattedRefundAmount = 0.1;
-            }
-            params = {
-                Params: {
-                    AliTransactionGUID: GUID,
-                    Currency: "CNY",
-                    TransCurrency: "CAD",
-                    RefundAmount: formattedRefundAmount,
-                    Reason: refundReason
-                }
-            };
-        }else{
-            params = {
-                Params: {
-                    WechatTransactionGUID: GUID,
-                    Currency: "CAD",
-                    TransCurrency: "CNY",
-                    RefundAmount: refundAmount,
-                    Reason: refundReason
-                }
-            };
-        }
-
-        let refundUrl = Platform === 'ALIPAY' ? 'alipay/merchant_refund' : 'wechat/merchant_refund';
-        apiManager.opayApi(opay_url+refundUrl, params, true)
-            .then((response) => {
-
-                let res = response.data;
-                if(res.Confirmation === 'Success'){
-
-                    let updated = Object.assign({}, this.state);
-                    updated.refundModalOpen = false;
-                    updated.refundTran = {};
-                    updated.refundAmount = '';
-                    updated.refundReason = '';
-                    this.setState(updated);
-                    this.handleTouchTap(`Transaction has been refund`, true);
-
-                    let timerange = null;
-                    if(this.state.fromDate && this.state.endDate){
-                        timerange = this.state.fromDate+'|'+this.state.endDate;
-                    }
-                    this.fetchTransaction(this.state.currentPage, this.state.transactionType, timerange);
-                }else{
-                    this.handleTouchTap(`${res.Message}`, false);
-                }
-            })
-            .catch((error) => {
-                this.handleTouchTap(`Error: ${error}`, false);
-            })
-    }
-
-    handleRefundClose = () => {
-        this.setState({refundModalOpen: false});
     }
 
     handleDetail = (tran, idx) => {
@@ -507,14 +431,39 @@ class FranchiseTransactions extends Component{
             btnControl,
             detailPlatform,
             msgContainer,
-            upperRight,
+            exportBtn,
         } = styles;
 
         return (
             <MuiThemeProvider>
-                <div style={searchContainer}>
 
-                    <RaisedButton label="Export" primary={true} style={upperRight} onclick={() => this.export()}/>
+                <div style={exportBtn}>
+                    <RaisedButton label="Export" primary={true} onClick={() => this.exportCSV()}/>
+                </div>
+
+                <div style={Object.assign({}, searchContainer, {marginLeft: 24, marginRight: 24, marginBottom: 12})}>
+                    <SelectField
+                        className="ui-search-select"
+                        style={{
+                            float: 'right',
+                            height: '36px',
+                            width: '100%',
+                            background: '#fff',
+                            boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
+                        }}
+                        hintText="Select a merchant.."
+                        underlineStyle={{display: 'none'}}
+                        multiple={true}
+                        value={this.state.merchant}
+                        onChange={(event, index, value) => this.handleMerchantChange(event, index, value)}>
+                        <MenuItem value="@" label="All Merchants" primaryText="All Merchants" />
+                        {this.state.merchantList.map((merchant) => (
+                            <MenuItem value={merchant.UserGUID} label={merchant.FirstName +"("+ merchant.AgentID + ")"} primaryText={merchant.FirstName +"("+ merchant.AgentID + ")"} />
+                        ))}
+                    </SelectField>
+                </div>
+
+                <div style={Object.assign({}, searchContainer, {marginTop: 24})}>
 
                     <RaisedButton icon={ (this.state.fromDate && this.state.endDate) ?
                         <ContentClear />
@@ -576,25 +525,10 @@ class FranchiseTransactions extends Component{
                         <MenuItem value="ALIPAY" label="Alipay" primaryText="Alipay" />
                         <MenuItem value="WECHAT" label="Wechat" primaryText="Wechat" />
                     </SelectField>
-                    <SelectField
-                        className="ui-search-select"
-                        style={{
-                            float: 'right',
-                            width: 120,
-                            height: '36px',
-                            background: '#fff',
-                            boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
-                        }}
-                        underlineStyle={{display: 'none'}}
-                        value={this.state.merchant}
-                        onChange={(event, index, value) => this.handleMerchantChange(event, index, value)}>
-                        <MenuItem value="MERCHANT" label="MERCHAT" primaryText="MERCHANT" />
-                        {this.state.merchantList.map((merchant) => (
-                            <MenuItem value={merchant} label={merchant} primaryText={merchant} />
-                        ))}
-                    </SelectField>
+                    
                 </div>
-                <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
+                
+                <Card style={{width: 'calc(100% - 48px)', margin: '24px auto', marginTop: 24}}>
 
                     {
                         this.state.transactionList.length > 0 ?
@@ -644,15 +578,6 @@ class FranchiseTransactions extends Component{
                                                         targetOrigin={{horizontal: 'left', vertical: 'top'}}
                                                         animation={PopoverAnimationVertical}>
                                                         <Menu>
-                                                            {
-                                                                (tran.Type !== 'REFUND' && tran.Status === 'Success') ?
-                                                                    (
-                                                                        null
-                                                                        // <MenuItem primaryText="Refund" onClick={() => this.handleRefund(tran, idx)}/>
-                                                                    )
-                                                                    :
-                                                                    (null)
-                                                            }
                                                             <MenuItem primaryText="Detail" onClick={() => this.handleDetail(tran, idx)}/>
                                                         </Menu>
                                                     </Popover>
@@ -680,64 +605,7 @@ class FranchiseTransactions extends Component{
                             onChange = { currentPage => this.handleChangePage(currentPage) }
                         />
                     </div>
-                </Card>
-
-
-                <Dialog
-                    className="refund-modal"
-                    title="Refund Transaction"
-                    modal={false}
-                    open={this.state.refundModalOpen}
-                    onRequestClose={this.handleRefundClose.bind(this)}
-                >
-                    <div style={{marginBottom: 36}}>
-                        <p style={{fontSize: 15, color: '#000'}}>
-                            <span style={{color: '#8C8C8C'}}>Platform: </span>
-                            {
-                                this.state.refundTran.Platform === 'ALIPAY' ?
-                                    (<img style={detailPlatform} src="/img/ali_r.png" />)
-                                    :
-                                    (<img style={detailPlatform} src="/img/wechat_r.png" />)
-                            }
-                        </p>
-                        <p style={{fontSize: 15, color: '#000'}}>
-                            <span style={{color: '#8C8C8C', marginRight: 6}}>Transaction amount: </span>
-                            ${ this.state.refundTran.DisplayAmount }
-                        </p>
-                        <p style={{fontSize: 15, color: '#000'}}>
-                            <span style={{color: '#8C8C8C', marginRight: 6}}>Refunded amount: </span>
-                            ${ this.state.refundTran.DisplayRefundedAmount }
-                        </p>
-                    </div>
-                    <Divider style={{marginBottom: 36}} />
-                    <div style={{marginBottom: 24}}>
-                        <p style={{marginBottom: 0}}>Refund Amount:</p>
-                        <div style={{position: 'relative', display: 'inline-block'}}>
-                            <EditorAttachMoney style={{position: 'absolute', left: 0, top: 15, width: 20, height: 20}}/>
-                            <TextField floatingLabelText=""
-                                       style={{paddingLeft: 18}}
-                                       value={this.state.refundAmount}
-                                       type="number"
-                                       onBlur={this.onFieldBlur.bind(this, 'refundAmount')}
-                                       errorText={this.state.refundErrMsg}
-                                       onChange={(e, value) => this.onRefundChange(e,value)}
-                            />
-                        </div>
-                    </div>
-                    <div style={{marginBottom: 24}}>
-                        <p style={{marginBottom: 6}}>Refund Reason:</p>
-                        <textarea
-                            onChange={(e) => this.handleReasonChange(e)}
-                            value={this.state.refundReason}
-                            placeholder="Please enter refund reason.."
-                            style={msgContainer} />
-                    </div>
-                    <div style={btnControl}>
-                        <RaisedButton label="Refund"
-                                      primary={true}
-                                      onClick={() => this.handleConfirmRefund()} />
-                    </div>
-                </Dialog>
+                </Card>               
 
 
                 <Dialog
@@ -834,7 +702,7 @@ class FranchiseTransactions extends Component{
                     <div style={btnControl}>
                         <RaisedButton label="Confirm"
                                       primary={true}
-                                      onClick={() => console.log('hit')} />
+                                      onClick={() => this.handleViewClose()} />
                     </div>
                 </Dialog>
 
@@ -880,7 +748,7 @@ const styles = {
     },
     searchContainer:{
         height: 36,
-        marginTop: 24
+        marginTop: 72
     },
     datepicker:{
         position: 'relative',
@@ -916,10 +784,11 @@ const styles = {
         padding: 12
     },
 
-    upperRight: {
+    exportBtn: {
         float: 'right',
-        marginRight: '1vw',
-
+        marginRight: 24,
+        marginTop: 18,
+        marginBottom: 18
     }
 }
 
