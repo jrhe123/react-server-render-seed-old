@@ -38,9 +38,12 @@ class PosList extends Component {
             Limit: "10",
             Offset: "0",
             serial: '',
+            routerNumber: '',
+            iccid: '',
+
             totalRecords: 0,
             currentPage: 1,
-            tableField: ['#', 'Serial', 'Status', 'CreatedAt', 'UpdatedAt'],
+            tableField: ['#', 'Serial', 'RouterNumber', 'ICCID', 'Status', 'Timestamp'],
             posList: [],
             display: 10,
             modalOpen: false,
@@ -79,10 +82,14 @@ class PosList extends Component {
 
         let UserGUID = this.state.UserGUID;
         let serial = this.state.serial;
+        let routerNumber = this.state.routerNumber;
+        let iccid = this.state.iccid;
 
         let params = { Params: {
                 UserGUID: UserGUID,
-                Serial: serial
+                Serial: serial,
+                RouterNumber: routerNumber,
+                ICCID: iccid
             }
         };
 
@@ -141,8 +148,10 @@ class PosList extends Component {
         });
     }
 
-    onFieldChange = (e, value) => {
-        this.setState({ serial: value })
+    onFieldChange = (e, value, field) => {
+        let updated = Object.assign({}, this.state);
+        updated[field] = value;
+        this.setState(updated);
     }
 
     handleClose = () => {
@@ -183,9 +192,10 @@ class PosList extends Component {
                                     <TableRow key={pos.PosGUID} selectable={false}>
                                         <TableRowColumn style={tableCellStyle}>{idx + 1}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{pos.Serial}</TableRowColumn>
+                                        <TableRowColumn style={tableCellStyle}>{pos.RouterNumber}</TableRowColumn>
+                                        <TableRowColumn style={tableCellStyle}>{pos.ICCID}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{pos.Status}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{pos.CreatedAt}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{pos.UpdatedAt}</TableRowColumn>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -212,7 +222,15 @@ class PosList extends Component {
                         <div>
                             <div style={formControl}>
                                 <TextField floatingLabelText="Serial Number"
-                                           onChange={(e, value) => this.onFieldChange(e,value)} />
+                                           onChange={(e, value) => this.onFieldChange(e,value, 'serial')} />
+                            </div>
+                            <div style={formControl}>
+                                <TextField floatingLabelText="Router Number (optional)"
+                                           onChange={(e, value) => this.onFieldChange(e,value, 'routerNumber')} />
+                            </div>
+                            <div style={formControl}>
+                                <TextField floatingLabelText="ICCID (optional)"
+                                           onChange={(e, value) => this.onFieldChange(e,value, 'iccid')} />
                             </div>
                             <div style={btnControl}>
                                 <RaisedButton label="Add" primary={true} onClick={this.addPos} />
