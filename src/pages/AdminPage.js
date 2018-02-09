@@ -94,6 +94,11 @@ class AdminPage extends Component{
             rateMer: '',
             rateErr: '',
 
+            hst: '',
+            hstModalOpen: false,
+            hstMer: '',
+            hstErr: '',
+
             timeZoneModalOpen: false,
             timeZoneMer: null,
             timeZoneList: ['EST', 'PST'],
@@ -140,7 +145,7 @@ class AdminPage extends Component{
             hideFirstAndLastPageLinks: false, hideEllipsis: false,
             merListOpenPop: [false],
             merListAnEl: [null],
-            merListTitle: ['AgentID', 'Merchant', 'Email', 'Phone', 'Status', 'Sales', 'Rate(%)', 'Action'],
+            merListTitle: ['AgentID', 'Merchant', 'Email', 'Phone', 'Status', 'Sales', 'Rate(%)', 'HST#', 'Action'],
             salesListTitle: ['Name', 'Phone','Email','Status','Action'],
             merList: [],
             UserGUID: '',
@@ -178,6 +183,7 @@ class AdminPage extends Component{
             rateModalOpen: false,
             bankModalOpen: false,
             salesModalOpen: false,
+            hstModalOpen: false,
         })
     }
 
@@ -436,6 +442,8 @@ class AdminPage extends Component{
             else this.setState({ Institution: value, InstitutionErr: '' });
         } else if(field === 'WID'){
             this.setState({ selecctedWID: value });
+        } else if(field === 'HST'){
+            this.setState({ hst: value });
         } else{
             let updated = Object.assign({}, this.state);
             let value = e.target.value;
@@ -865,6 +873,47 @@ class AdminPage extends Component{
         });
     }
 
+    updateHST = (idx, merchant) => {
+        let updated = Object.assign({}, this.state);
+        updated.merListOpenPop[idx] = false;
+        this.setState(updated);
+        this.closeAllModal();
+        this.setState({ hstModalOpen: true, hstMer: merchant });
+    }
+
+    handleHSTClose = (e) => {
+        this.setState({ hstModalOpen: false, hstMer: '', hst: '', hstErr: '' })
+    }
+
+    hstChange = () => {
+
+        if (!this.state.hst) {
+            this.setState({ hstErr: 'HSTNumber is required' });
+            return
+        }
+        let params = {
+            Params: {
+                UserGUID: this.state.hstMer.UserGUID,
+                HSTNumber: this.state.hst
+            }
+        };
+        apiManager.opayApi(opay_url + 'admin/update_merchant_hst', params,true).then((res) => {
+
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+                    this.getMerList(this.state.currentPage);
+                    this.handleTouchTap(`Success`, true);
+                    this.handleHSTClose();
+                }else{
+                    this.handleTouchTap(`Error: ${res.data.Message}`, false);
+                }
+            }
+        }).catch((err) => {
+            localStorage.removeItem('token');
+            browserHistory.push(`${root_page}`);
+        });
+    }
+
     handleSalesClose = () => {
         this.setState({ salesModalOpen: false })
     }
@@ -1230,6 +1279,7 @@ class AdminPage extends Component{
                                                 <TableRowColumn style={tableCellStyle}>{msg.Status === 'ACTIVE' ? 'ACTIVE' : 'PENDING'}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{(msg.SalesFirstName ? msg.SalesFirstName : '') + ' ' + (msg.SalesLastName ? msg.SalesLastName : '')}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{(parseFloat(msg.MerchantRate) * 100.0).toFixed(2)}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{msg.HSTNumber}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}><div style={{textAlign: 'center'}}>
                                                     <RaisedButton
                                                         onClick={(e) => this.handleAction(e, idx)}
@@ -1269,6 +1319,7 @@ class AdminPage extends Component{
                                                             }
                                                             <MenuItem primaryText="Bank Account" onClick={() => this.openBankSetting(idx, msg)}/>
                                                             { this.state.UserTypeID === '1' ? <MenuItem primaryText="Update Rate" onClick={() => this.updateRate(idx, msg)}/> : '' }
+                                                            { this.state.UserTypeID === '1' ? <MenuItem primaryText="Update HST" onClick={() => this.updateHST(idx, msg)}/> : '' }
                                                             { this.state.UserTypeID === '1' ? <MenuItem primaryText="Assign To Sales" onClick={() => this.assignToSales(idx, msg)}/> : ''}
                                                             <MenuItem primaryText="Wechat ID" onClick={() => this.openWIDSetting(idx, msg)}/>
                                                             <MenuItem primaryText="TimeZone" onClick={() => this.openTimeZoneSetting(idx, msg)}/>
@@ -1465,6 +1516,19 @@ class AdminPage extends Component{
                                     </div>
                                     <div style={btnControl}>
                                         <RaisedButton label="Confirm" primary={true} onClick={this.rateChange}/>
+                                    </div>
+                                </div>
+                            </Dialog>
+
+                            <Dialog title="Change HST Number" modal={false} open={this.state.hstModalOpen}
+                                    onRequestClose={this.handleHSTClose.bind(this)}>
+                                <div>
+                                    <div style={formControl}>
+                                        <TextField floatingLabelText="HST" errorText={this.state.hstErr}
+                                                   onChange={(e, value) => this.onFieldChange(e, value, 'HST')}/><br/>
+                                    </div>
+                                    <div style={btnControl}>
+                                        <RaisedButton label="Confirm" primary={true} onClick={this.hstChange}/>
                                     </div>
                                 </div>
                             </Dialog>
