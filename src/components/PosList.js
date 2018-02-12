@@ -6,6 +6,10 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Pagination from 'material-ui-pagination';
 import { green400, pinkA400 } from 'material-ui/styles/colors';
@@ -43,7 +47,18 @@ class PosList extends Component {
 
             totalRecords: 0,
             currentPage: 1,
-            tableField: ['#', 'Serial', 'RouterNumber', 'ICCID', 'Status', 'Timestamp'],
+            posListOpenPop: [false],
+            posListAnEl: [null],
+
+            deletePosModalOpen: false,
+            deletePos: {},
+            deletePosIdx: null,
+
+            updatePosModalOpen: false,
+            updatePos: {},
+            updatePosIdx: null,
+
+            tableField: ['#', 'Serial', 'RouterNumber', 'ICCID', 'Status', 'Timestamp', 'Action'],
             posList: [],
             display: 10,
             modalOpen: false,
@@ -53,6 +68,7 @@ class PosList extends Component {
         this.handleChangePage = this.handleChangePage.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.addPos = this.addPos.bind(this);
+        this.handleAction = this.handleAction.bind(this);
     }
 
     // Snack
@@ -154,6 +170,14 @@ class PosList extends Component {
         this.setState(updated);
     }
 
+    onUpdateFieldChange = (e, value, field) => {
+        let updatePos = Object.assign({}, this.state.updatePos);
+        updatePos[field] = value;
+        this.setState({
+            updatePos
+        });
+    }
+
     handleClose = () => {
         this.setState({modalOpen: false});
     }
@@ -166,6 +190,149 @@ class PosList extends Component {
         this.props.OnBack();
     }
 
+    handleAction = (event,idx) => {
+
+        event.preventDefault();
+
+        let posListOpenPop = [];
+        let posListAnEl = [];
+
+        for (let i = 0;i < this.state.posListOpenPop.length;i++) {
+            posListOpenPop[i] = this.state.posListOpenPop[i];
+        }
+
+        for (let i = 0;i < this.state.posListAnEl.length;i++) {
+            posListAnEl[i] = this.state.posListAnEl[i];
+        }
+
+        posListOpenPop[idx] = true;
+        posListAnEl[idx] = event.currentTarget;
+
+        this.setState({
+            posListOpenPop: posListOpenPop,
+            posListAnEl: posListAnEl,
+        });
+    }
+
+    handleRequestClose = (idx) => {
+
+        let posListOpenPop = [];
+
+        for (let i = 0;i < this.state.posListOpenPop.length;i++) {
+            posListOpenPop[i] = false;
+        }
+        posListOpenPop[idx] = false;
+
+        this.setState({
+            posListOpenPop: posListOpenPop
+        })
+    }
+
+    deletePos = (idx, pos) => {
+
+        let posListOpenPop = [];
+        for (let i = 0;i < this.state.posListOpenPop.length;i++) {
+            posListOpenPop[i] = false;
+        }
+        posListOpenPop[idx] = false;
+
+        this.setState({
+            deletePosModalOpen: true,
+            deletePos: pos,
+            deletePosIdx: idx,
+            posListOpenPop: posListOpenPop
+        })
+    }
+
+    handlePosDeleteClose = () => {
+        this.setState({
+            deletePosModalOpen: false
+        });
+    };
+
+    confirmDeletePos = () => {
+
+        let { PosGUID } = this.state.deletePos;
+        let params = { 
+            Params: {
+                PosGUID: PosGUID
+            }
+        };
+
+        apiManager.opayApi(opay_url + 'admin/delete_merchant_pos', params,true).then((res) => {
+
+            if (res.data) {
+                if (res.data.Confirmation === 'Fail') {
+                    this.handleTouchTap(`${res.data.Message}`, false);
+                } else if (res.data.Confirmation === 'Success') {
+
+                    this.setState({
+                        deletePosModalOpen: false
+                    });
+                    this.handleTouchTap(`Pos has been deleted`, true);
+                    this.getPosList(this.state.page);// may have problem when the current page contains 10 item
+                }
+            }
+        }).catch((err) => {
+            localStorage.removeItem('token');
+            browserHistory.push(`${root_page}`);
+        });
+    }
+
+    updatePos = (idx, pos) => {
+
+        let posListOpenPop = [];
+        for (let i = 0;i < this.state.posListOpenPop.length;i++) {
+            posListOpenPop[i] = false;
+        }
+        posListOpenPop[idx] = false;
+
+        this.setState({
+            updatePosModalOpen: true,
+            updatePos: pos,
+            updatePosIdx: idx,
+            posListOpenPop: posListOpenPop
+        })
+    }
+
+    handlePosUpdateClose = () => {
+        this.setState({
+            updatePosModalOpen: false
+        });
+    };
+
+    confirmUpdatePos = () => {
+
+        let { PosGUID, Serial, RouterNumber, ICCID } = this.state.updatePos;
+        let params = { 
+            Params: {
+                PosGUID: PosGUID,
+                Serial: Serial,
+                RouterNumber: RouterNumber,
+                ICCID: ICCID
+            }
+        };
+
+        apiManager.opayApi(opay_url + 'admin/update_merchant_pos', params,true).then((res) => {
+
+            if (res.data) {
+                if (res.data.Confirmation === 'Fail') {
+                    this.handleTouchTap(`${res.data.Message}`, false);
+                } else if (res.data.Confirmation === 'Success') {
+
+                    this.setState({
+                        updatePosModalOpen: false
+                    });
+                    this.handleTouchTap(`Pos has been updated`, true);
+                    this.getPosList(this.state.page);// may have problem when the current page contains 10 item
+                }
+            }
+        }).catch((err) => {
+            localStorage.removeItem('token');
+            browserHistory.push(`${root_page}`);
+        });
+    }
+
     render() {
 
         const {
@@ -174,6 +341,19 @@ class PosList extends Component {
             btnControl,
             backBtn
         } = styles;
+
+        const deleteActions = [
+            <FlatButton
+                label="YES, DELETE IT"
+                primary={true}
+                onClick={() => this.confirmDeletePos()}
+            />,
+            <FlatButton
+                label="NO, KEEP IT"
+                primary={true}
+                onClick={() => this.handlePosDeleteClose()}
+            />,
+        ];
 
         return (
             <MuiThemeProvider>
@@ -196,6 +376,24 @@ class PosList extends Component {
                                         <TableRowColumn style={tableCellStyle}>{pos.ICCID}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{pos.Status}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{pos.CreatedAt}</TableRowColumn>
+                                        <TableRowColumn style={tableCellStyle}>
+                                            <RaisedButton
+                                                onClick={(e) => this.handleAction(e, idx)}
+                                                label='ACTION'
+                                                />
+                                            <Popover
+                                                onRequestClose={(e, idx) => this.handleRequestClose(idx)}
+                                                open={this.state.posListOpenPop[idx]}
+                                                anchorEl={this.state.posListAnEl[idx]}
+                                                anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                                                targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                                animation={PopoverAnimationVertical}>
+                                                <Menu>
+                                                    <MenuItem primaryText="Update" onClick={() => this.updatePos(idx, pos)}/>
+                                                    <MenuItem primaryText="Delete" onClick={() => this.deletePos(idx, pos)}/>
+                                                </Menu>
+                                            </Popover>
+                                        </TableRowColumn>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -236,6 +434,43 @@ class PosList extends Component {
                                 <RaisedButton label="Add" primary={true} onClick={this.addPos} />
                             </div>
                         </div>
+                    </Dialog>
+
+                    <Dialog title="Update POS" modal={false} open={this.state.updatePosModalOpen}
+                        onRequestClose={this.handlePosUpdateClose.bind(this)}
+                    >
+                        <div>
+                            <div style={formControl}>
+                                <TextField 
+                                    floatingLabelText="Serial Number"
+                                    value={this.state.updatePos ? this.state.updatePos.Serial : ""}
+                                    onChange={(e, value) => this.onUpdateFieldChange(e,value, 'Serial')} />
+                            </div>
+                            <div style={formControl}>
+                                <TextField 
+                                    floatingLabelText="Router Number (optional)"
+                                    value={this.state.updatePos ? this.state.updatePos.RouterNumber : ""}
+                                    onChange={(e, value) => this.onUpdateFieldChange(e,value, 'RouterNumber')} />
+                            </div>
+                            <div style={formControl}>
+                                <TextField 
+                                    floatingLabelText="ICCID (optional)"
+                                    value={this.state.updatePos ? this.state.updatePos.ICCID : ""}
+                                    onChange={(e, value) => this.onUpdateFieldChange(e,value, 'ICCID')} />
+                            </div>
+                            <div style={btnControl}>
+                                <RaisedButton label="Update" primary={true} onClick={this.confirmUpdatePos} />
+                            </div>
+                        </div>
+                    </Dialog>
+
+                    <Dialog
+                        title="Delete Pos"
+                        actions={deleteActions}
+                        modal={true}
+                        open={this.state.deletePosModalOpen}
+                        >
+                        Are you sure you want to delete this POS?
                     </Dialog>
 
                 </div>
