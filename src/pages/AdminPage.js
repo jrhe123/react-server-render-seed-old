@@ -162,7 +162,7 @@ class AdminPage extends Component{
             hideFirstAndLastPageLinks: false, hideEllipsis: false,
             merListOpenPop: [false],
             merListAnEl: [null],
-            merListTitle: ['AgentID', 'Merchant', 'Email', 'Phone', 'Status', 'Sales', 'Rate(%)', 'HST#', 'Action'],
+            merListTitle: ['AgentID', 'Merchant', 'MemberID', 'Email', 'Phone', 'Status', 'Sales', 'Rate(%)', 'HST#', 'Action'],
             salesListTitle: ['Name', 'Phone','Email','Status','Action'],
             merList: [],
             UserGUID: '',
@@ -707,6 +707,7 @@ class AdminPage extends Component{
                     updated.countryErr = '';
                     updated.provinceErr = '';
                     this.setState(updated);
+                    this.handleTouchTap(`Merchant address has been updated`, true);
                 }else{
                     this.handleTouchTap(`${res.data.Message}`, false);
                 }
@@ -1434,6 +1435,7 @@ class AdminPage extends Component{
                                             <TableRow key={idx} selectable={false}>
                                                 <TableRowColumn style={tableCellStyle}>{msg.AgentID ? msg.AgentID : 'PENDING'}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{msg.FirstName}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>{msg.MemberID}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{msg.Email}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{msg.PhoneNumber}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{msg.Status === 'ACTIVE' ? 'ACTIVE' : 'PENDING'}</TableRowColumn>
