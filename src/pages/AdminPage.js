@@ -1460,7 +1460,7 @@ class AdminPage extends Component{
                                                                     this.state.UserTypeID == 1 ?
                                                                     (
                                                                         <div>
-                                                                            <MenuItem primaryText="Add POS" onClick={() => this.addPos(idx)}/>
+                                                                            <MenuItem primaryText="POS Machine" onClick={() => this.addPos(idx)}/>
                                                                             <MenuItem primaryText="Service Account" onClick={() => this.sendServiceAccount(idx)}/>
                                                                         </div>
                                                                     )
