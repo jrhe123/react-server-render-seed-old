@@ -670,6 +670,7 @@ class MerchantEmplyees extends Component{
                                 <TableRow displayBorder={false}>
                                     <TableHeaderColumn style={tableCellStyle}>#</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>UserType</TableHeaderColumn>
+                                    <TableHeaderColumn style={tableCellStyle}>MemberID</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>FirstName</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>LastName</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>Email</TableHeaderColumn>
@@ -682,6 +683,7 @@ class MerchantEmplyees extends Component{
                                     <TableRow key={emp.UserGUID} selectable={false}>
                                         <TableRowColumn style={tableCellStyle}>{idx + 1}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{emp.UserTypeID === 5 ? 'Manager' : 'Employee'}</TableRowColumn>
+                                        <TableRowColumn style={tableCellStyle}>{emp.MemberID}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{emp.FirstName}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{emp.LastName}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{emp.Email}</TableRowColumn>
@@ -828,6 +830,10 @@ class MerchantEmplyees extends Component{
                                             <p style={{fontSize: 15, color: '#000'}}>
                                                 <span style={{color: '#8C8C8C'}}>Username: </span> 
                                                 {this.state.empCredential.UserLogin.LoginKeyword}
+                                            </p>
+                                            <p style={{fontSize: 15, color: '#000'}}>
+                                                <span style={{color: '#8C8C8C'}}>MemberID: </span> 
+                                                {this.state.empCredential.UserLogin.LoginDigit}
                                             </p>
                                         </div>
                                     )

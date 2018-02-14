@@ -3,3 +3,4 @@
 /node_modules
 bundle.js
 /babel_cache
+/.vscode

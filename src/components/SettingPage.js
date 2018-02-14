@@ -19,6 +19,7 @@ import CommunicationEmail from 'material-ui/svg-icons/communication/email';
 import ActionAccountBox from 'material-ui/svg-icons/action/account-box';
 import ActionBuild from 'material-ui/svg-icons/action/build';
 import ActionHttps from 'material-ui/svg-icons/action/https';
+import SocialShare from 'material-ui/svg-icons/social/share';
 import Dialog from 'material-ui/Dialog';
 import InputMask from 'react-input-mask';
 import validator from 'validator';
@@ -89,6 +90,7 @@ class SettingPage extends Component{
                 let merchant = response.data.Response;
                 let profile = {
                     agentID: merchant.AgentID,
+                    memberID: merchant.MemberID,
                     firstName: merchant.FirstName,
                     lastName: merchant.LastName,
                     email: merchant.Email,
@@ -197,6 +199,7 @@ class SettingPage extends Component{
                         let merchant = response.data.Response;
                         let profile = {
                             agentID: merchant.AgentID,
+                            memberID: merchant.MemberID,
                             firstName: merchant.FirstName,
                             lastName: merchant.LastName,
                             email: merchant.Email,
@@ -407,6 +410,7 @@ class SettingPage extends Component{
                         <List style={{marginBottom: 24}}>
                             <ListItem style={{height: 48}} primaryText={this.props.profile.agentID} leftIcon={<ActionAccountBox />} />
                             <ListItem style={{height: 48}} primaryText={this.props.profile.email} leftIcon={<CommunicationEmail />} />
+                            <ListItem style={{height: 48}} primaryText={this.props.profile.memberID} leftIcon={<SocialShare />} />
                             <ListItem primaryText={this.props.profile.phoneNumber ? formattor.addFormatPhoneNumber(this.props.profile.phoneNumber) : (<div style={{height: 16}}></div>)} leftIcon={<CommunicationPhone />} />
                             {
                                 this.state.userTypeID == 2 ?
