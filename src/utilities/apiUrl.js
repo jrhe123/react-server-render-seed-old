@@ -1,5 +1,5 @@
-// export const opay_url = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/': '';
-export const opay_url = 'https://api.opay.ca/';//process.env.NODE_ENV === 'development' ? 'https://api.opay.ca/': '';
+ export const opay_url = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/': '';
+//export const opay_url = 'https://api.opay.ca/';//process.env.NODE_ENV === 'development' ? 'https://api.opay.ca/': '';
 
 
 export const admin_login = 'admin/login';
@@ -23,6 +23,10 @@ export const admin_franchise_available_merchant_list = 'admin/franchise_availabl
 export const admin_franchise_assign_merchant_list = 'admin/franchise_assign_merchant_list';
 export const admin_assign_merchant_to_franchise = 'admin/assign_merchant_to_franchise';
 export const admin_remove_merchant_from_franchise = 'admin/remove_merchant_from_franchise';
+
+export const admin_create_address = 'admin/create_address';
+export const admin_update_address = 'admin/update_address';
+export const admin_get_merchant_default_address = 'admin/get_merchant_default_address';
 
 export const merchant_upload_file = 'upload/multiple';
 export const merchant_pos_machines = 'merchant/pos_machine_list_by_guid';

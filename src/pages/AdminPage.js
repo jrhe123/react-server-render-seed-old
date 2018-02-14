@@ -17,7 +17,6 @@ import { green400, pinkA400 } from 'material-ui/styles/colors';
 import moment from 'moment';
 import Pagination from 'material-ui-pagination';
 import SelectField from 'material-ui/SelectField';
-import Divider from 'material-ui/Divider';
 import {Card} from 'material-ui/Card';
 import InputMask from 'react-input-mask';
 import validator from 'validator';
@@ -39,6 +38,9 @@ import { opay_url,
          admin_view_merchant_bank_account,
          admin_create_merchant_bank_account,
          admin_update_merchant_bank_account,
+         admin_create_address,
+         admin_update_address,
+         admin_get_merchant_default_address,
          admin_daily_report,
          admin_assign_service_account } from "../utilities/apiUrl";
 import * as apiManager from  '../helpers/apiManager';
@@ -110,6 +112,21 @@ class AdminPage extends Component{
             selectedWidMerIdx: null,
             selecctedWID: null,
 
+            addressModalOpen: false,
+            addrIdx: '',
+            addrline1: '',
+            addrline2: '',
+            city: '',
+            postal: '',
+            province: '',
+            country: '',
+            addrline1Err: '',
+            addrline2Err: '',
+            cityErr: '',
+            postalErr: '',
+            provinceErr: '',
+            countryErr: '',
+
             bankModalOpen: false,
             bankMer: '',
             Account: '',
@@ -174,6 +191,9 @@ class AdminPage extends Component{
         this.EFT = this.EFT.bind(this);
         this.Franchise = this.Franchise.bind(this);
         this.setMerchantTimeZone = this.setMerchantTimeZone.bind(this);
+        this.openAddressSetting = this.openAddressSetting.bind(this);
+        this.handleAddressClose = this.handleAddressClose.bind(this);
+        this.setAddressInfo = this.setAddressInfo.bind(this);
     }
 
     closeAllModal = () => {
@@ -184,6 +204,7 @@ class AdminPage extends Component{
             bankModalOpen: false,
             salesModalOpen: false,
             hstModalOpen: false,
+            addressModalOpen: false,
         })
     }
 
@@ -444,7 +465,19 @@ class AdminPage extends Component{
             this.setState({ selecctedWID: value });
         } else if(field === 'HST'){
             this.setState({ hst: value });
-        } else{
+        } else if(field === 'addrline1') {
+            this.setState({ addrline1: value, addrline1Err: '' })
+        } else if(field === 'addrline2') {
+            this.setState({ addrline2: value, addrline2Err: '' })
+        } else if(field === 'city') {
+            this.setState({ city: value, cityErr: '' })
+        } else if(field === 'province') {
+            this.setState({ province: value, provinceErr: '' })
+        } else if(field === 'country') {
+            this.setState({ country: value, countryErr: '' })
+        } else if(field === 'postal') {
+            this.setState({ postal: value, postalErr: '' })
+        } else {
             let updated = Object.assign({}, this.state);
             let value = e.target.value;
             if(field === 'phone'){
@@ -556,6 +589,133 @@ class AdminPage extends Component{
         }).catch((err) => {
             this.handleTouchTap(`Error: ${err}`);
         });
+    }
+
+    openAddressSetting = (idx, merchant) => {
+
+        let updated = Object.assign({}, this.state);
+        updated.merListOpenPop[idx] = false;
+        this.setState(updated);
+        this.closeAllModal();
+        this.setState({ addressModalOpen: true, addrIdx: idx })
+
+        let params = {
+            Params: {
+                AgentID: this.state.merList[idx].AgentID,
+            }
+        };
+
+
+        apiManager.opayApi(opay_url + admin_get_merchant_default_address, params, true).then((res) => {
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+                    let updated = Object.assign({}, this.state);
+                    if (res.data.Response.AddressLine1) {
+                        updated.addrline1 = res.data.Response.AddressLine1;
+                        updated.addrline2 = res.data.Response.AddressLine2;
+                        updated.city = res.data.Response.City;
+                        updated.postal = res.data.Response.PostalCode;
+                        updated.country = res.data.Response.Country;
+                        updated.province = res.data.Response.Province;
+                        updated.addOrUpdate = 'Update'
+                    } else {
+                        updated.addrline1 = '';
+                        updated.addrline2 = '';
+                        updated.city = '';
+                        updated.postal = '';
+                        updated.country = '';
+                        updated.province = '';
+                        updated.addOrUpdate = 'Add'
+                    }
+                    updated.addrline1Err = '';
+                    updated.addrline2Err = '';
+                    updated.cityErr = '';
+                    updated.postalErr = '';
+                    updated.countryErr = '';
+                    updated.provinceErr = '';
+                    this.setState(updated);
+                }else{
+                    this.handleTouchTap(`${res.data.Message}`, false);
+                }
+            }
+        }).catch((err) => {
+            this.handleTouchTap(`Error: ${err}`);
+        });
+
+    }
+
+    handleAddressClose = () => {
+        this.setState({ addressModalOpen: false })
+    }
+
+    setAddressInfo = () => {
+
+        let url = '';
+        let addrline1 = this.state.addrline1;
+        let addrline2 = this.state.addrline2
+        let city = this.state.city;
+        let province = this.state.province;
+        let postal = this.state.postal;
+        let country = this.state.country;
+
+        let addrline1Err = this.state.addrline1Err;
+        let addrline2Err = this.state.addrline2Err;
+        let cityErr = this.state.cityErr;
+        let provinceErr = this.state.provinceErr;
+        let postalErr = this.state.postalErr;
+        let countryErr = this.state.countryErr;
+
+        if (addrline1Err || addrline2Err || cityErr || provinceErr || countryErr || postalErr) return;
+
+        if ((!addrline1) || (!city) || (!province) || (!postal) || (!country)) {
+
+            if (!addrline1) { this.setState({ addrline1Err: 'Address line 1 is required' }) }
+            if (!city) { this.setState({ cityErr: 'city is required' }) }
+            if (!province) { this.setState({ provinceErr: 'province is required' }) }
+            if (!postal) { this.setState({ postalErr: 'postal code is required' }) }
+            if (!country) { this.setState({ countryErr: 'country is required' }) }
+
+            return;
+        }
+
+        if ( this.state.addOrUpdate === 'Add' ) {
+            url = admin_create_address;
+        } else if (this.state.addOrUpdate === 'Update') {
+            url = admin_update_address;
+        }
+
+        let params = {
+            Params: {
+                AgentID: this.state.merList[this.state.addrIdx].AgentID,
+                AddressLine1: addrline1,
+                AddressLine2: addrline2,
+                City: city,
+                Province: province,
+                Country: country,
+                PostalCode: postal
+            }
+        };
+
+        apiManager.opayApi(opay_url + url, params, true).then((res) => {
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+                    let updated = Object.assign({}, this.state);
+                    updated.addrline1Err = '';
+                    updated.addrline2Err = '';
+                    updated.cityErr = '';
+                    updated.postalErr = '';
+                    updated.countryErr = '';
+                    updated.provinceErr = '';
+                    this.setState(updated);
+                }else{
+                    this.handleTouchTap(`${res.data.Message}`, false);
+                }
+                this.closeAllModal();
+            }
+        }).catch((err) => {
+            this.handleTouchTap(`Error: ${err}`);
+        });
+
     }
 
     openWIDSetting = (idx, merchant) => {
@@ -1321,6 +1481,7 @@ class AdminPage extends Component{
                                                             { this.state.UserTypeID === '1' ? <MenuItem primaryText="Update Rate" onClick={() => this.updateRate(idx, msg)}/> : '' }
                                                             { this.state.UserTypeID === '1' ? <MenuItem primaryText="Update HST" onClick={() => this.updateHST(idx, msg)}/> : '' }
                                                             { this.state.UserTypeID === '1' ? <MenuItem primaryText="Assign To Sales" onClick={() => this.assignToSales(idx, msg)}/> : ''}
+                                                            <MenuItem primaryText="Update Address" onClick={() => this.openAddressSetting(idx, msg)}/>
                                                             <MenuItem primaryText="Wechat ID" onClick={() => this.openWIDSetting(idx, msg)}/>
                                                             <MenuItem primaryText="TimeZone" onClick={() => this.openTimeZoneSetting(idx, msg)}/>
                                                             <MenuItem primaryText="Documents" onClick={() => this.viewDocuments(idx, msg)}/>
@@ -1443,6 +1604,30 @@ class AdminPage extends Component{
                                     <div style={btnControl}>
                                         <RaisedButton label="Confirm" primary={true} onClick={() => this.handleAddMerchant()}/>
                                     </div>    
+                                </div>
+                            </Dialog>
+
+
+                            <Dialog title="Address Info" modal={false} open={this.state.addressModalOpen}
+                                    onRequestClose={this.handleAddressClose.bind(this)}>
+                                <div>
+                                    <div style={formControl}>
+                                        <TextField floatingLabelText="AddressLine1" errorText={this.state.addrline1Err}
+                                                   value={this.state.addrline1} onChange={(e, value) => this.onFieldChange(e, value, 'addrline1')}/><br/>
+                                        <TextField floatingLabelText="AddressLine2" errorText={this.state.addrline2Err}
+                                                   value={this.state.addrline2} onChange={(e, value) => this.onFieldChange(e, value, 'addrline2')}/><br/>
+                                        <TextField floatingLabelText="City" errorText={this.state.cityErr}
+                                                   value={this.state.city} onChange={(e, value) => this.onFieldChange(e, value, 'city')}/><br/>
+                                        <TextField floatingLabelText="Province" errorText={this.state.provinceErr}
+                                                   value={this.state.province} onChange={(e, value) => this.onFieldChange(e, value, 'province')}/><br/>
+                                        <TextField floatingLabelText="Country" errorText={this.state.countryErr}
+                                                   value={this.state.country} onChange={(e, value) => this.onFieldChange(e, value, 'country')}/><br/>
+                                        <TextField floatingLabelText="Postal Code" errorText={this.state.postalErr}
+                                                   value={this.state.postal} onChange={(e, value) => this.onFieldChange(e, value, 'postal')}/><br/>
+                                    </div>
+                                    <div style={btnControl}>
+                                        <RaisedButton label={this.state.addOrUpdate} primary={true} onClick={this.setAddressInfo}/>
+                                    </div>
                                 </div>
                             </Dialog>
 
