@@ -120,49 +120,6 @@ class NewAboutUs extends Component{
                         </div>
                     </div>
 
-                    <div style={teamContainerStyle}>
-                        <div style={contentContainerStyle}>
-                            <p className="txt-2" style={Object.assign({}, centerTitleTxtStyle, titleStyle )}>OUR TEAM</p>
-                            <div style={Object.assign({}, centerDivStyle, delimit )}></div>
-                            <div style={teamFlexContainerStyle}>
-                                <div className="team-flex-item">
-                                    <img style={teamImgStyle} src="/img/benjamin.png" />
-                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Benjamin Liang</p>
-                                    <p className="txt-4" style={teamDescStyle}>CEO, President, Founder</p>
-                                </div>
-                                <div className="team-flex-item">
-                                    <img style={teamImgStyle} src="/img/sophia.png" />
-                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Sophia Zhang</p>
-                                    <p className="txt-4" style={teamDescStyle}>COO</p>
-                                </div>
-                                <div className="team-flex-item">
-                                    <img style={teamImgStyle} src="/img/xueren.png" />
-                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Xueren Dai</p>
-                                    <p className="txt-4" style={teamDescStyle}>Board Advisor</p>
-                                </div>
-                                <div className="team-flex-item">
-                                    <img style={teamImgStyle} src="/img/xiaogu.png" />
-                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Xiaogu Jiang</p>
-                                    <p className="txt-4" style={teamDescStyle}>Board Advisor</p>
-                                </div>
-                                <div className="team-flex-item">
-                                    <img style={teamImgStyle} src="/img/nick.png" />
-                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Nick Ning</p>
-                                    <p className="txt-4" style={teamDescStyle}>Sales Director</p>
-                                </div>
-                                <div className="team-flex-item">
-                                    <img style={teamImgStyle} src="/img/tyler.png" />
-                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Tyler Liu</p>
-                                    <p className="txt-4" style={teamDescStyle}>Account Manager</p>
-                                </div>
-                                <div className="team-flex-item">
-                                    <img style={teamImgStyle} src="/img/jason.png" />
-                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Jason Yeh</p>
-                                    <p className="txt-4" style={teamDescStyle}>Account Manager</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <Footer />
 
@@ -477,4 +434,50 @@ export default NewAboutUs;
                                     <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Yifu Ye</p>
                                     <p className="txt-4" style={teamDescStyle}>System Engineer</p>
                                 </div>
+* */
+
+/*
+<div style={teamContainerStyle}>
+                        <div style={contentContainerStyle}>
+                            <p className="txt-2" style={Object.assign({}, centerTitleTxtStyle, titleStyle )}>OUR TEAM</p>
+                            <div style={Object.assign({}, centerDivStyle, delimit )}></div>
+                            <div style={teamFlexContainerStyle}>
+                                <div className="team-flex-item">
+                                    <img style={teamImgStyle} src="/img/benjamin.png" />
+                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Benjamin Liang</p>
+                                    <p className="txt-4" style={teamDescStyle}>CEO, President, Founder</p>
+                                </div>
+                                <div className="team-flex-item">
+                                    <img style={teamImgStyle} src="/img/sophia.png" />
+                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Sophia Zhang</p>
+                                    <p className="txt-4" style={teamDescStyle}>COO</p>
+                                </div>
+                                <div className="team-flex-item">
+                                    <img style={teamImgStyle} src="/img/xueren.png" />
+                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Xueren Dai</p>
+                                    <p className="txt-4" style={teamDescStyle}>Board Advisor</p>
+                                </div>
+                                <div className="team-flex-item">
+                                    <img style={teamImgStyle} src="/img/xiaogu.png" />
+                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Xiaogu Jiang</p>
+                                    <p className="txt-4" style={teamDescStyle}>Board Advisor</p>
+                                </div>
+                                <div className="team-flex-item">
+                                    <img style={teamImgStyle} src="/img/nick.png" />
+                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Nick Ning</p>
+                                    <p className="txt-4" style={teamDescStyle}>Sales Director</p>
+                                </div>
+                                <div className="team-flex-item">
+                                    <img style={teamImgStyle} src="/img/tyler.png" />
+                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Tyler Liu</p>
+                                    <p className="txt-4" style={teamDescStyle}>Account Manager</p>
+                                </div>
+                                <div className="team-flex-item">
+                                    <img style={teamImgStyle} src="/img/jason.png" />
+                                    <p className="txt-4" style={Object.assign({}, boldFont, teamDescStyle )}>Jason Yeh</p>
+                                    <p className="txt-4" style={teamDescStyle}>Account Manager</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 * */
