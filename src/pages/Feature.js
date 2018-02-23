@@ -227,7 +227,7 @@ class Feature extends Component{
                                     </div>
                                     <div className="profit-item">
                                         <img className="profit-icon" src="/img/profit6.png" />
-                                        <p className="bold txt-5 text-center m-b">OPAY HuaBei</p>
+                                        <p className="bold txt-5 text-center m-b">OPAY Instalment</p>
                                     </div>
                                     <div className="profit-item">
                                         <img className="profit-icon" src="/img/profit4.png" />
