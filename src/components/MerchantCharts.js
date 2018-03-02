@@ -626,6 +626,7 @@ class MerchantCharts extends Component{
             exRate,
             exRateSpan,
             exRateLabel,
+            exRateDiv,
             opayFeeContainer,
             feeLabelContainer,
             feeLabel,
@@ -774,7 +775,12 @@ class MerchantCharts extends Component{
                                 </div>
                             )
                             :
-                            (null)
+                            (
+                                <div style={exRateDiv}>
+                                    <span style={exRateLabel}>Alipay: {this.state.alipayRate}</span>
+                                    <span style={exRateLabel}>Wechat: {this.state.wechatRate}</span>
+                                </div>
+                            )
                         }
                 </Card> 
                 <Card style={{width: 'calc(100% - 48px)', margin: '24px auto'}}>
@@ -916,10 +922,13 @@ const styles = {
         overflow: 'hidden'
     },
     exRateLabel: {
-        color: '#c9c9c9',
+        color: '#000',
         fontSize: 12,
         height: 24,
         paddingRight: 12
+    },
+    exRateDiv: {
+        textAlign: 'right'
     },
     opayFeeContainer: {
         marginTop: 24,

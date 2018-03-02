@@ -17,6 +17,7 @@ import HardwareSmartphone from 'material-ui/svg-icons/hardware/smartphone';
 import CommunicationBusiness from 'material-ui/svg-icons/communication/business';
 import EditorShowChart from 'material-ui/svg-icons/editor/show-chart';
 import HardwareDesktopWindows from 'material-ui/svg-icons/hardware/desktop-windows';
+import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 import LocalAtm from 'material-ui/svg-icons/maps/local-atm';
 
 
@@ -42,6 +43,7 @@ import MerchantCharts from '../components/MerchantCharts';
 import MerchantMonitor from '../components/MerchantMonitor';
 import MerchantEmployees from '../components/MerchantEmployees';
 import MerchantAddresses from '../components/MerchantAddresses';
+import MerchantSettlements from '../components/MerchantSettlements';
 import MerchantPOSMachines from '../components/MerchantPOSMachines';
 import MerchantInvoices from '../components/MerchantInvoices';
 import SettingPage from '../components/SettingPage';
@@ -170,6 +172,10 @@ class MerchantAdminPage extends Component{
                 return (
                     <MerchantInvoices />
                 );
+            case 'settlement':
+                return (
+                    <MerchantSettlements />
+                );    
             default:
                 return (
                     <MerchantTransactions />
@@ -294,6 +300,20 @@ class MerchantAdminPage extends Component{
                                                       primaryText="Invoice"
                                                       leftIcon={<LocalAtm color="#fff" />}
                                                       onClick={this.switchTab.bind(this, 'invoice')} />
+
+                                        </div>
+                                    )
+                                    :
+                                    (null)
+                            }
+                            {
+                                (this.state.userTypeID == 2) ?
+                                    (
+                                        <div>
+                                            <MenuItem style={{color: '#fff'}}
+                                                      primaryText="Settlement"
+                                                      leftIcon={<ActionAssignment color="#fff" />}
+                                                      onClick={this.switchTab.bind(this, 'settlement')} />
 
                                         </div>
                                     )
