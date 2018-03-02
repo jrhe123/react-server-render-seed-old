@@ -129,8 +129,8 @@ class MerchantSettlements extends Component{
                     }
                     tran.DisplayType = displayType;
                     tran.Status = formattor.capitalStr(tran.Status);
-                    tran.CreatedAt = tran.CreatedAt ? moment.tz(tran.CreatedAt, 'America/Toronto').format('YYYY-MM-DD') : '';
-                    tran.SettledAt = tran.SettledAt ? moment.tz(tran.SettledAt, 'America/Toronto').format('YYYY-MM-DD') : '';
+                    tran.CreatedAt = tran.CreatedAt ? moment.tz(formattor.formatDatetime(tran.CreatedAt), 'America/Toronto').format('YYYY-MM-DD') : '';
+                    tran.SettledAt = tran.SettledAt ? moment.tz(formattor.formatDatetime(tran.SettledAt), 'America/Toronto').format('YYYY-MM-DD') : '';
                 }
 
                 let updated = Object.assign({}, this.state);
