@@ -323,7 +323,7 @@ class MerchantSettlements extends Component{
                                     <TableHeaderColumn style={tableCellStyle}>Amount</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>Type</TableHeaderColumn>
                                     <TableHeaderColumn style={tableCellStyle}>Transaction Date</TableHeaderColumn>
-                                    <TableHeaderColumn style={tableCellStyle}>Settled Date</TableHeaderColumn>
+                                    <TableHeaderColumn style={tableCellStyle}>Estimate Settle Date</TableHeaderColumn>
                                 </TableRow>
                             </TableHeader>
                             
@@ -342,7 +342,7 @@ class MerchantSettlements extends Component{
                                             <TableRowColumn style={tableCellStyle}>${tran.DisplayAmount}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{tran.DisplayType}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{tran.CreatedAt}</TableRowColumn>
-                                            <TableRowColumn style={tableCellStyle}>{tran.SettledAt}</TableRowColumn>
+                                            <TableRowColumn style={tableCellStyle}>{tran.EstimateSettledAt}</TableRowColumn>
                                         </TableRow>
                                     ))}
                             </TableBody>                            
