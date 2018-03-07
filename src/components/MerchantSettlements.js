@@ -113,6 +113,21 @@ class MerchantSettlements extends Component{
                 let { TotalRecords, Transactions } = res;
 
                 for(let tran of Transactions){
+
+                    if(!tran.FirstName){
+                        tran.FirstName = tran.AdminFirstName;
+                        if(!tran.AdminFirstName){
+                            tran.FirstName = tran.SuperAdminFirstName;
+                        }
+                    }
+
+                    if(!tran.LastName){
+                        tran.LastName = tran.AdminLastName;
+                        if(!tran.AdminLastName){
+                            tran.LastName = tran.SuperAdminLastName;
+                        }
+                    }
+
                     tran.OperatorName = (tran.FirstName ? formattor.capitalStr(tran.FirstName): '')+" "+(tran.LastName ? formattor.capitalStr(tran.LastName): '');
                     tran.DisplayAmount = tran.Currency == 'CNY' ? (parseFloat(tran.Amount) / parseFloat(tran.Rate)).toFixed(2) : (tran.Amount).toFixed(2);
                     tran.IsOpen = false;
@@ -122,6 +137,8 @@ class MerchantSettlements extends Component{
                         displayType = 'QR code';
                     }else if(tran.Type == 'COMPLETE_MERCHANT_QRCODE'){
                         displayType = 'Merchant QR code';
+                    }else if(tran.Type == 'COMPLETE_UNIQUE_CODE'){
+                        displayType = 'Unique QR code';
                     }else if(tran.Type == 'SCAN_QRCODE' || tran.Type == 'SCAN_QRCODE_COMPLETE'){
                         displayType = 'Scan';
                     }else if(tran.Type == 'REFUND'){
