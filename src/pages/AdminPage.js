@@ -1464,6 +1464,7 @@ class AdminPage extends Component{
             inputDescStyle,
             inputBtnStyle,
             checkContainer,
+            uniqueFormStyle,
         } = styles;
 
         switch(tab) {
@@ -1875,7 +1876,7 @@ class AdminPage extends Component{
                                 open={this.state.uniqueCodeModalOpen}
                                 onRequestClose={this.handleUniqueCodeClose.bind(this)}>
                                 <div>
-                                    <div style={formControl}>
+                                    <div style={Object.assign({}, formControl, uniqueFormStyle)}>
                                         <div style={uniqueCodeContainer}>
                                             {
                                                 this.state.uniqueCode ?
@@ -2079,15 +2080,20 @@ const styles = {
         marginTop: 24
     },
 
+    uniqueFormStyle: {
+        height: 450,
+        overflow: 'auto',
+    },
+
     uniqueCodeContainer: {
         width: 250,
-        height: 250,
+        height: 320,
         boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
     },
 
     uniqueCodeImg: {
         width: 250,
-        height: 250,
+        height: 320,
         display: 'block',
         margin: '0 auto',
         cursor: 'pointer'
