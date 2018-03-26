@@ -42,7 +42,8 @@ import { opay_url,
          admin_update_address,
          admin_get_merchant_default_address,
          admin_daily_report,
-         admin_assign_service_account } from "../utilities/apiUrl";
+         admin_assign_service_account,
+         admin_sales_merchant_report } from "../utilities/apiUrl";
 import * as apiManager from  '../helpers/apiManager';
 
 // Component
@@ -194,6 +195,7 @@ class AdminPage extends Component{
         this.openAddressSetting = this.openAddressSetting.bind(this);
         this.handleAddressClose = this.handleAddressClose.bind(this);
         this.setAddressInfo = this.setAddressInfo.bind(this);
+        this.salesReport = this.salesReport.bind(this);
     }
 
     closeAllModal = () => {
@@ -250,6 +252,25 @@ class AdminPage extends Component{
 
     Franchise = () => {
         this.setState({ tab: 5 });
+    }
+
+    salesReport = () => {
+        apiManager.opayApi(opay_url + admin_sales_merchant_report, {}, true).then((response) => {
+            let csvString = response.data;
+            var blob = new Blob([csvString]);
+            if (window.navigator.msSaveOrOpenBlob)
+                window.navigator.msSaveBlob(blob, "sales_report.csv");
+            else{
+                var a = window.document.createElement("a");
+                a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
+                a.download = "sales_report.csv";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        }).catch((err) => {
+            this.handleTouchTap(`Error: ${err}`);
+        });
     }
 
     getMerList = (page) => {
@@ -1817,6 +1838,7 @@ class AdminPage extends Component{
                             {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Report" onClick={this.dailyReport} /> : ''}
                             {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="EFT" onClick={this.EFT} /> : ''}
                             {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Franchise" onClick={this.Franchise} /> : ''}
+                            {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Sales Report" onClick={this.salesReport} /> : ''}
                             <MenuItem style={drawerItem} primaryText="Log out" onClick={this.logout} />
                         </Drawer>
                     </div>

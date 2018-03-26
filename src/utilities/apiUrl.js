@@ -23,6 +23,7 @@ export const admin_franchise_available_merchant_list = 'admin/franchise_availabl
 export const admin_franchise_assign_merchant_list = 'admin/franchise_assign_merchant_list';
 export const admin_assign_merchant_to_franchise = 'admin/assign_merchant_to_franchise';
 export const admin_remove_merchant_from_franchise = 'admin/remove_merchant_from_franchise';
+export const admin_sales_merchant_report = 'admin/sales_merchant_report';
 
 export const admin_create_address = 'admin/create_address';
 export const admin_update_address = 'admin/update_address';
