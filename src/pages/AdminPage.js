@@ -20,7 +20,8 @@ import SelectField from 'material-ui/SelectField';
 import {Card} from 'material-ui/Card';
 import InputMask from 'react-input-mask';
 import validator from 'validator';
-
+import ActionCheckCircle from 'material-ui/svg-icons/action/check-circle';
+import Checkbox from 'material-ui/Checkbox';
 
 // helper
 import * as formattor from '../helpers/formattor';
@@ -147,6 +148,13 @@ class AdminPage extends Component{
             salesList: [],
             assignMerchant: {},
             selectedSales: {},
+
+            uniqueCodeModalOpen: false,
+            uniqueCodeMer: '',
+            uniqueCodeMerIdx: null,
+            uniqueCode: '',
+            isUploadLogo: false,
+            embedLogo: false,
 
             open: false,
             message: '',
@@ -456,6 +464,98 @@ class AdminPage extends Component{
         window.open(`${opay_url}${file}`);
     }
 
+    viewUniqueCode = (idx, merchant) => {
+        this.closeAllModal();
+        let updated = Object.assign({}, this.state);
+        updated.merListOpenPop[idx] = false;
+        updated.uniqueCodeModalOpen = true;
+        updated.uniqueCodeMer = merchant;
+        updated.uniqueCodeMerIdx = idx;
+        updated.uniqueCode = merchant.UniqueCodeImage;
+        updated.embedLogo = false;
+        this.setState(updated);
+    }
+
+    handleImageChange = (e) => {
+        e.preventDefault();
+        let reader = new FileReader();
+        let file = e.target.files[0];
+        if(file){
+            if(file.type != "image/jpeg"
+                && file.type != "image/jpg"
+                && file.type != "image/gif"
+                && file.type != "image/png"
+            ){
+                this.handleTouchTap(`Please select one of these image type: [jpg, jpeg, png, gif]`, false);
+            }else{
+                this.setState({
+                    isUploadLogo: false
+                });
+                let formData = new FormData();
+                formData.append('File', file);
+                formData.append('MerchantUserGUID', this.state.uniqueCodeMer.UserGUID);
+                apiManager.opayFileApi(opay_url + 'upload/merchant_image', formData, true)
+                    .then((response) => {
+                        if(response.data.Confirmation === 'Success'){
+                            this.setState({
+                                isUploadLogo: true
+                            });
+                        }else{
+                            this.handleTouchTap(`${response.data.Message}`, false);
+                        }
+                    })
+                    .catch((error) => {
+                        this.handleTouchTap(`Error: Upload image failed`, false);
+                    })
+            }            
+        }
+    }
+
+    updateCheck = () => {
+        this.setState({
+            embedLogo: !this.state.embedLogo
+        })
+    }
+
+    updateMerchantUniqueCode = () => {
+
+        let params = { 
+            Params: {
+                MerchantUserGUID: this.state.uniqueCodeMer.UserGUID,
+                WithLogo: this.state.embedLogo ? '1' : '0'         
+            }
+        };
+        apiManager.opayApi(opay_url + 'admin/create_merchant_unique_code', params, true).then((res) => {
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+                    let { Image } = res.data.Response;
+                    let { ImageGUID } = Image;
+                    this.setState({
+                        uniqueCode: ImageGUID
+                    });
+                }else{
+                    this.handleTouchTap(`Error: ${res.data.Message}`, false);
+                }
+            }
+        }).catch((err) => {
+            this.handleTouchTap(`Error: ${err}`);
+        });
+    }
+
+    handleUniqueCodeClose = () => {
+        let idx = this.state.uniqueCodeMerIdx;
+        let uniqueCode = this.state.uniqueCode;
+        let updated = Object.assign({}, this.state);
+        updated.uniqueCodeModalOpen = false;
+        updated.uniqueCodeMer = {};
+        updated.uniqueCodeMerIdx = null;
+        updated.uniqueCode = '';
+        updated.isUploadLogo = false;
+        updated.embedLogo = false;
+        updated.merList[idx].UniqueCodeImage = uniqueCode;
+        this.setState(updated);
+    }
+
     handleBackToList = () => {
         this.setState({
             tab: 0,
@@ -544,29 +644,7 @@ class AdminPage extends Component{
     }
 
     dailyReport = () => {
-
-        this.setState({ tab: 4 })
-
-     /*   apiManager.opayApi(opay_url + admin_daily_report, null, true).then((response) => {
-            if (response.data) {
-                let csvString = response.data;
-                var blob = new Blob([csvString]);
-                if (window.navigator.msSaveOrOpenBlob)  
-                    window.navigator.msSaveBlob(blob, "report.csv");
-                else{
-                    var a = window.document.createElement("a");
-                    a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
-                    a.download = "report.csv";
-                    document.body.appendChild(a);
-                    a.click(); 
-                    document.body.removeChild(a);
-                }
-            }else{
-                this.handleTouchTap(`Error: ${res.data.Message}`, false);
-            }
-        }).catch((err) => {
-            this.handleTouchTap(`Error: ${err}`);
-        }); */
+        this.setState({ tab: 4 });
     }
 
     sendEmail = (idx, merchant) => {
@@ -1401,6 +1479,13 @@ class AdminPage extends Component{
             tableCardContainer,
             uploadDescriptionContainer,
             uploadDescriptionStyle,
+            uniqueCodeContainer,
+            uniqueCodeImg,
+            logoContainer,
+            inputDescStyle,
+            inputBtnStyle,
+            checkContainer,
+            uniqueFormStyle,
         } = styles;
 
         switch(tab) {
@@ -1509,6 +1594,7 @@ class AdminPage extends Component{
                                                             <MenuItem primaryText="TimeZone" onClick={() => this.openTimeZoneSetting(idx, msg)}/>
                                                             <MenuItem primaryText="Documents" onClick={() => this.viewDocuments(idx, msg)}/>
                                                             <MenuItem primaryText="Email" onClick={() => this.sendEmail(idx, msg)}/>
+                                                            <MenuItem primaryText="Unique Code" onClick={() => this.viewUniqueCode(idx, msg)}/>
                                                         </Menu>
                                                     </Popover>
                                                 </div></TableRowColumn>
@@ -1804,6 +1890,66 @@ class AdminPage extends Component{
                                                 onClick={() => this.sendMessage()} />
                                 </div> 
                             </Dialog>
+
+                            <Dialog 
+                                title="Unique Code" 
+                                modal={false} 
+                                open={this.state.uniqueCodeModalOpen}
+                                onRequestClose={this.handleUniqueCodeClose.bind(this)}>
+                                <div>
+                                    <div style={Object.assign({}, formControl, uniqueFormStyle)}>
+                                        <div style={uniqueCodeContainer}>
+                                            {
+                                                this.state.uniqueCode ?
+                                                (
+                                                    <a target="_blank" href={`${opay_url}picture?ImageGUID=${this.state.uniqueCode}`}>
+                                                        <img 
+                                                            style={uniqueCodeImg} 
+                                                            src={`${opay_url}picture?ImageGUID=${this.state.uniqueCode}`} 
+                                                        />
+                                                    </a>
+                                                )
+                                                :
+                                                (
+                                                    <img style={uniqueCodeImg} src="/img/default_img.png" />
+                                                )
+                                            }
+                                        </div>
+                                        <div style={logoContainer}>
+                                            <p style={inputDescStyle}>Image</p>
+                                            <a style={inputBtnStyle}
+                                                onClick={(e) => this.myInput.click() }
+                                                >Upload Image</a>
+                                            {
+                                                this.state.isUploadLogo ?
+                                                (<span style={{paddingLeft: 12, float: 'left', marginTop: 8}}>
+                                                    <ActionCheckCircle color={green400} />
+                                                </span>)
+                                                :
+                                                null
+                                            }
+                                            <input 
+                                                id="myInput" 
+                                                type="file" 
+                                                ref={(ref) => this.myInput = ref}
+                                                style={{ display: 'none' }} 
+                                                onChange={(e) => this.handleImageChange(e)}
+                                            />
+                                        </div>
+                                        <div style={checkContainer}>
+                                            <p style={inputDescStyle}>Embed Logo</p>
+                                            <Checkbox
+                                                label="embed logo"
+                                                checked={this.state.embedLogo}
+                                                onCheck={() => this.updateCheck()}
+                                                />
+                                        </div>
+                                    </div>
+                                    <div style={btnControl}>
+                                        <RaisedButton label="Update" primary={true} onClick={() => this.updateMerchantUniqueCode()}/>
+                                    </div>
+                                </div>
+                            </Dialog>
                         </div>
                 );
         }
@@ -1956,7 +2102,51 @@ const styles = {
         marginTop: 24
     },
 
-    
+    uniqueFormStyle: {
+        height: 450,
+        overflow: 'auto',
+    },
+
+    uniqueCodeContainer: {
+        width: 250,
+        height: 320,
+        boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+    },
+
+    uniqueCodeImg: {
+        width: 250,
+        height: 320,
+        display: 'block',
+        margin: '0 auto',
+        cursor: 'pointer'
+    },
+
+    logoContainer: {
+        marginTop: 24,
+        textAlign: 'left',
+        height: 84
+    },
+
+    inputDescStyle: {
+        fontSize: 16,
+        color: '#000'
+    },
+
+    inputBtnStyle: {
+        fontSize: 12,
+        padding: '12px 24px',
+        backgroundColor: '#4BA8EE',
+        color: '#FFF',
+        cursor: 'pointer',
+        display: 'block',
+        float: 'left'
+    },
+
+    checkContainer: {
+        marginTop: 24,
+        textAlign: 'left',
+        height: 60
+    },
 
 }
 
