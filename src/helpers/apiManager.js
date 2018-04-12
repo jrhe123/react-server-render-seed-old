@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Promise from 'bluebird';
+import { api_key } from "../utilities/apiUrl";
 
 export const get = (endpoint, params) => {
     
@@ -41,13 +42,15 @@ export const opayApi = (endpoint, params, isAuth) => {
             headers = {
                 headers: {
                     'Content-Type': 'application/json',
+                    'api-key': api_key,
                     'Authorization': token
                 }
             };
         }else{
             headers = {
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'api-key': api_key,
                 }
             };
         }
@@ -77,13 +80,15 @@ export const opayFileApi = (endpoint, params, isAuth) => {
             headers = {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': token
+                    'api-key': api_key,
+                    'Authorization': token,
                 }
             };
         }else{
             headers = {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    'api-key': api_key,
                 }
             };
         }
@@ -112,13 +117,15 @@ export const opayCsvApi = (endpoint, params, isAuth) => {
             headers = {
                 headers: {
                     'Content-Type': 'application/json',
+                    'api-key': api_key,
                     'Authorization': token
                 }
             };
         }else{
             headers = {
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'api-key': api_key,
                 }
             };
         }
@@ -137,7 +144,11 @@ export const opayPicApi = (endpoint, params) => {
     
     return new Promise(function(resolve, reject){
 
-        let headers = null;        
+        // let headers = null;     
+        let headers = {
+            'Content-Type': 'application/json',
+            'api-key': api_key,
+        };  
         axios.get(endpoint, params, headers)
             .then((response) => {
                 resolve(response);     

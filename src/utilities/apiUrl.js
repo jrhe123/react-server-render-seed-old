@@ -1,6 +1,6 @@
 // export const opay_url = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/': '';
 export const opay_url = 'https://api.opay.ca/';//process.env.NODE_ENV === 'development' ? 'https://api.opay.ca/': '';
-
+export const api_key = '86a0789b-2807-4940-b70d-1b1428265694';
 
 export const admin_login = 'admin/login';
 export const admin_merchantlist = 'admin/merchant_list';
