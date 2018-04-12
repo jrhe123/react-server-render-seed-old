@@ -507,7 +507,6 @@ class MerchantTransactions extends Component{
                                     background: '#fff',
                                     boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
                                 }}
-                                value={ this.state.endDate ? new Date(this.state.endDate) : null }
                                 onChange={(event, date) => this.handleChangeDate(date, 'END')} />
                         </div>
                         <div style={Object.assign({}, datepicker)}>        
@@ -526,7 +525,6 @@ class MerchantTransactions extends Component{
                                     background: '#fff',
                                     boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
                                 }}
-                                value={ this.state.fromDate ? new Date(this.state.fromDate) : null }
                                 onChange={(event, date) => this.handleChangeDate(date, 'FROM')} />
                         </div>  
                         <SelectField 
