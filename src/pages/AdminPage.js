@@ -22,6 +22,8 @@ import InputMask from 'react-input-mask';
 import validator from 'validator';
 import ActionCheckCircle from 'material-ui/svg-icons/action/check-circle';
 import Checkbox from 'material-ui/Checkbox';
+import SearchBar from 'material-ui-search-bar'
+import ActionSearch from 'material-ui/svg-icons/action/search';
 
 // helper
 import * as formattor from '../helpers/formattor';
@@ -177,6 +179,8 @@ class AdminPage extends Component{
             UserGUID: '',
             isLoading: true,
             tab: 0,
+
+            searchMerchantName: ''
         }
 
         this.logout = this.logout.bind(this);
@@ -228,7 +232,7 @@ class AdminPage extends Component{
     };
 
     handleChangePage = (page) => {
-        this.getMerList(page);
+        this.getMerList(page, this.state.searchMerchantName);
     }
 
     handleTouchTapClose = () => {
@@ -281,14 +285,25 @@ class AdminPage extends Component{
         });
     }
 
-    getMerList = (page) => {
+    getMerList = (page, searchMerchantName) => {
 
         if (!page) {
             page = 1;
         }
         let offset = (page - 1) * parseInt(this.state.Limit);
         let limit = this.state.Limit;
-        let params = { Params: { Limit: limit, Offset: offset.toString(), Extra: {} } };// Limit: -1 means return all results
+        let params = { 
+            Params: { 
+                Limit: limit, 
+                Offset: offset.toString(), 
+                Extra: {
+                    SearchType: "NAME",
+                    SearchField: searchMerchantName,
+                    SortType: "",
+                    SortOrder: ""
+                } 
+            } 
+        };// Limit: -1 means return all results
         apiManager.opayApi(opay_url + admin_merchantlist, params,true).then((res) => {
 
             if (res.data) {
@@ -412,7 +427,7 @@ class AdminPage extends Component{
     }
 
     componentDidMount() {
-        this.getMerList(this.state.currentPage);
+        this.getMerList(this.state.currentPage, this.state.searchMerchantName);
         let token = localStorage.getItem('token');
         let userTypeId = localStorage.getItem('userTypeID');
         this.setState({ UserTypeID: userTypeId });
@@ -1121,7 +1136,7 @@ class AdminPage extends Component{
 
             if (res.data) {
                 if (res.data.Confirmation === 'Success') {
-                    this.getMerList(this.state.currentPage);
+                    this.getMerList(this.state.currentPage, this.state.searchMerchantName);
                     this.handleTouchTap(`Success`, true);
                 }else{
                     this.handleTouchTap(`Error: ${res.data.Message}`, false);
@@ -1161,7 +1176,7 @@ class AdminPage extends Component{
 
             if (res.data) {
                 if (res.data.Confirmation === 'Success') {
-                    this.getMerList(this.state.currentPage);
+                    this.getMerList(this.state.currentPage, this.state.searchMerchantName);
                     this.handleTouchTap(`Success`, true);
                     this.handleHSTClose();
                 }else{
@@ -1218,7 +1233,7 @@ class AdminPage extends Component{
                         selectedSales: {},
                         salesModalOpen: false,
                     });
-                    this.getMerList(this.state.currentPage);
+                    this.getMerList(this.state.currentPage, this.state.searchMerchantName);
                 }else{
                     this.handleTouchTap(`Error: ${res.data.Message}`, false);
                 }
@@ -1455,7 +1470,7 @@ class AdminPage extends Component{
                             addMerchantModal: false
                         })    
                         this.handleTouchTap(`Merchant has been created`, true);                 
-                        this.getMerList(this.state.currentPage);
+                        this.getMerList(this.state.currentPage, this.state.searchMerchantName);
                     }else{
                         this.handleTouchTap(`${response.data.Message}`, false);
                     }
@@ -1466,9 +1481,17 @@ class AdminPage extends Component{
         }
     }
 
+    handleSearchMerchant = (val) => {
+        this.setState({
+            searchMerchantName: val
+        });
+        this.getMerList(0, val);
+    }
+
     renderTab(tab) {
 
         const {
+            topControlContainer,
             tableCellStyle,
             docLink,
             msgContainer,
@@ -1526,6 +1549,21 @@ class AdminPage extends Component{
                                 :
                                 (null)
                             }
+
+                            <div style={topControlContainer}>
+                                <SearchBar
+                                    className="ui-search-bar"
+                                    onChange={(val) => this.handleSearchMerchant(val)}
+                                    style={{
+                                        float: 'right',
+                                        width: 180,
+                                        height: '36px',
+                                        marginRight: 24,
+                                    }}
+                                    iconButtonStyle={{height:36, marginTop: -4}}
+                                    searchIcon={<ActionSearch />}
+                                />
+                            </div>
 
                             <Card style={tableCardContainer}>
                                 <Table>
@@ -2009,6 +2047,12 @@ class AdminPage extends Component{
 
 
 const styles = {
+
+    topControlContainer: {
+        marginTop: 24,
+        marginBottom: 36,
+        height: 30
+    },
 
     mainPageStyle: {
         width: '100vw',
