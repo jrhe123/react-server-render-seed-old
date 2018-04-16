@@ -1552,6 +1552,7 @@ class AdminPage extends Component{
 
                             <div style={topControlContainer}>
                                 <SearchBar
+                                    value={this.state.searchMerchantName}
                                     className="ui-search-bar"
                                     onChange={(val) => this.handleSearchMerchant(val)}
                                     style={{
