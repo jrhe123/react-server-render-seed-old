@@ -1948,7 +1948,6 @@ class AdminPage extends Component{
 
                             <Dialog 
                                 title="Unique Code" 
-                                autoScrollBodyContent={true}
                                 modal={false} 
                                 open={this.state.uniqueCodeModalOpen}
                                 onRequestClose={this.handleUniqueCodeClose.bind(this)}>
@@ -2165,7 +2164,7 @@ const styles = {
     },
 
     uniqueFormStyle: {
-        height: 450,
+        height: 200,
         overflow: 'auto',
     },
 

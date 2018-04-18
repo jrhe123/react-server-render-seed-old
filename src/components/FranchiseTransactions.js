@@ -256,8 +256,7 @@ class FranchiseTransactions extends Component{
             if(this.state.endDate){
                 timerange = formatted+'|'+this.state.endDate;
             }
-            // this.fetchTransaction(1, this.state.transactionType, timerange, this.state.selectedMerchants);
-            this.fetchTransaction(1, this.state.transactionType, timerange);
+            this.fetchTransaction(1, this.state.transactionType, timerange, this.state.selectedMerchants);
         }else{
             let formatted = moment(date).tz('America/Toronto').hour(23).minute(59).second(59).format('YYYY-MM-DD HH:mm:ss');
             this.setState({
@@ -266,8 +265,7 @@ class FranchiseTransactions extends Component{
             if(this.state.fromDate){
                 timerange = this.state.fromDate+'|'+formatted;
             }
-            // this.fetchTransaction(1, this.state.transactionType, timerange, this.state.selectedMerchants);
-            this.fetchTransaction(1, this.state.transactionType, timerange);
+            this.fetchTransaction(1, this.state.transactionType, timerange, this.state.selectedMerchants);
         }
     }
 
@@ -277,8 +275,7 @@ class FranchiseTransactions extends Component{
             endDate: null,
             currentPage: 1,
         })
-        // this.fetchTransaction(1, this.state.transactionType, null, this.state.selectedMerchants);
-        this.fetchTransaction(1, this.state.transactionType, null);
+        this.fetchTransaction(1, this.state.transactionType, null, this.state.selectedMerchants);
     }
 
     fetchTransaction = (page, transactionField, timerange, merchant) => {
