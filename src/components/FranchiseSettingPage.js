@@ -433,6 +433,7 @@ class FranchiseSettingPage extends Component{
 
                 <Dialog
                         title="Profile"
+                        autoScrollBodyContent={true}
                         modal={false}
                         open={this.state.profileModalOpen}
                         onRequestClose={this.handleClose.bind(this)}
@@ -492,6 +493,7 @@ class FranchiseSettingPage extends Component{
 
                 <Dialog
                         title="Password"
+                        autoScrollBodyContent={true}
                         modal={false}
                         open={this.state.passwordModalOpen}
                         onRequestClose={this.handleClosePass.bind(this)}

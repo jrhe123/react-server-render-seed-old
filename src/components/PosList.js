@@ -376,9 +376,9 @@ class PosList extends Component {
                                         <TableRowColumn style={tableCellStyle}>{pos.ICCID}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{pos.Status}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{pos.CreatedAt}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>
+                                        <TableRowColumn className='actionBtnColn' style={tableCellStyle}>
                                             <RaisedButton
-                                                onClick={(e) => this.handleAction(e, idx)}
+                                                className='actionBtn' onClick={(e) => this.handleAction(e, idx)}
                                                 label='ACTION'
                                                 />
                                             <Popover
@@ -414,7 +414,7 @@ class PosList extends Component {
                         <a style={backBtn} onClick={() => this.backToList()}>Back</a>
                     </div>
 
-                    <Dialog title="Add POS" modal={false} open={this.state.modalOpen}
+                    <Dialog title="Add POS" modal={false} open={this.state.modalOpen} autoScrollBodyContent={true}
                         onRequestClose={this.handleClose.bind(this)}
                     >
                         <div>
@@ -436,7 +436,7 @@ class PosList extends Component {
                         </div>
                     </Dialog>
 
-                    <Dialog title="Update POS" modal={false} open={this.state.updatePosModalOpen}
+                    <Dialog title="Update POS" modal={false} open={this.state.updatePosModalOpen} autoScrollBodyContent={true}
                         onRequestClose={this.handlePosUpdateClose.bind(this)}
                     >
                         <div>

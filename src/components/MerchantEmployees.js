@@ -735,6 +735,7 @@ class MerchantEmplyees extends Component{
 
                     <Dialog
                             title="Employee"
+                            autoScrollBodyContent={true}
                             modal={false}
                             open={this.state.empModalOpen}
                             onRequestClose={this.handleClose.bind(this)}
@@ -776,6 +777,7 @@ class MerchantEmplyees extends Component{
 
                     <Dialog
                             title="Assign Employee"
+                            autoScrollBodyContent={true}
                             modal={false}
                             open={this.state.assignEmpModalOpen}
                             onRequestClose={this.handleAssignClose.bind(this)}
@@ -814,6 +816,7 @@ class MerchantEmplyees extends Component{
 
                     <Dialog
                             title="Login Credential"
+                            autoScrollBodyContent={true}
                             modal={false}
                             open={this.state.credentialEmpModalOpen}
                             onRequestClose={this.handleCredentialClose.bind(this)}

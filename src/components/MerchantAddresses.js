@@ -500,6 +500,7 @@ class MerchantAddresses extends Component{
 
                 <Dialog
                         title="Address"
+                        autoScrollBodyContent={true}
                         modal={false}
                         open={this.state.addrModalOpen}
                         onRequestClose={this.handleClose.bind(this)}
@@ -545,6 +546,7 @@ class MerchantAddresses extends Component{
 
                     <Dialog
                         title="Address"
+                        autoScrollBodyContent={true}
                         modal={false}
                         open={this.state.updateAddrModalOpen}
                         onRequestClose={this.handleUpdateClose.bind(this)}

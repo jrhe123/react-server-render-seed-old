@@ -542,6 +542,7 @@ class MerchantRefundableTransactions extends Component{
                         <Dialog
                             className="refund-modal"
                             title="Refund Transaction"
+                            autoScrollBodyContent={true}
                             modal={false}
                             open={this.state.refundModalOpen}
                             onRequestClose={this.handleRefundClose.bind(this)}
@@ -599,6 +600,7 @@ class MerchantRefundableTransactions extends Component{
                     <Dialog
                             className="refund-modal"
                             title="Transaction Detail"
+                            autoScrollBodyContent={true}
                             modal={false}
                             open={this.state.viewModalOpen}
                             onRequestClose={this.handleViewClose.bind(this)}

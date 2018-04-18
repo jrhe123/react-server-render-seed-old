@@ -1,3 +1,22 @@
+@media(max-width: 1280px) {
+    
+    .actionBtnColn {
+        min-width: 300px;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    .actionBtn {
+        min-width: 70px !important;
+    }
+
+    .actionBtn span {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        font-size: 12px !important;
+    }
+}
+
 @media(max-width: 767px) {
 
     .app-content {

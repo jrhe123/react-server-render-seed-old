@@ -281,9 +281,9 @@ class SalesList extends Component {
                                         <TableRowColumn style={tableCellStyle}>{sales.Email}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{sales.Status}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{sales.CreatedAt}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{<div style={{textAlign: 'center'}}>
+                                        <TableRowColumn className='actionBtnColn' style={tableCellStyle}>{<div style={{textAlign: 'center'}}>
                                             <RaisedButton
-                                                onClick={(e) => this.deleteSales(e, idx)}
+                                                className='actionBtn' onClick={(e) => this.deleteSales(e, idx)}
                                                 secondary={true}
                                                 label='Delete'
                                             /></div>}</TableRowColumn>
@@ -302,7 +302,7 @@ class SalesList extends Component {
                         />
                     </div>
 
-                    <Dialog title="Add Sales" modal={false} open={this.state.modalOpen}
+                    <Dialog title="Add Sales" modal={false} open={this.state.modalOpen} autoScrollBodyContent={true}
                             onRequestClose={this.handleClose.bind(this)}>
                         <div>
                             <div style={formControl}>

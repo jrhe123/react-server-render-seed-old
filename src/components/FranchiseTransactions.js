@@ -256,7 +256,8 @@ class FranchiseTransactions extends Component{
             if(this.state.endDate){
                 timerange = formatted+'|'+this.state.endDate;
             }
-            this.fetchTransaction(1, this.state.transactionType, timerange, this.state.selectedMerchants);
+            // this.fetchTransaction(1, this.state.transactionType, timerange, this.state.selectedMerchants);
+            this.fetchTransaction(1, this.state.transactionType, timerange);
         }else{
             let formatted = moment(date).tz('America/Toronto').hour(23).minute(59).second(59).format('YYYY-MM-DD HH:mm:ss');
             this.setState({
@@ -265,7 +266,8 @@ class FranchiseTransactions extends Component{
             if(this.state.fromDate){
                 timerange = this.state.fromDate+'|'+formatted;
             }
-            this.fetchTransaction(1, this.state.transactionType, timerange, this.state.selectedMerchants);
+            // this.fetchTransaction(1, this.state.transactionType, timerange, this.state.selectedMerchants);
+            this.fetchTransaction(1, this.state.transactionType, timerange);
         }
     }
 
@@ -275,7 +277,8 @@ class FranchiseTransactions extends Component{
             endDate: null,
             currentPage: 1,
         })
-        this.fetchTransaction(1, this.state.transactionType, null, this.state.selectedMerchants);
+        // this.fetchTransaction(1, this.state.transactionType, null, this.state.selectedMerchants);
+        this.fetchTransaction(1, this.state.transactionType, null);
     }
 
     fetchTransaction = (page, transactionField, timerange, merchant) => {
@@ -489,7 +492,7 @@ class FranchiseTransactions extends Component{
                                 background: '#fff',
                                 boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
                             }}
-                            value={ this.state.endDate ? new Date(this.state.endDate) : null }
+                            // value={ this.state.endDate ? new Date(this.state.endDate) : null }
                             onChange={(event, date) => this.handleChangeDate(date, 'END')} />
                     </div>
                     <div style={Object.assign({}, datepicker)}>
@@ -508,7 +511,7 @@ class FranchiseTransactions extends Component{
                                 background: '#fff',
                                 boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
                             }}
-                            value={ this.state.fromDate ? new Date(this.state.fromDate) : null }
+                            // value={ this.state.fromDate ? new Date(this.state.fromDate) : null }
                             onChange={(event, date) => this.handleChangeDate(date, 'FROM')} />
                     </div>
                     <SelectField

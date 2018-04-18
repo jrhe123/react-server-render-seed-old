@@ -415,6 +415,7 @@ class MerchantInvoices extends Component{
                 <Dialog
                     title="Invoice"
                     className="invoice-modal"
+                    autoScrollBodyContent={true}
                     modal={false}
                     open={this.state.invoiceModalOpen}
                     onRequestClose={this.handleClose.bind(this)}

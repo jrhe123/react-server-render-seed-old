@@ -193,9 +193,9 @@ class EFT extends Component {
                                         <TableRowColumn style={tableCellStyle}>{idx + 1}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{file.FileName}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{file.Date}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>
+                                        <TableRowColumn className='actionBtnColn' style={tableCellStyle}>
                                             <RaisedButton
-                                                onClick={(e) => this.handleDownload(e, idx)}
+                                                className='actionBtn' onClick={(e) => this.handleDownload(e, idx)}
                                                 secondary={true}
                                                 label='Download'
                                             />

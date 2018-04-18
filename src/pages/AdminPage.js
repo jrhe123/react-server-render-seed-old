@@ -180,7 +180,9 @@ class AdminPage extends Component{
             isLoading: true,
             tab: 0,
 
-            searchMerchantName: ''
+            searchMerchantName: '',
+
+            windowsWidth: 1024
         }
 
         this.logout = this.logout.bind(this);
@@ -209,6 +211,19 @@ class AdminPage extends Component{
         this.setAddressInfo = this.setAddressInfo.bind(this);
         this.salesReport = this.salesReport.bind(this);
     }
+
+
+    // /**
+    //  * Calculate & Update state of new dimensions
+    //  */
+    // updateDimensions() {
+    //   if(window.innerWidth < 500) {
+    //     this.setState({ windowsWidth: 450 });
+    //   } else {
+    //     let update_width  = window.innerWidth - 100;
+    //     this.setState({ windowsWidth: update_width });
+    //   }
+    // }
 
     closeAllModal = () => {
         this.setState({
@@ -1587,9 +1602,9 @@ class AdminPage extends Component{
                                                 <TableRowColumn style={tableCellStyle}>{(msg.SalesFirstName ? msg.SalesFirstName : '') + ' ' + (msg.SalesLastName ? msg.SalesLastName : '')}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{(parseFloat(msg.MerchantRate) * 100.0).toFixed(2)}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{msg.HSTNumber}</TableRowColumn>
-                                                <TableRowColumn style={tableCellStyle}><div style={{textAlign: 'center'}}>
+                                                <TableRowColumn className='actionBtnColn' style={tableCellStyle}><div style={{textAlign: 'center'}}>
                                                     <RaisedButton
-                                                        onClick={(e) => this.handleAction(e, idx)}
+                                                        className='actionBtn' onClick={(e) => this.handleAction(e, idx)}
                                                         secondary={msg.Status !== 'ACTIVE'}
                                                         label='ACTION'
                                                     />
@@ -1597,8 +1612,8 @@ class AdminPage extends Component{
                                                         onRequestClose={(e, idx) => this.handleRequestClose(idx)}
                                                         open={this.state.merListOpenPop[idx]}
                                                         anchorEl={this.state.merListAnEl[idx]}
-                                                        anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                                                        targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                                        anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                                                        targetOrigin={{horizontal: 'right', vertical: 'top'}}
                                                         animation={PopoverAnimationVertical}>
                                                         <Menu>
                                                             {
@@ -1654,6 +1669,7 @@ class AdminPage extends Component{
 
                             <Dialog title="Add Merchant" 
                                 className="add-merchant-modal"
+                                autoScrollBodyContent={true}
                                 modal={false} 
                                 open={this.state.addMerchantModal}
                                 onRequestClose={this.handleAddMerchantClose.bind(this)}
@@ -1756,7 +1772,7 @@ class AdminPage extends Component{
                             </Dialog>
 
 
-                            <Dialog title="Address Info" modal={false} open={this.state.addressModalOpen}
+                            <Dialog title="Address Info" modal={false} open={this.state.addressModalOpen} autoScrollBodyContent={true}
                                     onRequestClose={this.handleAddressClose.bind(this)}>
                                 <div>
                                     <div style={formControl}>
@@ -1779,7 +1795,7 @@ class AdminPage extends Component{
                                 </div>
                             </Dialog>
 
-                            <Dialog title="Bank Account Info" modal={false} open={this.state.bankModalOpen}
+                            <Dialog title="Bank Account Info" modal={false} open={this.state.bankModalOpen} autoScrollBodyContent={true}
                                     onRequestClose={this.handleBankSettingClose.bind(this)}>
                                 <div>
                                     <div style={formControl}>
@@ -1800,7 +1816,7 @@ class AdminPage extends Component{
                                 </div>
                             </Dialog>
 
-                            <Dialog title="Wechat ID" modal={false} open={this.state.widModalOpen}
+                            <Dialog title="Wechat ID" modal={false} open={this.state.widModalOpen} autoScrollBodyContent={true}
                                     onRequestClose={this.handleWidClose.bind(this)}>
                                 <div>
                                     <div style={formControl}>
@@ -1819,7 +1835,7 @@ class AdminPage extends Component{
                                 </div>
                             </Dialog>
 
-                            <Dialog title="Time Zone" modal={false} open={this.state.timeZoneModalOpen}
+                            <Dialog title="Time Zone" modal={false} open={this.state.timeZoneModalOpen} autoScrollBodyContent={true}
                                     onRequestClose={this.handleTimeZoneClose.bind(this)}>
                                 <div>
                                     <div style={formControl}>
@@ -1840,7 +1856,7 @@ class AdminPage extends Component{
                                 </div>
                             </Dialog>
 
-                            <Dialog title="Change Rate (%)" modal={false} open={this.state.rateModalOpen}
+                            <Dialog title="Change Rate (%)" modal={false} open={this.state.rateModalOpen} autoScrollBodyContent={true}
                                     onRequestClose={this.handleRateClose.bind(this)}>
                                 <div>
                                     <div style={formControl}>
@@ -1853,7 +1869,7 @@ class AdminPage extends Component{
                                 </div>
                             </Dialog>
 
-                            <Dialog title="Change HST Number" modal={false} open={this.state.hstModalOpen}
+                            <Dialog title="Change HST Number" modal={false} open={this.state.hstModalOpen} autoScrollBodyContent={true}
                                     onRequestClose={this.handleHSTClose.bind(this)}>
                                 <div>
                                     <div style={formControl}>
@@ -1866,7 +1882,7 @@ class AdminPage extends Component{
                                 </div>
                             </Dialog>
 
-                            <Dialog title="Assign sales" modal={false} open={this.state.salesModalOpen}
+                            <Dialog title="Assign sales" modal={false} open={this.state.salesModalOpen} autoScrollBodyContent={true}
                                     onRequestClose={this.handleSalesClose.bind(this)}>
                                 <div>
                                     <div style={formControl}>
@@ -1887,7 +1903,7 @@ class AdminPage extends Component{
                                 </div>
                             </Dialog>
 
-                            <Dialog title="Documentation" modal={false} open={this.state.docModalOpen}
+                            <Dialog title="Documentation" modal={false} open={this.state.docModalOpen} autoScrollBodyContent={true}
                                 onRequestClose={this.handleDocClose.bind(this)}>
                                 <div style={{marginBottom: 24}}>
                                     {
@@ -1901,7 +1917,7 @@ class AdminPage extends Component{
                                 </div>
                             </Dialog>
 
-                            <Dialog title="Email" modal={false} open={this.state.emailModalOpen}
+                            <Dialog title="Email" modal={false} open={this.state.emailModalOpen} autoScrollBodyContent={true}
                                 onRequestClose={this.handleEmailClose.bind(this)}>
                                 <div style={{marginBottom: 36}}>
                                     <p style={{fontSize: 17, fontWeight: 'bold', color: '#000'}}>Information:</p>
@@ -1932,6 +1948,7 @@ class AdminPage extends Component{
 
                             <Dialog 
                                 title="Unique Code" 
+                                autoScrollBodyContent={true}
                                 modal={false} 
                                 open={this.state.uniqueCodeModalOpen}
                                 onRequestClose={this.handleUniqueCodeClose.bind(this)}>

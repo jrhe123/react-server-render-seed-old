@@ -173,8 +173,8 @@ class AddMerchant extends Component {
                                         <TableRowColumn style={tableCellStyle}>{mer.FirstName + " " + mer.LastName}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{mer.Email}</TableRowColumn>
                                         <TableRowColumn style={tableCellStyle}>{mer.Status}</TableRowColumn>
-                                        <TableRowColumn style={tableCellStyle}>{<div style={{textAlign: 'center'}}>
-                                            <RaisedButton onClick={(e) => this.addMer(e, idx)}
+                                        <TableRowColumn className='actionBtnColn' style={tableCellStyle}>{<div style={{textAlign: 'center'}}>
+                                            <RaisedButton className='actionBtn' onClick={(e) => this.addMer(e, idx)}
                                                 primary={true} label='Connect'
                                             /></div>}
                                         </TableRowColumn>

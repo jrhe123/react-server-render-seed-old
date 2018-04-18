@@ -306,9 +306,9 @@ class Franchise extends Component {
                                             <TableRowColumn style={tableCellStyle}>{franchise.FirstName + ' ' + franchise.LastName}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{franchise.Email}</TableRowColumn>
                                             <TableRowColumn style={tableCellStyle}>{franchise.Status}</TableRowColumn>
-                                            <TableRowColumn style={tableCellStyle}>{<div style={{textAlign: 'center'}}>
+                                            <TableRowColumn className='actionBtnColn' style={tableCellStyle}>{<div style={{textAlign: 'center'}}>
                                                 <RaisedButton
-                                                    onClick={(e) => this.action(e, idx)}
+                                                    className='actionBtn' onClick={(e) => this.action(e, idx)}
                                                     primary={true}
                                                     label='Action'
                                                 />
@@ -340,7 +340,7 @@ class Franchise extends Component {
                             />
                         </div>
 
-                        <Dialog title="Add Franchise" modal={false} open={this.state.modalOpen}
+                        <Dialog title="Add Franchise" modal={false} open={this.state.modalOpen} autoScrollBodyContent={true}
                                 onRequestClose={this.handleClose.bind(this)}>
                             <div>
                                 <div style={formControl}>
