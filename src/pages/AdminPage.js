@@ -55,8 +55,9 @@ import PosList from '../components/PosList';
 import SalesList from '../components/SalesList';
 import Loading from '../components/Loading';
 import EFT from '../components/EFT';
-import Franchise from '../components/Franchise'
+import Franchise from '../components/Franchise';
 import AdminReport from '../components/AdminReport';
+import AuditPage from '../components/AuditPage'
 
 
 class AdminPage extends Component{
@@ -1503,6 +1504,10 @@ class AdminPage extends Component{
         this.getMerList(0, val);
     }
 
+    auditPage = () => {
+        this.setState({ tab: 6 });
+    }
+
     renderTab(tab) {
 
         const {
@@ -1546,6 +1551,10 @@ class AdminPage extends Component{
             case 5:
                 return (
                     <Franchise OnBack={() => this.handleBackToList()} />
+                )
+            case 6:
+                return (
+                    <AuditPage />
                 )
             default:
                 return (
@@ -2040,6 +2049,7 @@ class AdminPage extends Component{
                             {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="EFT" onClick={this.EFT} /> : ''}
                             {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Franchise" onClick={this.Franchise} /> : ''}
                             {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Sales Report" onClick={this.salesReport} /> : ''}
+                            {this.state.UserTypeID === '1' ? <MenuItem style={drawerItem} primaryText="Audit" onClick={this.auditPage} /> : ''}
                             <MenuItem style={drawerItem} primaryText="Log out" onClick={this.logout} />
                         </Drawer>
                     </div>

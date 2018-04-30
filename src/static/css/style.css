@@ -1270,3 +1270,15 @@ table, th, td {
 .actionBtn span {
     font-size: 14px;
 }
+
+/* popup btn in audit */
+.upload-btn-pop{
+    width: 88px !important;
+    padding: 0 !important;
+}
+.upload-btn-pop>div>div{
+    padding: 0 !important;
+}
+.upload-btn-pop>div>div>div{
+    width: 90px !important;
+}
