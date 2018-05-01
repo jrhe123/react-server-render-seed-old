@@ -262,7 +262,7 @@ class AuditPage extends Component {
         let err = '';
         let size = file.size / 1000 / 1000;
 
-        if(file.type !== "text/csv"){
+        if(file.type !== "text/csv" && file.type !== "application/vnd.ms-excel"){
             this.handleTouchTap(`Please upload file *.csv`, false);
             return;
         }
@@ -281,7 +281,7 @@ class AuditPage extends Component {
         let err = '';
         let size = file.size / 1000 / 1000;
 
-        if(file.type !== "text/csv"){
+        if(file.type !== "text/csv" && file.type !== "application/vnd.ms-excel"){
             this.handleTouchTap(`Please upload file *.csv`, false);
             return;
         }
