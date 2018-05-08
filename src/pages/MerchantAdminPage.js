@@ -20,6 +20,7 @@ import HardwareDesktopWindows from 'material-ui/svg-icons/hardware/desktop-windo
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 import LocalAtm from 'material-ui/svg-icons/maps/local-atm';
 import LocalConvenienceStore from 'material-ui/svg-icons/maps/local-convenience-store';
+// import CardTravel from 'material-ui/svg-icons/maps/card-travel'
 
 
 // Redux
@@ -50,6 +51,7 @@ import MerchantPOSMachines from '../components/MerchantPOSMachines';
 import MerchantInvoices from '../components/MerchantInvoices';
 import SettingPage from '../components/SettingPage';
 import PosSettingPage from '../components/PosSettingPage';
+import MerchantServiceCharges from '../components/MerchantServiceCharges';
 
 
 class MerchantAdminPage extends Component{
@@ -60,7 +62,8 @@ class MerchantAdminPage extends Component{
             isLoading: true,
             tab: 'charts',
             open: false,
-            userTypeID: null
+            userTypeID: null,
+            isServiceCharge: null
         }
         this.refactor = this.refactor.bind(this);
     }
@@ -76,8 +79,11 @@ class MerchantAdminPage extends Component{
     componentDidMount() {
         let token = localStorage.getItem('token');
         let userTypeID = localStorage.getItem('userTypeID');
+        // let isServiceCharge = localStorage.getItem('isServiceCharge');
+        let isServiceCharge = 0;
         this.setState({
-            userTypeID: userTypeID
+            userTypeID: userTypeID,
+            isServiceCharge: isServiceCharge
         })
 
         if(localStorage.getItem('profileImage') != ''){
@@ -121,6 +127,7 @@ class MerchantAdminPage extends Component{
                 localStorage.removeItem('agentID');
                 localStorage.removeItem('loginKeyword');
                 localStorage.removeItem('profileImage');
+                localStorage.removeItem('isServiceCharge');
                 browserHistory.push(`${root_page}`);
             })
             .catch((error) => {
@@ -129,6 +136,7 @@ class MerchantAdminPage extends Component{
                 localStorage.removeItem('agentID');
                 localStorage.removeItem('loginKeyword');
                 localStorage.removeItem('profileImage');
+                localStorage.removeItem('isServiceCharge');
                 browserHistory.push(`${root_page}`);
             })
     }
@@ -177,10 +185,14 @@ class MerchantAdminPage extends Component{
             case 'settlement':
                 return (
                     <MerchantSettlements />
-                );  
+                );
             case 'refund':
                 return (
                     <MerchantRefundableTransactions />
+                );
+            case 'serviceCharge':
+                return (
+                    <MerchantServiceCharges />
                 );
             default:
                 return (
@@ -334,6 +346,20 @@ class MerchantAdminPage extends Component{
                                                       primaryText="Refund"
                                                       leftIcon={<LocalConvenienceStore color="#fff" />}
                                                       onClick={this.switchTab.bind(this, 'refund')} />
+
+                                        </div>
+                                    )
+                                    :
+                                    (null)
+                            }
+                            {
+                                (this.state.userTypeID == 2 && this.state.isServiceCharge == 0) ?
+                                    (
+                                        <div>
+                                            <MenuItem style={{color: '#fff'}}
+                                                      primaryText="Service Charge"
+                                                      leftIcon={<LocalConvenienceStore color="#fff" />}
+                                                      onClick={this.switchTab.bind(this, 'serviceCharge')} />
 
                                         </div>
                                     )

@@ -57,8 +57,9 @@ import Loading from '../components/Loading';
 import EFT from '../components/EFT';
 import Franchise from '../components/Franchise';
 import AdminReport from '../components/AdminReport';
-import AuditPage from '../components/AuditPage'
+import AuditPage from '../components/AuditPage';
 
+import InvoiceList from '../components/InvoiceList';
 
 class AdminPage extends Component{
 
@@ -87,6 +88,10 @@ class AdminPage extends Component{
             checkErr: '',
             categoryValue: '',
             categoryGUID: '',
+
+            agentId: '',
+            isServiceCharge: false,
+            serviceChargeModalOpen: false,
 
             docModalOpen: false,
             viewMerchant: {},
@@ -174,7 +179,7 @@ class AdminPage extends Component{
             hideFirstAndLastPageLinks: false, hideEllipsis: false,
             merListOpenPop: [false],
             merListAnEl: [null],
-            merListTitle: ['AgentID', 'Merchant', 'MemberID', 'Email', 'Phone', 'Status', 'Sales', 'Rate(%)', 'HST#', 'Action'],
+            merListTitle: ['AgentID', 'Merchant', 'MemberID', 'Email', 'Phone', 'Status', 'Sales', 'Rate(%)', 'HST#', 'IsServiceCharge', 'Action'],
             salesListTitle: ['Name', 'Phone','Email','Status','Action'],
             merList: [],
             UserGUID: '',
@@ -571,6 +576,50 @@ class AdminPage extends Component{
         }).catch((err) => {
             this.handleTouchTap(`Error: ${err}`);
         });
+    }
+
+    updateServiceChargeCheck = () => {
+        this.setState({
+            isServiceCharge: !this.state.isServiceCharge
+        })
+    }
+
+    updateMerchantServiceType = () => {
+
+        let params = { 
+            Params: {
+                MerchantUserGUID: this.state.uniqueCodeMer.UserGUID,
+                isServiceCharge: this.state.isServiceCharge ? '1' : '0'
+            }
+        };
+        apiManager.opayApi(opay_url + 'admin/change_service_charge_test', params, true).then((res) => {
+            if (res.data) {
+                if (res.data.Confirmation === 'Success') {
+                }else{
+                    this.handleTouchTap(`Error: ${res.data.Message}`, false);
+                }
+            }
+        }).catch((err) => {
+            this.handleTouchTap(`Error: ${err}`);
+        });
+    }
+
+    updateServiceType = (idx, merchant) => {
+        this.closeAllModal();
+        let updated = Object.assign({}, this.state);
+        updated.merListOpenPop[idx] = false;
+        updated.serviceChargeModalOpen = true;
+        updated.isServiceCharge = merchant.isServiceCharge;
+        console.log(merchant);console.log(merchant.isServiceCharge);
+        this.setState(updated);
+    }
+
+    handleServiceChargeClose = () => {
+        this.setState({ serviceChargeModalOpen: false });
+    }
+
+    showAllInvoice = (idx, merchant) => {
+        this.setState({ tab: 7, agentId: merchant.AgentID });
     }
 
     handleUniqueCodeClose = () => {
@@ -1529,6 +1578,7 @@ class AdminPage extends Component{
             inputBtnStyle,
             checkContainer,
             uniqueFormStyle,
+            checkboxStyle
         } = styles;
 
         switch(tab) {
@@ -1555,6 +1605,10 @@ class AdminPage extends Component{
             case 6:
                 return (
                     <AuditPage />
+                )
+            case 7:
+                return (
+                    <InvoiceList merchantID = {this.state.agentId} />
                 )
             default:
                 return (
@@ -1611,6 +1665,9 @@ class AdminPage extends Component{
                                                 <TableRowColumn style={tableCellStyle}>{(msg.SalesFirstName ? msg.SalesFirstName : '') + ' ' + (msg.SalesLastName ? msg.SalesLastName : '')}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{(parseFloat(msg.MerchantRate) * 100.0).toFixed(2)}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{msg.HSTNumber}</TableRowColumn>
+                                                <TableRowColumn style={tableCellStyle}>
+                                                    {msg.IsServiceCharge == 0 ? 'No' : msg.IsServiceCharge}
+                                                </TableRowColumn>
                                                 <TableRowColumn className='actionBtnColn' style={tableCellStyle}><div style={{textAlign: 'center'}}>
                                                     <RaisedButton
                                                         className='actionBtn' onClick={(e) => this.handleAction(e, idx)}
@@ -1658,6 +1715,8 @@ class AdminPage extends Component{
                                                             <MenuItem primaryText="Documents" onClick={() => this.viewDocuments(idx, msg)}/>
                                                             <MenuItem primaryText="Email" onClick={() => this.sendEmail(idx, msg)}/>
                                                             <MenuItem primaryText="Unique Code" onClick={() => this.viewUniqueCode(idx, msg)}/>
+                                                            <MenuItem primaryText="Change Service Type" onClick={() => this.updateServiceType(idx, msg)}/>
+                                                            <MenuItem primaryText="Show All Invoices" onClick={() => this.showAllInvoice(idx, msg)}/>
                                                         </Menu>
                                                     </Popover>
                                                 </div></TableRowColumn>
@@ -2014,6 +2073,27 @@ class AdminPage extends Component{
                                     </div>
                                 </div>
                             </Dialog>
+
+                            <Dialog 
+                                title="Update Service Type" 
+                                modal={false} 
+                                open={this.state.serviceChargeModalOpen}
+                                onRequestClose={this.handleServiceChargeClose.bind(this)}>
+                                <div>
+                                    <div style={Object.assign({}, formControl, uniqueFormStyle)}>
+                                        
+                                        <Checkbox
+                                            style={checkboxStyle}
+                                            label="is service charge"
+                                            checked={this.state.isServiceCharge}
+                                            onCheck={() => this.updateServiceChargeCheck()}
+                                            />
+                                        <div style={btnControl}>
+                                            <RaisedButton label="Update" primary={true} onClick={() => this.updateMerchantServiceType()}/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Dialog>
                         </div>
                 );
         }
@@ -2174,7 +2254,6 @@ const styles = {
     },
 
     uniqueFormStyle: {
-        height: 200,
         overflow: 'auto',
     },
 
@@ -2218,6 +2297,11 @@ const styles = {
         textAlign: 'left',
         height: 60
     },
+
+    checkboxStyle: {
+        width: '60%',
+        margin: 'auto'
+    }
 
 }
 
