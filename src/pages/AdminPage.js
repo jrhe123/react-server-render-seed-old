@@ -179,7 +179,7 @@ class AdminPage extends Component{
             hideFirstAndLastPageLinks: false, hideEllipsis: false,
             merListOpenPop: [false],
             merListAnEl: [null],
-            merListTitle: ['AgentID', 'Merchant', 'MemberID', 'Email', 'Phone', 'Status', 'Sales', 'Rate(%)', 'HST#', 'IsServiceCharge', 'Action'],
+            merListTitle: ['AgentID', 'Merchant', 'MemberID', 'Email', 'Phone', 'Status', 'Sales', 'Rate(%)', 'HST#', 'ServiceCharge', 'Action'],
             salesListTitle: ['Name', 'Phone','Email','Status','Action'],
             merList: [],
             UserGUID: '',
@@ -188,7 +188,9 @@ class AdminPage extends Component{
 
             searchMerchantName: '',
 
-            windowsWidth: 1024
+            windowsWidth: 1024,
+
+            serviceChargeMerchant: {}
         }
 
         this.logout = this.logout.bind(this);
@@ -588,13 +590,22 @@ class AdminPage extends Component{
 
         let params = { 
             Params: {
-                MerchantUserGUID: this.state.uniqueCodeMer.UserGUID,
-                isServiceCharge: this.state.isServiceCharge ? '1' : '0'
+                MerchantUserGUID: this.state.serviceChargeMerchant.UserGUID,
+                IsServiceCharge: this.state.isServiceCharge ? '1' : '0'
             }
-        };
-        apiManager.opayApi(opay_url + 'admin/change_service_charge_test', params, true).then((res) => {
+        };        
+        apiManager.opayApi(opay_url + 'admin/update_merchant_service_charge', params, true).then((res) => {
             if (res.data) {
                 if (res.data.Confirmation === 'Success') {
+                    //close modal
+                    this.closeAllModal();
+                    let updated = Object.assign({}, this.state);
+                    updated.serviceChargeModalOpen = false;
+                    updated.isServiceCharge = 0;
+                    updated.serviceChargeMerchant = {};
+                    this.setState(updated);
+                    // fetch merchant list
+                    this.getMerList(this.state.currentPage, this.state.searchMerchantName);
                 }else{
                     this.handleTouchTap(`Error: ${res.data.Message}`, false);
                 }
@@ -609,8 +620,8 @@ class AdminPage extends Component{
         let updated = Object.assign({}, this.state);
         updated.merListOpenPop[idx] = false;
         updated.serviceChargeModalOpen = true;
-        updated.isServiceCharge = merchant.isServiceCharge;
-        console.log(merchant);console.log(merchant.isServiceCharge);
+        updated.isServiceCharge = merchant.IsServiceCharge;
+        updated.serviceChargeMerchant = merchant;
         this.setState(updated);
     }
 
@@ -619,6 +630,10 @@ class AdminPage extends Component{
     }
 
     showAllInvoice = (idx, merchant) => {
+        let updated = Object.assign({}, this.state);
+        updated.merListOpenPop[idx] = false;
+        this.setState(updated);
+        this.closeAllModal();
         this.setState({ tab: 7, agentId: merchant.AgentID });
     }
 
@@ -1578,7 +1593,8 @@ class AdminPage extends Component{
             inputBtnStyle,
             checkContainer,
             uniqueFormStyle,
-            checkboxStyle
+            checkboxStyle,
+            checkboxLabelStyle
         } = styles;
 
         switch(tab) {
@@ -1666,7 +1682,7 @@ class AdminPage extends Component{
                                                 <TableRowColumn style={tableCellStyle}>{(parseFloat(msg.MerchantRate) * 100.0).toFixed(2)}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>{msg.HSTNumber}</TableRowColumn>
                                                 <TableRowColumn style={tableCellStyle}>
-                                                    {msg.IsServiceCharge == 0 ? 'No' : msg.IsServiceCharge}
+                                                    {msg.IsServiceCharge == 0 ? 'No' : 'Yes'}
                                                 </TableRowColumn>
                                                 <TableRowColumn className='actionBtnColn' style={tableCellStyle}><div style={{textAlign: 'center'}}>
                                                     <RaisedButton
@@ -2085,7 +2101,8 @@ class AdminPage extends Component{
                                         <Checkbox
                                             style={checkboxStyle}
                                             label="is service charge"
-                                            checked={this.state.isServiceCharge}
+                                            labelStyle={checkboxLabelStyle}
+                                            checked={this.state.isServiceCharge == 1 ? true : false}
                                             onCheck={() => this.updateServiceChargeCheck()}
                                             />
                                         <div style={btnControl}>
@@ -2299,8 +2316,12 @@ const styles = {
     },
 
     checkboxStyle: {
-        width: '60%',
+        width: 'auto',
         margin: 'auto'
+    },
+
+    checkboxLabelStyle: {
+        width: 'max-content'
     }
 
 }

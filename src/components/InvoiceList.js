@@ -64,11 +64,21 @@ class InvoiceList extends Component {
     };
 
     fetchInvoiceList = () => {
-        // apiManager.opayApi(opay_url + merchant_invoice_list, {}, true).then((response) => {
-        //     this.setState({ invoiceList:response.data })
-        // }).catch((err) => {
-        //     this.handleTouchTap(`Error: ${err}`);
-        // });
+        let search = {
+            Limit: '-1',
+            Offset: '',
+            Extra: {
+
+            }
+        }
+        apiManager.opayApi(opay_url + '/merchant/invoice_list', search).then((response) => {
+            if(response.TotalRecords) {
+                this.setState({ invoiceList:response.Invoices });
+                console.log(response.Invoices);
+            }
+        }).catch((err) => {
+            this.handleTouchTap(`Error: ${err}`);
+        });
     };
 
     showInvoiceStatus = (idx, merchant) => {
@@ -116,7 +126,8 @@ class InvoiceList extends Component {
             formControl,
             uniqueFormStyle,
             btnControl,
-            checkboxStyle
+            checkboxStyle,
+            checkboxLabelStyle
         } = styles;
 
         return (
@@ -163,6 +174,7 @@ class InvoiceList extends Component {
                             <Checkbox
                                 style={checkboxStyle}
                                 label="is settle"
+                                labelStyle={checkboxLabelStyle}
                                 checked={this.state.isSettle}
                                 onCheck={() => this.updateInvoiceStatusCheck()}
                                 />
@@ -206,8 +218,11 @@ const styles = {
         marginBottom: 12
     },
     checkboxStyle: {
-        width: '60%',
+        width: 'auto',
         margin: 'auto'
+    },
+    checkboxLabelStyle: {
+        width: 'max-content'
     }
 }
 
