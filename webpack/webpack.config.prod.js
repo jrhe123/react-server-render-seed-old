@@ -11,7 +11,6 @@ module.exports = {
     },
     module: {
         loaders: [{
-            // test: path.join(__dirname, 'src'),
             test: /\.js$/,
             exclude: /(node_modules|bower_components)/,
             loader: 'babel-loader',
@@ -35,7 +34,6 @@ module.exports = {
     },
     plugins: [
         new webpack.DefinePlugin({
-            // 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
             'process.env.NODE_ENV': JSON.stringify("production")
         }),
         new webpack.optimize.AggressiveMergingPlugin(),
